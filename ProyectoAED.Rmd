@@ -1,0 +1,13 @@
+---
+title: "Proyecto AED"
+author: "Iyán Álvarez, Azahara Martinez y Juan Alcaraz"
+date: "2025-10-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list = ls())
+```
+
+
