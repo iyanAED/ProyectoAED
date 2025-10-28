@@ -9,20 +9,34 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r Librerías}
+library(readr)
+```
+
+
 ## IMPORTACIÓN
 
-```{r Importación del dataframe}
+```{r Enlaces de descarga}
 url_ocupacion <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
 url_hoteles <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
+```
 
+```{r Codificación de los archivos}
+guess_encoding(url_hoteles)
+guess_encoding(url_ocupacion)
+```
+
+```{r Importación}
 df_Hoteles <- read.csv(url_hoteles,
                        header = TRUE,
                        sep = ";",
-                       dec = ".")
+                       dec = ".",
+                       encoding = "UTF-8")
 
 df_Ocupacion <- read.csv(url_ocupacion,
                        header = TRUE,
                        sep = ";",
-                       dec = ".")
+                       dec = ".",
+                       encoding = "UTF-8")
 ```
 
