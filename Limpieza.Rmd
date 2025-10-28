@@ -1,0 +1,28 @@
+---
+title: "Limpieza_Datos"
+author: "Juan Alcaraz Otón"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## IMPORTACIÓN
+
+```{r Importación del dataframe}
+url_ocupacion <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
+url_hoteles <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
+
+df_Hoteles <- read.csv(url_hoteles,
+                       header = TRUE,
+                       sep = ";",
+                       dec = ".")
+
+df_Ocupacion <- read.csv(url_ocupacion,
+                       header = TRUE,
+                       sep = ";",
+                       dec = ".")
+```
+
