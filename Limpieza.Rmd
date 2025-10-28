@@ -1,6 +1,6 @@
 ---
 title: "Limpieza_Datos"
-author: "Juan Alcaraz Otón"
+author: "Iyán Álvarez, Azahara Martinez y Juan Alcaraz"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -8,6 +8,15 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+```{r}
+library(dplyr)
+library(stringr)
+library(lubridate)
+library(tidyr)
+library(tidyverse)
+```
+
 
 ## IMPORTACIÓN
 
@@ -24,5 +33,27 @@ df_Ocupacion <- read.csv(url_ocupacion,
                        header = TRUE,
                        sep = ";",
                        dec = ".")
+```
+
+## LIMPIEZA BASE DE DATOS 
+
+###TURISMO 
+
+Elinamos las filas que corresponden al total nacional y a las Comunidades Autónomas ya que son redundantes y se pueden sacar a partir del resto de datos si se necesitaran.
+
+```{r}
+df_Hoteles <- df_Hoteles %>%
+  select(-Totales.Territoriales)%>%
+  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
+```
+
+Ahora voy a toquetear las fechas
+
+```{r}
+df_Hoteles <- df_Hoteles%>%
+  separate(col=Periodo,into=c('Año', 'Mes'), sep='M')
+
+df_Hoteles <- df_Hoteles %>%
+  mutate(fecha = ym(paste0(Año, "-", Mes)))
 ```
 
