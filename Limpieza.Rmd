@@ -11,8 +11,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r Librerías}
 library(readr)
+library(dplyr)
+library(stringr)
+library(tidyr)
 ```
-
 
 ## IMPORTACIÓN
 
@@ -40,3 +42,40 @@ df_Ocupacion <- read.csv(url_ocupacion,
                        encoding = "UTF-8")
 ```
 
+###TURISMO 
+
+Elinamos las filas que corresponden al total nacional y a las Comunidades Autónomas ya que son redundantes y se pueden sacar a partir del resto de datos si se necesitaran.
+
+```{r}
+df_Hoteles <- df_Hoteles %>%
+  select(-Totales.Territoriales)%>%
+  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
+```
+
+Ahora voy a toquetear las fechas
+
+```{r}
+#df_Hoteles <- df_Hoteles%>%
+  #separate(col=Periodo,into=c('Año', 'Mes'), sep='M')
+
+#df_Hoteles <- df_Hoteles %>%
+ # mutate(fecha = ym(paste0(Año,"-",Mes)))
+```
+
+
+### OCUPACIÓN
+```{r}
+df_Ocupacion_clean <- df_Ocupacion %>%
+  dplyr::filter(Comunidades.y.Ciudades.Autónomas != "Total Nacional") %>% #elimino los totales pq son redundantes
+  dplyr::filter(Sector.económico == "Servicios") %>% #filtro para quedarme solo con el sector servicios que es el que me interesa
+  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>%#elimino la enumeracion de los nombres de las comunidades
+  select(-Sexo, -Sector.económico) %>% 
+  separate(Periodo,c('Año','Trimestre'), sep='T') %>% #separo el periodo en año y trimestre usando 'T' como separador para que, de paso, se elimine
+  rename('Comunidades Autónomas'= Comunidades.y.Ciudades.Autónomas)
+
+```
+
+Para tener una imagen general de como se mueve la ocupación
+```{r}
+
+```
