@@ -15,22 +15,23 @@ library(stringr)
 library(lubridate)
 library(tidyr)
 library(tidyverse)
+library(zoo)
 ```
 
 ## IMPORTACIÓN
 
 ```{r Enlaces de descarga}
 url_ocupacion <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
-url_hoteles <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
+url_turismo <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
 ```
 
 ```{r Codificación de los archivos}
-guess_encoding(url_hoteles)
+guess_encoding(url_turismo)
 guess_encoding(url_ocupacion)
 ```
 
 ```{r Importación}
-df_Hoteles <- read.csv(url_hoteles,
+df_Turismo <- read.csv(url_turismo,
                        header = TRUE,
                        sep = ";",
                        dec = ".",
@@ -43,29 +44,67 @@ df_Ocupacion <- read.csv(url_ocupacion,
                        encoding = "UTF-8")
 ```
 
-## LIMPIEZA BASE DE DATOS 
+# CARACTERÍSTICAS GENERALES
 
-###TURISMO 
+## TURISMO
 
+```{r}
+df_Turismo %>% glimpse()
+```
+
+```{r}
+sapply(df_Turismo, function(x) length(unique(x)))
+```
+```{r}
+print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
+print(unique(df_Turismo$Provincias))
+```
 Elinamos las filas que corresponden al total nacional y a las Comunidades Autónomas ya que son redundantes y se pueden sacar a partir del resto de datos si se necesitaran.
 
 ```{r}
-df_Hoteles <- df_Hoteles %>%
+df_Turismo <- df_Turismo %>%
   select(-Totales.Territoriales)%>%
   filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
 ```
 
+Como hemos visto arriba hay que arreglar los tipos de datos, empezamos con las fechas
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  mutate(Periodo = as.yearmon(str_replace(Periodo, "M", "-")))
+```
+
+Limpiamos los nombres #TODO ARREGLAR LOS NOMBRES, LAS COMAS DE DETRAS Y LOS DOS IDIOMAS (VER UNIQUES)
+
+```{r}
+df_Turismo <- df_Turismo %>% 
+  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>% 
+  mutate(Provincias = str_replace(Provincias, "^[0-9]+\\s+", ""))
+```
+
+
+## OCUPACIÓN
+
+```{r}
+df_Ocupacion %>% glimpse()
+```
+
+
+# LIMPIEZA BASE DE DATOS 
+
+##TURISMO 
+
 Ahora voy a toquetear las fechas
 
 ```{r}
-df_Hoteles <- df_Hoteles%>%
+df_Turismo <- df_Turismo%>%
   separate(col=Periodo,into=c('Año', 'Mes'), sep='M')
 
-df_Hoteles <- df_Hoteles %>%
+df_Turismo <- df_Turismo %>%
   mutate(fecha = ym(paste0(Año, "-", Mes)))
 ```
 
-### OCUPACIÓN
+## OCUPACIÓN
 
 ```{r}
 df_Ocupacion_clean <- df_Ocupacion %>%
@@ -73,7 +112,7 @@ df_Ocupacion_clean <- df_Ocupacion %>%
   dplyr::filter(Sector.económico == "Servicios") %>% #filtro para quedarme solo con el sector servicios que es el que me interesa
   mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>%#elimino la enumeracion de los nombres de las comunidades
   select(-Sexo, -Sector.económico) %>% 
-  separate(Periodo,c('Año','Trimestre'), sep='T') %>% #separo el periodo en año y trimestre usando 'T' como separador para que, de paso, se elimine
+  mutate(Periodo = as.yearqtr(str_replace(Periodo, "T", "-"))) %>%
   rename('Comunidades Autónomas'= Comunidades.y.Ciudades.Autónomas)
 
 ```
