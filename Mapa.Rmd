@@ -1,0 +1,86 @@
+---
+title: "Limpieza_Datos"
+author: "Juan Alcaraz Otón"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Librerías}
+rm(list = ls())
+if (!require("pacman")) install.packages("pacman")
+
+# Usa pacman para instalar/cargar
+pacman::p_load(dplyr, ggplot2, tidyr, readr, sf,lubridate, tidyverse, jsonlite, data.table, tibble)
+```
+
+
+```{r}
+# importamos el archivo que generamos en QGIS
+qgis_export <- read.csv(file = "Mapa_Espania.csv", 
+                        encoding="UTF-8", 
+                        stringsAsFactors=FALSE,
+                        sep = ";")
+```
+
+
+```{r}
+# generamos un identificador numérico único para cada conjunto de name, admin, vertex_part y vertex_part_ring
+# guardamos este identificador en una columna nueva llamada group
+setDT(qgis_export)[ , group := .GRP, .(NAME_2, NAME_1, vertex_part, vertex_part_ring)]
+```
+
+
+```{r}
+# si tenemos más columnas de las necesarias, nos deshacemos de ellas
+# luego les ponemos los nombres apropiados para que se usen en ggplot2
+dataset <- qgis_export %>% select(X, Y,NAME_2, NAME_1, group, vertex_index)
+colnames(dataset) <- c('long', 'lat', 'region', 'CCAA', 'group', 'order')
+
+# podemos visualizar su estructura
+str(dataset)
+```
+
+
+```{r}
+# generamos algunos datos aleatorios para colorear las regiones del mapa, podemos omitir este paso si ya contamos con un dataset de información que queremos mostrar
+# si usamos nuestro propio dataset, solo nos aseguramos de contar con la columna 'region' y 'value'
+rand_data <- tibble(region=unique(dataset$region),
+                    value=sample(100, length(region)))
+```
+
+
+```{r}
+# Vamos a crear las capas del mapa
+# PRIMERA CAPA: lineza inicial
+gg <- ggplot()
+
+# SEGUNDA CAPA: añadimos el mapa, para comprender mejor esta capa es mejor consultar la documentación de la librería ggplot2, en concreto la documentación de geom_map()
+# Los argumentos más importantes de la función son los siguientes:
+# 1.- mapping = aes() con esto especificamos como queremos que se vea el mapa, son las opciones gráficas
+
+
+# 2.- map = lo que espera la función es que este argumento sea un dataframe que tenga tres columnas, llamadas, x o long, y o lat y por último la última debe llamarse region o id. El dataframe que le pasemos puede ser que tenga más columnas, pero debe tener al menos tres cada una llamada como hemos dicho, si fuera así daría error
+
+# 3.- data = es el argumento típico de la librería ggplot2, se trata de un conjunto de datos, el cual usaremos (o no) para poner información en el gráfico.
+# -------------------------------------------------------------------------------------------
+# Para nuestro caso le pasamos dataset como map, que como se puede ver contiene más de tres columnas, eso da igual, solo usará las que tengan los nombres correctos.
+# El dataframe del argumento data, en este caso es irrelevante, solo se rellena porque no puede dejarse vacío.
+gg <- gg + geom_map(data=dataset, map=dataset,
+                    aes(x=long, y=lat, map_id=region),
+                    color="#b2b2b2", size=0.1, fill=NA)
+
+# -------------------------------------------------------------------------------------------
+# Ahora si queremos que cada región se coloree de distinto tono en función de una cierta característica, debemos pasarle el dataframe con la información que usaremos para colorear, entonces, tras poner los dos dataframe necesarios primero, después en el argumento de mapping, se ponen las especificaciones de visualización:
+# fill = nos dirá de qué color se pintará la zona
+# map_id es lo que une la información del color y el mapa, es decir en dataframe que le hayamos pasado para data, habrá una columna llamada región, y otra columna que contiene el valor para cada región, esa columna región debe tener los mismos nombre que la columna región del dataframe del mapa
+gg <- gg + geom_map(data=rand_data, map=dataset,
+                    aes(fill=value, map_id=region),
+                    color="red", size=0.5)
+gg <- gg + coord_fixed(ratio = 1)
+gg
+```
+
