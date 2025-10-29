@@ -1,6 +1,6 @@
 ---
 title: "Limpieza_Datos"
-author: "Juan Alcaraz Otón"
+author: "Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón"
 date: "`r Sys.Date()`"
 output: html_document
 ---
