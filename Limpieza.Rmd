@@ -89,16 +89,16 @@ Ahora vamos a poner las comunidades autonomas y provincias(regiones) a tipo fact
 ```{r}
 df_Turismo <- df_Turismo %>% 
   mutate(Viajeros.y.pernoctaciones=as.factor(df_Turismo$Viajeros.y.pernoctaciones)) %>% 
-  mutate(Residencia..Nivel.2=as.factor(df_Turismo$Residencia..Nivel.2))
+  mutate(Residencia..Nivel.2=as.factor(df_Turismo$Residencia..Nivel.2)) %>% 
+  rename(Residencia=Residencia..Nivel.2)
 
 ```
 
 La columna de total debemos ponerla en tipo numerico
 ```{r}
 df_Turismo <- df_Turismo %>% 
-  mutate(Total=as.factor(df_Turismo$Total))
+  mutate(Total=as.numeric(df_Turismo$Total))
 ```
-
 
 También deberíamos cambiar a factor las comunidade sy provincias pero primero debemos limpiarlas:
 
@@ -121,7 +121,28 @@ df_Turismo <- df_Turismo %>%
   mutate(Region=as.factor(df_Turismo$Region))
 ```
 
-
+VAMOS A HACER UNOS POCOS GRÁFICOS EXPLORATORIOS
+Estadisticos descriptivos. Para las variables de tipo factor hacemos un summary y ya (DESCRIBIR) Aunque no aporten mucho a nivel estadistico, tiene sentido lo que vemos en relacion cn lo que esperamos del datframe.
+```{r}
+summary(df_Turismo)
+```
+Sin embargo, de la variable numérica si que podemos hacer algun que otro analisis #TODO completar con algo más exploratorio
+```{r}
+sd(df_Turismo$Total)
+```
+Como inicialmente en este dataset habian espacios en blanco, vamos a revisar que, una vez todo limpio, debemos comprbar si efectivamente ha quedado todo bien. También comprobamos si hay algún NA
+```{r}
+#NA
+anyNA(df_Turismo)
+colSums(is.na(df_Turismo))
+```
+Se observa que no hay ningun NA
+```{r}
+#Huecos en blanco
+sum(df_Turismo == "", na.rm = TRUE)
+colSums(df_Turismo == "", na.rm = TRUE)
+```
+Tampoco se observan huecos en blanco, por lo que el dataset está limpio.
 
 ## OCUPACIÓN
 
