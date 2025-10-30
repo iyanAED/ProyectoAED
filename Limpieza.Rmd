@@ -58,6 +58,7 @@ sapply(df_Turismo, function(x) length(unique(x)))
 ```{r}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
 print(unique(df_Turismo$Provincias))
+print(unique(df_Turismo$Residencia..Nivel.2))
 ```
 Elinamos las filas que corresponden al total nacional y a las Comunidades Autónomas ya que son redundantes y se pueden sacar a partir del resto de datos si se necesitaran.
 
@@ -67,6 +68,15 @@ df_Turismo <- df_Turismo %>%
   filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
 ```
 
+La columna de Residencia nivel 1 solo se compone de una string que es total entonces no aporta informacion nueva y es redundante.
+```{r}
+unique(df_Turismo$Residencia..Nivel.1)
+
+df_Turismo <- df_Turismo %>% 
+  select(-Residencia..Nivel.1) %>% 
+  filter(str_trim(Residencia..Nivel.2) != "")
+```
+Recordando lo que hicimos antes, observamosAhora vamos a cambiar el tipo de variable al correspondiente.
 Como hemos visto arriba hay que arreglar los tipos de datos, empezamos con las fechas
 
 ```{r}
@@ -74,13 +84,43 @@ df_Turismo <- df_Turismo %>%
   mutate(Periodo = as.yearmon(str_replace(Periodo, "M", "-")))
 ```
 
-Limpiamos los nombres #TODO ARREGLAR LOS NOMBRES, LAS COMAS DE DETRAS Y LOS DOS IDIOMAS (VER UNIQUES)
+Ahora vamos a poner las comunidades autonomas y provincias(regiones) a tipo factor porque es mejor(explicar por qué es mejor)
+
+```{r}
+df_Turismo <- df_Turismo %>% 
+  mutate(Viajeros.y.pernoctaciones=as.factor(df_Turismo$Viajeros.y.pernoctaciones)) %>% 
+  mutate(Residencia..Nivel.2=as.factor(df_Turismo$Residencia..Nivel.2))
+
+```
+
+La columna de total debemos ponerla en tipo numerico
+```{r}
+df_Turismo <- df_Turismo %>% 
+  mutate(Total=as.factor(df_Turismo$Total))
+```
+
+
+También deberíamos cambiar a factor las comunidade sy provincias pero primero debemos limpiarlas:
+
+Limpiamos los nombres de las comunidades autonomas y provincias, porque el formato no estaba bien
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
   mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>% 
-  mutate(Provincias = str_replace(Provincias, "^[0-9]+\\s+", ""))
+  mutate(Provincias = str_replace(Provincias, "^[0-9]+\\s+", "")) %>% 
+  rename(Region=Provincias) %>% 
+  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$","\\2 \\1")  %>% str_squish(),Region = str_replace(Region,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$","\\2 \\1") %>%  str_squish()) %>% 
+  mutate(Region = str_remove(Region, "\\s*/.*$"))
+
 ```
+
+Ahora ya podemos cambiarlas a factor
+```{r}
+df_Turismo <- df_Turismo %>% 
+  mutate(Comunidades.y.Ciudades.Autónomas=as.factor(df_Turismo$Comunidades.y.Ciudades.Autónomas)) %>% 
+  mutate(Region=as.factor(df_Turismo$Region))
+```
+
 
 
 ## OCUPACIÓN
