@@ -16,19 +16,27 @@ library(lubridate)
 library(tidyr)
 library(tidyverse)
 library(zoo)
+library(ggplot2)
 ```
 
-## IMPORTACIÓN
+# IMPORTACIÓN
 
+Para el desarrollo del análisis, se han utilizado dos bases de datos principales. La primera contiene información relacionada con el turismo en España, desglosada por comunidades autónomas y provincias, e incluye variables como el número de viajeros y pernoctaciones registradas a lo largo de varios años. La segunda base de datos corresponde al sector servicios, específicamente a la ocupación en dicho sector, que se analizará posteriormente para establecer relaciones con la evolución del turismo.
+
+Con el fin de garantizar que los datos utilizados estén siempre actualizados, se ha optado por realizar la importación directamente desde la URL de origen, en lugar de utilizar copias locales. De este modo, si los archivos son modificados o actualizados en la fuente oficial, el código podrá acceder automáticamente a la versión más reciente.
 ```{r Enlaces de descarga}
 url_ocupacion <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
 url_turismo <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
 ```
 
+Antes de proceder a la carga definitiva, se ha comprobado la codificación (encoding) de cada archivo, con el objetivo de evitar posibles problemas de lectura o visualización de caracteres especiales en las tablas. Esto se ha realizado aplicando la función correspondiente para identificar el tipo de codificación de cada dataset.
+
 ```{r Codificación de los archivos}
 guess_encoding(url_turismo)
 guess_encoding(url_ocupacion)
 ```
+
+Finalmente, los datos se han importado utilizando la función read_csv(), creando dos dataframes principales:
 
 ```{r Importación}
 df_Turismo <- read.csv(url_turismo,
@@ -48,19 +56,69 @@ df_Ocupacion <- read.csv(url_ocupacion,
 
 ## TURISMO
 
+Una vez importados los datos, se procede al análisis de las características generales del primer conjunto, correspondiente al turismo en España. Este dataset recopila información sobre el número de viajeros y las pernoctaciones registradas a lo largo del tiempo, desglosadas por comunidades y provincias.
+
+Las variables incluidas son las siguientes:
+
+- Totales.Territoriales: columna con un único valor (“Total Nacional”). No aporta información relevante para el análisis, por lo que se eliminará en fases posteriores.
+
+- Comunidades.y.Ciudades.Autónomas: identifica la comunidad o ciudad autónoma correspondiente a cada registro.
+
+- Provincias: especifica la provincia asociada a cada comunidad.
+
+- Viajeros.y.pernoctaciones: indica el tipo de registro (viajeros o pernoctaciones).
+
+- Residencia..Nivel.1: variable redundante que contiene el valor “Total” en todas sus observaciones; se eliminará del dataset.
+
+- Residencia..Nivel.2: indica el origen de los viajeros, diferenciando entre residentes en España y residentes en el extranjero.
+
+- Periodo: recoge el año y el mes al que corresponde cada observación.
+
+- Total: valor numérico asociado al tipo de registro (viajeros o pernoctaciones) en el periodo y territorio determinados.
+
+En el momento de la importación, todas las variables se cargaron inicialmente con tipo de dato character. Posteriormente, durante la fase de preparación de los datos, se realizará la conversión de aquellas variables que correspondan a fechas, factores o valores numéricos, con el fin de facilitar su análisis estadístico y gráfico.
+
+Como primer paso del análisis exploratorio, se utilizó la función glimpse() (del paquete dplyr) para obtener una visión general de la estructura del dataset.
+Gracias a esta función se pudo observar que todas las columnas se importaron como tipo carácter, por lo que será necesario realizar conversiones de tipo en etapas posteriores.
+
 ```{r}
 df_Turismo %>% glimpse()
 ```
+Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función sapply() combinada con unique() al dataframe del turismo.
+Esta operación permitió obtener los valores únicos presentes en cada una de las columnas, facilitando la identificación de errores o redundancias en los datos.
+
+A partir de este análisis se obtuvieron las siguientes observaciones:
+
+- Totales.Territoriales presenta un único valor (“Total nacional”), por lo que se confirma que esta variable no aporta información útil y será eliminada.
+
+- Comunidades.y.Ciudades.Autónomas contiene 20 valores únicos, cuando en realidad existen 19 comunidades y ciudades autónomas, lo que sugiere la posible presencia de algún error o duplicado en los nombres.
+
+- Provincias muestra 51 valores únicos, aunque en España existen 50 provincias, por lo que también será necesario revisar esta variable.
+
+- Viajeros.y.Pernoctaciones incluye correctamente 2 valores distintos, lo que confirma su coherencia.
+
+- Residencia..Nivel.1 tiene un único valor (“Total”), por lo que se considera redundante.
+
+- Residencia..Nivel.2 presenta 3 valores únicos, cuando solo deberían existir 2 categorías (residentes en España y residentes en el extranjero), lo que indica un posible error en la codificación de algunos registros.
+
+- Las variables Periodo y Total no presentan incidencias destacables en esta fase.
+
+Este análisis preliminar permitió detectar columnas redundantes y posibles errores de codificación que deberán corregirse en la fase de limpieza del dataset antes de continuar con el análisis exploratorio.
 
 ```{r}
 sapply(df_Turismo, function(x) length(unique(x)))
 ```
+Tras analizar los valores únicos, se observó que las variables Comunidades.y.Ciudades.Autónomas, Provincias y Residencia2.Nivel.2 presentaban registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente.
+Estos valores se eliminarán en la fase de limpieza del dataset.
+
 ```{r}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
 print(unique(df_Turismo$Provincias))
 print(unique(df_Turismo$Residencia..Nivel.2))
 ```
-Elinamos las filas que corresponden al total nacional y a las Comunidades Autónomas ya que son redundantes y se pueden sacar a partir del resto de datos si se necesitaran.
+Se eliminaron las filas correspondientes al total nacional y a las comunidades autónomas, ya que esta información es redundante y puede obtenerse fácilmente a partir del resto de los registros si fuera necesario.
+
+Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en las variables Comunidades.y.Ciudades.Autónomas y Provincias, utilizando las funciones select() y filter() del paquete dplyr.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
@@ -68,7 +126,10 @@ df_Turismo <- df_Turismo %>%
   filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
 ```
 
-La columna de Residencia nivel 1 solo se compone de una string que es total entonces no aporta informacion nueva y es redundante.
+Como ya se ha mencionadi, la columna Residencia..Nivel.1 contiene un único valor (“Total”) en todas sus observaciones, por lo que no aporta información relevante al análisis.
+
+Se decidió eliminarla junto con las filas vacías de la variable Residencia..Nivel.2.
+
 ```{r}
 unique(df_Turismo$Residencia..Nivel.1)
 
@@ -76,15 +137,17 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
-Recordando lo que hicimos antes, observamosAhora vamos a cambiar el tipo de variable al correspondiente.
-Como hemos visto arriba hay que arreglar los tipos de datos, empezamos con las fechas
+Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter.
+Para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
 
 ```{r}
 df_Turismo <- df_Turismo %>%
   mutate(Periodo = as.yearmon(str_replace(Periodo, "M", "-")))
 ```
 
-Ahora vamos a poner las comunidades autonomas y provincias(regiones) a tipo factor porque es mejor(explicar por qué es mejor)
+A continuación, se convirtieron a tipo factor las variables Viajeros.y.pernoctaciones y Residencia..Nivel.2 (renombrada como Residencia), ya que representan categorías con un número limitado de valores posibles.
+
+Transformarlas en factores permite optimizar el uso de memoria, facilitar la agrupación y el filtrado de datos y mejorar la interpretación en análisis estadísticos y representaciones gráficas.
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
@@ -94,15 +157,18 @@ df_Turismo <- df_Turismo %>%
 
 ```
 
-La columna de total debemos ponerla en tipo numerico
+Además, se transformó la columna Total a tipo numérico, ya que contiene los valores cuantitativos asociados al número de viajeros o pernoctaciones.
+Esta conversión permitirá realizar operaciones estadísticas y cálculos posteriores sin generar errores de tipo de dato.
+
 ```{r}
 df_Turismo <- df_Turismo %>% 
   mutate(Total=as.numeric(df_Turismo$Total))
 ```
 
-También deberíamos cambiar a factor las comunidade sy provincias pero primero debemos limpiarlas:
+Antes de convertir las variables Comunidades.y.Ciudades.Autónomas y Provincias (renombrada como Región) a tipo factor, fue necesario limpiar y estandarizar sus valores.
 
-Limpiamos los nombres de las comunidades autonomas y provincias, porque el formato no estaba bien
+Se eliminaron los números iniciales, espacios y caracteres innecesarios, y se ajustó el formato de texto para unificar la escritura de los nombres de comunidades y provincias.
+Esta limpieza garantiza la consistencia de los datos geográficos y evita duplicados derivados de diferencias en el formato.
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
@@ -114,14 +180,17 @@ df_Turismo <- df_Turismo %>%
 
 ```
 
-Ahora ya podemos cambiarlas a factor
+Una vez limpiados y normalizados los nombres, las variables Comunidades.y.Ciudades.Autónomas y Región se transformaron a tipo factor.
+
+De esta forma, se facilita su uso en agrupaciones, resúmenes estadísticos y representaciones gráficas, además de optimizar el tratamiento de estas variables categóricas en los análisis posteriores.
+
 ```{r}
 df_Turismo <- df_Turismo %>% 
   mutate(Comunidades.y.Ciudades.Autónomas=as.factor(df_Turismo$Comunidades.y.Ciudades.Autónomas)) %>% 
   mutate(Region=as.factor(df_Turismo$Region))
 ```
 
-VAMOS A HACER UNOS POCOS GRÁFICOS EXPLORATORIOS
+#TODO VAMOS A HACER UNOS POCOS GRÁFICOS EXPLORATORIOS
 Estadisticos descriptivos. Para las variables de tipo factor hacemos un summary y ya (DESCRIBIR) Aunque no aporten mucho a nivel estadistico, tiene sentido lo que vemos en relacion cn lo que esperamos del datframe.
 ```{r}
 summary(df_Turismo)
@@ -130,6 +199,13 @@ Sin embargo, de la variable numérica si que podemos hacer algun que otro analis
 ```{r}
 sd(df_Turismo$Total)
 ```
+Esta sd indica que............
+Para visualizar mejor estos datos, podemos usar un gráfico #TODO, GRAFICO POR COMUNIDAD AUTÓNOMA?
+```{r}
+
+```
+
+
 Como inicialmente en este dataset habian espacios en blanco, vamos a revisar que, una vez todo limpio, debemos comprbar si efectivamente ha quedado todo bien. También comprobamos si hay algún NA
 ```{r}
 #NA
@@ -183,3 +259,8 @@ Para tener una imagen general de como se mueve la ocupación
 
 ```
 
+1. Identificar variables de entrada 
+2. Analisis univariante
+3. Análisis bivariante
+4. Transformacion de variables
+5. Obtención de nuevas variables a partir de las originales
