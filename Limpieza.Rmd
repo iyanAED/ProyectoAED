@@ -42,13 +42,11 @@ Finalmente, los datos se han importado utilizando la función read_csv(), creand
 df_Turismo <- read.csv(url_turismo,
                        header = TRUE,
                        sep = ";",
-                       dec = ".",
                        encoding = "UTF-8")
 
 df_Ocupacion <- read.csv(url_ocupacion,
                        header = TRUE,
                        sep = ";",
-                       dec = ".",
                        encoding = "UTF-8")
 ```
 
@@ -84,6 +82,15 @@ Gracias a esta función se pudo observar que todas las columnas se importaron co
 ```{r}
 df_Turismo %>% glimpse()
 ```
+Vemos que los puntos en la columna del total nos podrían causar problemas de comprensión de los datos por parte de R(que no entienda bien que significa el .) #TODO EXPLICAR BIEN
+
+```{r}
+df_Turismo <- mutate(df_Turismo, Total = str_replace_all(Total, "\\.", ""))
+```
+
+
+
+
 Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función sapply() combinada con unique() al dataframe del turismo.
 Esta operación permitió obtener los valores únicos presentes en cada una de las columnas, facilitando la identificación de errores o redundancias en los datos.
 
@@ -126,7 +133,7 @@ df_Turismo <- df_Turismo %>%
   filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
 ```
 
-Como ya se ha mencionadi, la columna Residencia..Nivel.1 contiene un único valor (“Total”) en todas sus observaciones, por lo que no aporta información relevante al análisis.
+Como ya se ha mencionado, la columna Residencia..Nivel.1 contiene un único valor (“Total”) en todas sus observaciones, por lo que no aporta información relevante al análisis.
 
 Se decidió eliminarla junto con las filas vacías de la variable Residencia..Nivel.2.
 
@@ -137,6 +144,7 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
+
 Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter.
 Para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
 
@@ -190,29 +198,54 @@ df_Turismo <- df_Turismo %>%
   mutate(Region=as.factor(df_Turismo$Region))
 ```
 
-#TODO VAMOS A HACER UNOS POCOS GRÁFICOS EXPLORATORIOS
 Estadisticos descriptivos. Para las variables de tipo factor hacemos un summary y ya (DESCRIBIR) Aunque no aporten mucho a nivel estadistico, tiene sentido lo que vemos en relacion cn lo que esperamos del datframe.
+
 ```{r}
 summary(df_Turismo)
 ```
+
 Sin embargo, de la variable numérica si que podemos hacer algun que otro analisis #TODO completar con algo más exploratorio
+
 ```{r}
 sd(df_Turismo$Total)
 ```
+
+Cobsideramos que analizar todos los datos de esta forma nos hace perder bastante información relativa a cada comunidad autónoma.  Agrupamos comunidades y calculamos nuevos estadisticos #TODO MEDIANA DECIMAL????
+
+```{r}
+df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  ) %>%
+  arrange(desc(media)) %>% 
+  print()
+```
+
+
 Esta sd indica que............
 Para visualizar mejor estos datos, podemos usar un gráfico #TODO, GRAFICO POR COMUNIDAD AUTÓNOMA?
+
 ```{r}
 
 ```
 
 
 Como inicialmente en este dataset habian espacios en blanco, vamos a revisar que, una vez todo limpio, debemos comprbar si efectivamente ha quedado todo bien. También comprobamos si hay algún NA
+
 ```{r}
 #NA
 anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
+
 Se observa que no hay ningun NA
+
 ```{r}
 #Huecos en blanco
 sum(df_Turismo == "", na.rm = TRUE)
