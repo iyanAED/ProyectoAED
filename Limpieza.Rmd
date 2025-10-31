@@ -2,7 +2,9 @@
 title: "Limpieza_Datos"
 author: "Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -24,9 +26,10 @@ library(ggplot2)
 Para el desarrollo del análisis, se han utilizado dos bases de datos principales. La primera contiene información relacionada con el turismo en España, desglosada por comunidades autónomas y provincias, e incluye variables como el número de viajeros y pernoctaciones registradas a lo largo de varios años. La segunda base de datos corresponde al sector servicios, específicamente a la ocupación en dicho sector, que se analizará posteriormente para establecer relaciones con la evolución del turismo.
 
 Con el fin de garantizar que los datos utilizados estén siempre actualizados, se ha optado por realizar la importación directamente desde la URL de origen, en lugar de utilizar copias locales. De este modo, si los archivos son modificados o actualizados en la fuente oficial, el código podrá acceder automáticamente a la versión más reciente.
+
 ```{r Enlaces de descarga}
-url_ocupacion <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
-url_turismo <- "https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
+url_ocupacion<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
+url_turismo<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
 ```
 
 Antes de proceder a la carga definitiva, se ha comprobado la codificación (encoding) de cada archivo, con el objetivo de evitar posibles problemas de lectura o visualización de caracteres especiales en las tablas. Esto se ha realizado aplicando la función correspondiente para identificar el tipo de codificación de cada dataset.
@@ -88,9 +91,6 @@ Vemos que los puntos en la columna del total nos podrían causar problemas de co
 df_Turismo <- mutate(df_Turismo, Total = str_replace_all(Total, "\\.", ""))
 ```
 
-
-
-
 Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función sapply() combinada con unique() al dataframe del turismo.
 Esta operación permitió obtener los valores únicos presentes en cada una de las columnas, facilitando la identificación de errores o redundancias en los datos.
 
@@ -130,7 +130,8 @@ Además, se eliminó la columna Totales.Territoriales y aquellas filas que conte
 ```{r}
 df_Turismo <- df_Turismo %>%
   select(-Totales.Territoriales)%>%
-  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", str_trim(Provincias) != "")
+  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", 
+         str_trim(Provincias) != "")
 ```
 
 Como ya se ha mencionado, la columna Residencia..Nivel.1 contiene un único valor (“Total”) en todas sus observaciones, por lo que no aporta información relevante al análisis.
@@ -144,7 +145,6 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
-
 Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter.
 Para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
 
@@ -180,10 +180,17 @@ Esta limpieza garantiza la consistencia de los datos geográficos y evita duplic
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
-  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>% 
+  mutate(Comunidades.y.Ciudades.Autónomas = 
+           str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>% 
   mutate(Provincias = str_replace(Provincias, "^[0-9]+\\s+", "")) %>% 
   rename(Region=Provincias) %>% 
-  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$","\\2 \\1")  %>% str_squish(),Region = str_replace(Region,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$","\\2 \\1") %>%  str_squish()) %>% 
+  mutate(Comunidades.y.Ciudades.Autónomas = 
+           str_replace(Comunidades.y.Ciudades.Autónomas,
+                       "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$","\\2 \\1")  %>% 
+           str_squish(),Region = 
+           str_replace(Region,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$",
+                       "\\2 \\1") %>%  
+           str_squish()) %>% 
   mutate(Region = str_remove(Region, "\\s*/.*$"))
 
 ```
@@ -194,9 +201,12 @@ De esta forma, se facilita su uso en agrupaciones, resúmenes estadísticos y re
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
-  mutate(Comunidades.y.Ciudades.Autónomas=as.factor(df_Turismo$Comunidades.y.Ciudades.Autónomas)) %>% 
+  mutate(Comunidades.y.Ciudades.Autónomas=
+           as.factor(df_Turismo$Comunidades.y.Ciudades.Autónomas)) %>% 
   mutate(Region=as.factor(df_Turismo$Region))
 ```
+
+## ANÁLISIS UNIVARIANTE
 
 Estadisticos descriptivos. Para las variables de tipo factor hacemos un summary y ya (DESCRIBIR) Aunque no aporten mucho a nivel estadistico, tiene sentido lo que vemos en relacion cn lo que esperamos del datframe.
 
