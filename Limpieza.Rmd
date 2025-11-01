@@ -17,8 +17,8 @@ library(stringr)
 library(lubridate)
 library(tidyr)
 library(tidyverse)
-library(zoo)
 library(ggplot2)
+library(scales)
 ```
 
 # IMPORTACIÓN
@@ -150,7 +150,8 @@ Para facilitar el análisis temporal, se modificó el tipo de dato de la variabl
 
 ```{r}
 df_Turismo <- df_Turismo %>%
-  mutate(Periodo = as.yearmon(str_replace(Periodo, "M", "-")))
+  mutate(Periodo = str_replace(Periodo, "M", "-"), 
+    Periodo = ym(Periodo))
 ```
 
 A continuación, se convirtieron a tipo factor las variables Viajeros.y.pernoctaciones y Residencia..Nivel.2 (renombrada como Residencia), ya que representan categorías con un número limitado de valores posibles.
@@ -220,7 +221,9 @@ Sin embargo, de la variable numérica si que podemos hacer algun que otro analis
 sd(df_Turismo$Total)
 ```
 
-Cobsideramos que analizar todos los datos de esta forma nos hace perder bastante información relativa a cada comunidad autónoma.  Agrupamos comunidades y calculamos nuevos estadisticos #TODO MEDIANA DECIMAL????
+Esta sd indica que............
+
+Cobsideramos que analizar todos los datos de esta forma nos hace perder bastante información relativa a cada comunidad autónoma.  Agrupamos comunidades y calculamos nuevos estadisticos.
 
 ```{r}
 df_Turismo %>%
@@ -237,12 +240,38 @@ df_Turismo %>%
   print()
 ```
 
+Para visualizar mejor estos datos, podemos usar un gráfico. En primer lugar vamos a examinar el total nacional de los datos, para generar una visión general sobre tendencias y dinámicas estacionales. 
 
-Esta sd indica que............
-Para visualizar mejor estos datos, podemos usar un gráfico #TODO, GRAFICO POR COMUNIDAD AUTÓNOMA?
+Podemos ver que en los datos hay una tendencia creciente y una clara estacionalidad, factores que después analizaremos con mayor profundidad. Además también se observan valores atípicos relacionados con la pandemia del COVID-19.
 
 ```{r}
+nacional_mensual <- df_Turismo %>%
+  group_by(Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 
+ggplot(nacional_mensual, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_continuous(labels = label_comma(big.mark = ".")) +
+  labs(title = "Serie temporal de viajeros y pernoctaciones españolas por mes",
+       x = "Periodo", y = "Total",
+       color = "Tipo") +
+  theme_minimal()
+```
+
+Ahora representaremos las CCAA.
+
+```{r}
+ca_mensual <- df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ca_mensual, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".")) +
+  labs(title = "Serie temporal por Comunidad Autónoma",
+       x = "Periodo", y = "Total") +
+  theme_minimal()
 ```
 
 
