@@ -48,7 +48,7 @@ df_Turismo <- read.csv(url_turismo,
 
 df_Ocupacion <- read.csv(url_ocupacion,
                        header = TRUE,
-                       sep = ";",
+                       sep = ";", #TODO, ESTA SI QUE TIENE DECIMAL
                        encoding = "UTF-8")
 ```
 
@@ -79,6 +79,7 @@ Las variables incluidas son las siguientes:
 En el momento de la importación, todas las variables se cargaron inicialmente con tipo de dato character. Posteriormente, durante la fase de preparación de los datos, se realizará la conversión de aquellas variables que correspondan a fechas, factores o valores numéricos, con el fin de facilitar su análisis estadístico y gráfico.
 
 Como primer paso del análisis exploratorio, se utilizó la función glimpse() (del paquete dplyr) para obtener una visión general de la estructura del dataset.
+
 Gracias a esta función se pudo observar que todas las columnas se importaron como tipo carácter, por lo que será necesario realizar conversiones de tipo en etapas posteriores.
 
 ```{r}
@@ -380,26 +381,29 @@ outliers_estacionales %>%
 
 ## OCUPACIÓN
 
+El segundo conjunto de datos corresponde a la ocupación por sectores económicos en España, obtenido del INE.Recoge el número de personas ocupadas (en miles) por comunidad o ciudad autónoma, sector y periodo trimestral.
+
+Las variables incluidas son:
+
+- Sexo: único valor (“Ambos sexos”), por lo que se eliminará al no aportar información.
+
+- Comunidades.y.Ciudades.Autónomas: incluye las distintas comunidades y el total nacional, que también se eliminará por ser redundante.
+
+- Sector.económico: distingue cuatro sectores: agricultura, industria, construcción y servicios.
+
+- Periodo: año y trimestre.
+
+- Total: número de personas ocupadas en miles.#TODO SI AQUI ESTAN EXPRESADOS EN MILES Y ALLI DIRECTAMENTE DEBEMOS ESTANDARIZARLO
+
+Este dataset permitirá analizar la evolución del empleo por sectores y regiones, así como su relación con la actividad turística.
+
+Como primer paso, se utilizó la función glimpse() para revisar la estructura del dataset.
+
+Se comprobó que todas las columnas se importaron como tipo carácter, por lo que será necesario ajustar los tipos de datos en los siguientes pasos.
+
 ```{r}
 df_Ocupacion %>% glimpse()
 ```
-
-
-# LIMPIEZA BASE DE DATOS 
-
-##TURISMO 
-
-Ahora voy a toquetear las fechas
-
-```{r}
-df_Turismo <- df_Turismo%>%
-  separate(col=Periodo,into=c('Año', 'Mes'), sep='M')
-
-df_Turismo <- df_Turismo %>%
-  mutate(fecha = ym(paste0(Año, "-", Mes)))
-```
-
-## OCUPACIÓN
 
 ```{r}
 df_Ocupacion_clean <- df_Ocupacion %>%
@@ -417,8 +421,3 @@ Para tener una imagen general de como se mueve la ocupación
 
 ```
 
-1. Identificar variables de entrada 
-2. Analisis univariante
-3. Análisis bivariante
-4. Transformacion de variables
-5. Obtención de nuevas variables a partir de las originales
