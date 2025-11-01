@@ -12,12 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r Librerias}
-library(dplyr)
-library(stringr)
 library(lubridate)
 library(tidyr)
 library(tidyverse)
-library(ggplot2)
 library(scales)
 ```
 
@@ -120,7 +117,6 @@ Estos valores se eliminarán en la fase de limpieza del dataset.
 
 ```{r}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
-print(unique(df_Turismo$Provincias))
 print(unique(df_Turismo$Residencia..Nivel.2))
 ```
 Se eliminaron las filas correspondientes al total nacional y a las comunidades autónomas, ya que esta información es redundante y puede obtenerse fácilmente a partir del resto de los registros si fuera necesario.
@@ -129,9 +125,11 @@ Además, se eliminó la columna Totales.Territoriales y aquellas filas que conte
 
 ```{r}
 df_Turismo <- df_Turismo %>%
-  select(-Totales.Territoriales)%>%
-  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "", 
-         str_trim(Provincias) != "")
+  select(-Totales.Territoriales) %>%
+  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "")
+
+df_Turismo <- df_Turismo %>%
+  select(-Provincias)
 ```
 
 Como ya se ha mencionado, la columna Residencia..Nivel.1 contiene un único valor (“Total”) en todas sus observaciones, por lo que no aporta información relevante al análisis.
@@ -145,6 +143,13 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
+Creo el data set agregado por cominidades autónomas
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones, Residencia..Nivel.2)
+```
+
 Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter.
 Para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
 
@@ -160,8 +165,8 @@ Transformarlas en factores permite optimizar el uso de memoria, facilitar la agr
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
-  mutate(Viajeros.y.pernoctaciones=as.factor(df_Turismo$Viajeros.y.pernoctaciones)) %>% 
-  mutate(Residencia..Nivel.2=as.factor(df_Turismo$Residencia..Nivel.2)) %>% 
+  mutate(Viajeros.y.pernoctaciones=as.factor(Viajeros.y.pernoctaciones)) %>% 
+  mutate(Residencia..Nivel.2=as.factor(Residencia..Nivel.2)) %>%
   rename(Residencia=Residencia..Nivel.2)
 
 ```
@@ -171,7 +176,7 @@ Esta conversión permitirá realizar operaciones estadísticas y cálculos poste
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
-  mutate(Total=as.numeric(df_Turismo$Total))
+  mutate(Total=as.numeric(Total))
 ```
 
 Antes de convertir las variables Comunidades.y.Ciudades.Autónomas y Provincias (renombrada como Región) a tipo factor, fue necesario limpiar y estandarizar sus valores.
@@ -181,19 +186,13 @@ Esta limpieza garantiza la consistencia de los datos geográficos y evita duplic
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
-  mutate(Comunidades.y.Ciudades.Autónomas = 
-           str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>% 
-  mutate(Provincias = str_replace(Provincias, "^[0-9]+\\s+", "")) %>% 
-  rename(Region=Provincias) %>% 
-  mutate(Comunidades.y.Ciudades.Autónomas = 
-           str_replace(Comunidades.y.Ciudades.Autónomas,
-                       "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$","\\2 \\1")  %>% 
-           str_squish(),Region = 
-           str_replace(Region,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$",
-                       "\\2 \\1") %>%  
-           str_squish()) %>% 
-  mutate(Region = str_remove(Region, "\\s*/.*$"))
-
+  mutate(
+    Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", ""),
+    Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,
+                                                   "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
+    Comunidades.y.Ciudades.Autónomas = str_squish(Comunidades.y.Ciudades.Autónomas)
+  ) %>%
+  mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
 ```
 
 Una vez limpiados y normalizados los nombres, las variables Comunidades.y.Ciudades.Autónomas y Región se transformaron a tipo factor.
@@ -201,10 +200,8 @@ Una vez limpiados y normalizados los nombres, las variables Comunidades.y.Ciudad
 De esta forma, se facilita su uso en agrupaciones, resúmenes estadísticos y representaciones gráficas, además de optimizar el tratamiento de estas variables categóricas en los análisis posteriores.
 
 ```{r}
-df_Turismo <- df_Turismo %>% 
-  mutate(Comunidades.y.Ciudades.Autónomas=
-           as.factor(df_Turismo$Comunidades.y.Ciudades.Autónomas)) %>% 
-  mutate(Region=as.factor(df_Turismo$Region))
+df_Turismo <- df_Turismo %>%
+  mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
 ```
 
 ## ANÁLISIS UNIVARIANTE
@@ -282,46 +279,66 @@ Se observa que las que tienen un volumen menor de turismo no presentan la tenden
 
 Algo destacable es la gran dispersión que presenta el gráfico de las Islas Baleares, la cual tiene mucho sentido con los estadísticos univariantes antes extraidos, ya que se observaba una media muy alta pero una mediana mucho más baja, en contraposición por ejemplo con Madrid, que tenía valores más parecidos, y como podemos ver,  tiene una dispersión mucho menor.
 
+Además se observa en todos los gráficos que hemos analizado el valor atípico relativo al COVID-19. A continuación vamos a detectarlo de manera más formal. 
+Dado que la serie temporal presenta una marcada estacionalidad, se aplicó el método de detección de valores atípicos 3σ de forma estacional, es decir, calculando la media y la desviación típica por mes y por provincia.
+Este enfoque permite comparar cada observación con el comportamiento esperado para esa época del año, evitando identificar como atípicos los picos de temporada alta o las caídas de temporada baja.
+Los resultados ofrecen una detección más precisa de anomalías reales o posibles errores en los datos.
+
 ```{r}
-prov_mensual <- df_Turismo %>%
-  group_by(Region, Periodo) %>%
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+ca_mensual <- df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop") %>%
+  mutate(Mes = month(Periodo, label = TRUE, abbr = TRUE))
 
-ranking_prov <- prov_mensual %>%
-  group_by(Region) %>%
-  summarise(total_acum = sum(Total, na.rm = TRUE), .groups = "drop")
+outliers_estacionales <- ca_mensual %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Mes) %>%
+  mutate(
+    media_mes = mean(Total, na.rm = TRUE),
+    sd_mes = sd(Total, na.rm = TRUE),
+    upLim_mes = media_mes + 3 * sd_mes,
+    lowLim_mes = media_mes - 3 * sd_mes,
+    es_outlier = ifelse(Total < lowLim_mes | Total > upLim_mes, TRUE, FALSE)
+  ) %>%
+  ungroup()
 
-top5 <- ranking_prov %>% slice_max(total_acum, n = 5)
-bottom5 <- ranking_prov %>% slice_min(total_acum, n = 5)
+resumen_out_estacional <- outliers_estacionales %>%
+  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  summarise(
+    n_outliers = sum(es_outlier, na.rm = TRUE),
+    prop_outliers = mean(es_outlier, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(n_outliers))
 
-prov_top <- prov_mensual %>% filter(Region %in% top5$Region)
-prov_bottom <- prov_mensual %>% filter(Region %in% bottom5$Region)
+resumen_out_estacional
 
-ggplot(prov_top, aes(Periodo, Total)) +
-  geom_line(linewidth = 0.3) +
-  facet_wrap(~ Region, scales = "free_y", ncol = 3) +
-  scale_y_continuous(labels = label_comma(big.mark = ".")) +
-  labs(title = "Serie temporal por provincia: Top 5 con más turismo",
-       x = "Periodo", y = "Total") +
-  theme_minimal() +
-  theme(
-    aspect.ratio = 0.65,
-    strip.text = element_text(size = 9),
-    panel.spacing = unit(1, "lines")
-  )
+```
 
-ggplot(prov_bottom, aes(Periodo, Total)) +
-  geom_line(linewidth = 0.3) +
-  facet_wrap(~ Region, scales = "free_y", ncol = 3) +
-  scale_y_continuous(labels = label_comma(big.mark = ".")) +
-  labs(title = "Serie temporal por provincia: Bottom 5 con menos turismo",
-       x = "Periodo", y = "Total") +
-  theme_minimal() +
-  theme(
-    aspect.ratio = 0.65,
-    strip.text = element_text(size = 9),
-    panel.spacing = unit(1, "lines")
-  )
+Por ejemplo vamos a ver la representación gráfica de los outliers en el caso de Islas Baleares (provincia con alta dispersión entre meses, comprobamos que se aplica bien el 3σ estacional) y Alicante (provincia con mayor cantidad de outliers). Vemos que la gran mayoría de los valores atípicos, como ya habíamos intuido con anterioridad corresponden al periodo relativo al COVID-19.
+```{r}
+outliers_estacionales %>%
+  filter(Comunidades.y.Ciudades.Autónomas == "Illes Balears") %>%
+  ggplot(aes(Periodo, Total)) +
+  geom_line(color = "grey60") +
+  geom_point(aes(color = es_outlier), size = 1.5) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  labs(
+    title = "Detección de valores atípicos estacionales (3σ) - Illes Balears",
+    x = "Periodo", y = "Total", color = "Outlier"
+  ) +
+  theme_minimal()
+
+outliers_estacionales %>%
+  filter(Comunidades.y.Ciudades.Autónomas == "Comunitat Valenciana") %>%
+  ggplot(aes(Periodo, Total)) +
+  geom_line(color = "grey60") +
+  geom_point(aes(color = es_outlier), size = 1.5) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  labs(
+    title = "Detección de valores atípicos estacionales (3σ) - Comunitat Valenciana",
+    x = "Periodo", y = "Total", color = "Outlier"
+  ) +
+  theme_minimal()
 ```
 
 
