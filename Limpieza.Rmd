@@ -18,9 +18,11 @@ library(tidyverse)
 library(scales)
 ```
 
-# IMPORTACIÓN
+# INTRODUCCIÓN
 
 Para el desarrollo del análisis, se han utilizado dos bases de datos principales. La primera contiene información relacionada con el turismo en España, desglosada por comunidades autónomas y provincias, e incluye variables como el número de viajeros y pernoctaciones registradas a lo largo de varios años. La segunda base de datos corresponde al sector servicios, específicamente a la ocupación en dicho sector, que se analizará posteriormente para establecer relaciones con la evolución del turismo.
+
+# IMPORTACIÓN Y LIMPIEZA
 
 Con el fin de garantizar que los datos utilizados estén siempre actualizados, se ha optado por realizar la importación directamente desde la URL de origen, en lugar de utilizar copias locales. De este modo, si los archivos son modificados o actualizados en la fuente oficial, el código podrá acceder automáticamente a la versión más reciente.
 
@@ -82,13 +84,15 @@ Gracias a esta función se pudo observar que todas las columnas se importaron co
 ```{r}
 df_Turismo %>% glimpse()
 ```
-Vemos que los puntos en la columna del total nos podrían causar problemas de comprensión de los datos por parte de R(que no entienda bien que significa el .) #TODO EXPLICAR BIEN
+
+La columna Total presenta puntos como separadores de miles, por lo que, para garantizar cálculos correctos, se eliminaron.
 
 ```{r}
 df_Turismo <- mutate(df_Turismo, Total = str_replace_all(Total, "\\.", ""))
 ```
 
 Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función sapply() combinada con unique() al dataframe del turismo.
+
 Esta operación permitió obtener los valores únicos presentes en cada una de las columnas, facilitando la identificación de errores o redundancias en los datos.
 
 A partir de este análisis se obtuvieron las siguientes observaciones:
@@ -112,22 +116,31 @@ Este análisis preliminar permitió detectar columnas redundantes y posibles err
 ```{r}
 sapply(df_Turismo, function(x) length(unique(x)))
 ```
+
 Tras analizar los valores únicos, se observó que las variables Comunidades.y.Ciudades.Autónomas, Provincias y Residencia2.Nivel.2 presentaban registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente.
+
 Estos valores se eliminarán en la fase de limpieza del dataset.
 
 ```{r}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
 print(unique(df_Turismo$Residencia..Nivel.2))
 ```
+
 Se eliminaron las filas correspondientes al total nacional y a las comunidades autónomas, ya que esta información es redundante y puede obtenerse fácilmente a partir del resto de los registros si fuera necesario.
 
-Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en las variables Comunidades.y.Ciudades.Autónomas y Provincias, utilizando las funciones select() y filter() del paquete dplyr.
+Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en la variables Comunidades.y.Ciudades.Autónomas, utilizando las funciones select() y filter() del paquete dplyr.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
   select(-Totales.Territoriales) %>%
   filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "")
+```
 
+Para simplificar el análisis y la interpretación gráfica, se decidió agrupar la información a nivel de comunidades y ciudades autónomas.
+
+Aunque disponer de datos desagregados por provincia podría resultar interesante para estudios más específicos, en este trabajo se opta por un enfoque autonómico que permite una visión más general y comparativa del turismo en España.
+
+```{r}
 df_Turismo <- df_Turismo %>%
   select(-Provincias)
 ```
@@ -143,15 +156,15 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
-Creo el data set agregado por cominidades autónomas
+
+Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
   group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones, Residencia..Nivel.2)
 ```
 
-Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter.
-Para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
+Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
 
 ```{r}
 df_Turismo <- df_Turismo %>%
@@ -179,48 +192,45 @@ df_Turismo <- df_Turismo %>%
   mutate(Total=as.numeric(Total))
 ```
 
-Antes de convertir las variables Comunidades.y.Ciudades.Autónomas y Provincias (renombrada como Región) a tipo factor, fue necesario limpiar y estandarizar sus valores.
+Antes de convertir la variable Comunidades.y.Ciudades.Autónoma (#TODO renombrada como Región) a tipo factor, fue necesario limpiar y estandarizar sus valores.
 
-Se eliminaron los números iniciales, espacios y caracteres innecesarios, y se ajustó el formato de texto para unificar la escritura de los nombres de comunidades y provincias.
-Esta limpieza garantiza la consistencia de los datos geográficos y evita duplicados derivados de diferencias en el formato.
+Se eliminaron los números iniciales, espacios y caracteres innecesarios, y se ajustó el formato de texto para unificar la escritura de los nombres de las comunidades. Además, se determinó la variable como tipo factor.
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
   mutate(
     Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", ""),
-    Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,
-                                                   "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
+    Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,                                                   "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
     Comunidades.y.Ciudades.Autónomas = str_squish(Comunidades.y.Ciudades.Autónomas)
   ) %>%
   mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
 ```
 
-Una vez limpiados y normalizados los nombres, las variables Comunidades.y.Ciudades.Autónomas y Región se transformaron a tipo factor.
-
-De esta forma, se facilita su uso en agrupaciones, resúmenes estadísticos y representaciones gráficas, además de optimizar el tratamiento de estas variables categóricas en los análisis posteriores.
-
 ```{r}
-df_Turismo <- df_Turismo %>%
-  mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
+#TODO NO ES LO MISMO QUE HAY ARRIBA??? df_Turismo <- df_Turismo %>%
+#  mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
 ```
 
 ## ANÁLISIS UNIVARIANTE
 
-Estadisticos descriptivos. Para las variables de tipo factor hacemos un summary y ya (DESCRIBIR) Aunque no aporten mucho a nivel estadistico, tiene sentido lo que vemos en relacion cn lo que esperamos del datframe.
+Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos de las variables incluidas en el dataset mediante la función summary(). 
 
 ```{r}
 summary(df_Turismo)
 ```
 
-Sin embargo, de la variable numérica si que podemos hacer algun que otro analisis #TODO completar con algo más exploratorio
+Aunque al aplicar esta función sobre variables categóricas, no obtenemos información muy relevante a nivel estadístico, muestran la frecuencia de cada categoría, confirmando que los datos son coherentes con lo esperado.
+
+En cuanto a la variable numérica (Total), también se analizó su dispersión mediante la desviación típica:
 
 ```{r}
 sd(df_Turismo$Total)
 ```
+#TODO POR QUE NA? Esta sd indica que............
 
-Esta sd indica que............
+Consideramos que analizar el conjunto completo de observaciones puede ocultar las diferencias existentes entre regiones. 
 
-Cobsideramos que analizar todos los datos de esta forma nos hace perder bastante información relativa a cada comunidad autónoma.  Agrupamos comunidades y calculamos nuevos estadisticos.
+Por ello, se agruparon los datos por comunidad y ciudad autónoma y se calcularon los principales estadísticos descriptivos de la variable Total
 
 ```{r}
 df_Turismo %>%
@@ -237,11 +247,25 @@ df_Turismo %>%
   print()
 ```
 
+Dado que inicialmente este dataset contenía espacios en blanco, resulta necesario comprobar que, tras el proceso de limpieza, todos los valores se hayan corregido correctamente. Además, se verifica si existen valores faltantes (NA) en las distintas variables.
+
+```{r}
+#Huecos en blanco
+sum(df_Turismo == "", na.rm = TRUE)
+colSums(df_Turismo == "", na.rm = TRUE)
+
+#NA
+anyNA(df_Turismo)
+colSums(is.na(df_Turismo))
+```
+
+Se confirma que no hay valores faltantes ni espacios en blanco, por lo que el dataset está limpio y listo para el análisis.
+
 ## REPRESENTACIÓN GRÁFICA
 
-Para visualizar mejor estos datos, podemos usar un gráfico. En primer lugar vamos a examinar el total nacional de los datos, para generar una visión general sobre tendencias y dinámicas estacionales. 
+Para visualizar mejor estos datos, se emplea una representación gráfica. En primer lugar, se analiza el total nacional, con el objetivo de obtener una visión general de las tendencias y dinámicas estacionales presentes en los datos.
 
-Podemos ver que en los datos hay una tendencia creciente y una clara estacionalidad, factores que después analizaremos con mayor profundidad. Además también se observan valores atípicos relacionados con la pandemia del COVID-19.
+En la gráfica se aprecia una tendencia creciente a lo largo del tiempo y una marcada estacionalidad, factores que se estudiarán con mayor profundidad en apartados posteriores. Además, se observan valores atípicos asociados a la pandemia de la COVID-19, que provocaron una fuerte caída en los registros turísticos.
 
 ```{r}
 nacional_mensual <- df_Turismo %>%
@@ -257,7 +281,7 @@ ggplot(nacional_mensual, aes(Periodo, Total)) +
   theme_minimal()
 ```
 
-Ahora representaremos las CCAA.
+A continuación, se representa gráficamente la serie temporal correspondiente a cada comunidad y ciudad autónoma, con el objetivo de observar la evolución del turismo en cada territorio y comparar sus comportamientos a lo largo del tiempo.
 
 ```{r}
 ca_mensual <- df_Turismo %>%
@@ -273,16 +297,19 @@ ggplot(ca_mensual, aes(Periodo, Total)) +
   theme_minimal()
 ```
 
-Ahora vamos a representar graficamente las 5 provincias con más turismo y las 5 con menos, para ver que más o menos siguen las mismas tendencias que las comunidades autónomas.
+#TODO ESTO ES SEGÚN LO QUE YO HE VISTO EN LOS GRAFICOS, CREO QUE ESTARÁ BIEN PERO REVISAR
 
-Se observa que las que tienen un volumen menor de turismo no presentan la tendencia creciente de las demás provincias. Sin embargo, en las provincias que hay más turismo, la tendencía se acentúa aún más que lo que se puede ver en el total nacional. Estas observaciones también son extrapolables a los datos de las comunidades autónomas.
+En términos generales, todas las comunidades presentan una fuerte estacionalidad, con picos de actividad turística durante los meses de verano.
 
-Algo destacable es la gran dispersión que presenta el gráfico de las Islas Baleares, la cual tiene mucho sentido con los estadísticos univariantes antes extraidos, ya que se observaba una media muy alta pero una mediana mucho más baja, en contraposición por ejemplo con Madrid, que tenía valores más parecidos, y como podemos ver,  tiene una dispersión mucho menor.
+Sin embargo, al analizar la tendencia a largo plazo, se aprecia que la Comunidad de Madrid, el País Vasco y Canarias muestran una tendencia claramente creciente, lo que indica un aumento sostenido del turismo en estos territorios.
+Por el contrario, comunidades como Ceuta presentan una evolución más estacionaria, sin una tendencia ascendente evidente.
 
-Además se observa en todos los gráficos que hemos analizado el valor atípico relativo al COVID-19. A continuación vamos a detectarlo de manera más formal. 
-Dado que la serie temporal presenta una marcada estacionalidad, se aplicó el método de detección de valores atípicos 3σ de forma estacional, es decir, calculando la media y la desviación típica por mes y por provincia.
-Este enfoque permite comparar cada observación con el comportamiento esperado para esa época del año, evitando identificar como atípicos los picos de temporada alta o las caídas de temporada baja.
-Los resultados ofrecen una detección más precisa de anomalías reales o posibles errores en los datos.
+También se observan diferencias en la variabilidad de las series: en comunidades como Illes Balears, Asturias, Andalucía o la Comunitat Valenciana se aprecia una heterocedasticidad significativa, es decir, una mayor dispersión de los valores a medida que aumenta el número de turistas.
+En cambio, en regiones como Madrid o Canarias, la variabilidad parece mantenerse más constante en el tiempo.
+
+Finalmente, en todas las comunidades se detecta un descenso abrupto en 2020, correspondiente al impacto de la pandemia de la COVID-19, que afectó de forma notable a la actividad turística.
+
+En el siguiente apartado, se procederá a detectar de forma más formal estos valores atípicos, aplicando el método de detección 3σ de forma estacional (por mes y comunidad autónoma), lo que permite identificar anomalías reales sin confundir los picos de temporada alta o baja con valores atípicos.
 
 ```{r}
 ca_mensual <- df_Turismo %>%
@@ -314,7 +341,16 @@ resumen_out_estacional
 
 ```
 
-Por ejemplo vamos a ver la representación gráfica de los outliers en el caso de Islas Baleares (provincia con alta dispersión entre meses, comprobamos que se aplica bien el 3σ estacional) y Alicante (provincia con mayor cantidad de outliers). Vemos que la gran mayoría de los valores atípicos, como ya habíamos intuido con anterioridad corresponden al periodo relativo al COVID-19.
+Se observa que las comunidades con mayor número de outliers son Castilla-La Mancha, Comunitat Valenciana y La Rioja, con entre 10 y 11 observaciones atípicas cada una. En general, estas comunidades presentan una mayor variabilidad mensual, lo que puede estar asociado a fluctuaciones puntuales en el turismo o a posibles registros anómalos en los datos.
+
+En el extremo opuesto, comunidades como Canarias, Comunidad de Madrid, País Vasco y Navarra no presentan valores atípicos detectables bajo este método, lo que indica una mayor estabilidad temporal en sus series turísticas.
+
+En términos relativos, la proporción de outliers es reducida en todos los casos (inferior al 4%), lo que sugiere que el conjunto de datos es coherente y sin grandes anomalías, más allá de los valores excepcionales ya identificados durante la pandemia de la COVID-19.
+
+A modo de ejemplo, se representa gráficamente la detección de valores atípicos en el caso de Illes Balears, una comunidad que presenta una alta dispersión entre meses y permite comprobar la correcta aplicación del método 3σ estacional, y en la Comunitat Valenciana, una de las regiones con mayor número de outliers.
+
+En ambos casos, se observa que la gran mayoría de los valores atípicos corresponden al periodo de la pandemia de la COVID-19, lo que confirma las anomalías ya detectadas previamente en la serie temporal nacional y autonómica.
+
 ```{r}
 outliers_estacionales %>%
   filter(Comunidades.y.Ciudades.Autónomas == "Illes Balears") %>%
@@ -323,7 +359,7 @@ outliers_estacionales %>%
   geom_point(aes(color = es_outlier), size = 1.5) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   labs(
-    title = "Detección de valores atípicos estacionales (3σ) - Illes Balears",
+    title = "Detección de valores atípicos estacionales (3σ) - Islas Baleares",
     x = "Periodo", y = "Total", color = "Outlier"
   ) +
   theme_minimal()
@@ -335,29 +371,12 @@ outliers_estacionales %>%
   geom_point(aes(color = es_outlier), size = 1.5) +
   scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   labs(
-    title = "Detección de valores atípicos estacionales (3σ) - Comunitat Valenciana",
+    title = "Detección de valores atípicos estacionales (3σ) - Comunidad Valenciana",
     x = "Periodo", y = "Total", color = "Outlier"
   ) +
   theme_minimal()
 ```
 
-
-Como inicialmente en este dataset habian espacios en blanco, vamos a revisar que, una vez todo limpio, debemos comprbar si efectivamente ha quedado todo bien. También comprobamos si hay algún NA
-
-```{r}
-#NA
-anyNA(df_Turismo)
-colSums(is.na(df_Turismo))
-```
-
-Se observa que no hay ningun NA
-
-```{r}
-#Huecos en blanco
-sum(df_Turismo == "", na.rm = TRUE)
-colSums(df_Turismo == "", na.rm = TRUE)
-```
-Tampoco se observan huecos en blanco, por lo que el dataset está limpio.
 
 ## OCUPACIÓN
 
