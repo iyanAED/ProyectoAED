@@ -240,6 +240,8 @@ df_Turismo %>%
   print()
 ```
 
+## REPRESENTACIÓN GRÁFICA
+
 Para visualizar mejor estos datos, podemos usar un gráfico. En primer lugar vamos a examinar el total nacional de los datos, para generar una visión general sobre tendencias y dinámicas estacionales. 
 
 Podemos ver que en los datos hay una tendencia creciente y una clara estacionalidad, factores que después analizaremos con mayor profundidad. Además también se observan valores atípicos relacionados con la pandemia del COVID-19.
@@ -272,6 +274,54 @@ ggplot(ca_mensual, aes(Periodo, Total)) +
   labs(title = "Serie temporal por Comunidad Autónoma",
        x = "Periodo", y = "Total") +
   theme_minimal()
+```
+
+Ahora vamos a representar graficamente las 5 provincias con más turismo y las 5 con menos, para ver que más o menos siguen las mismas tendencias que las comunidades autónomas.
+
+Se observa que las que tienen un volumen menor de turismo no presentan la tendencia creciente de las demás provincias. Sin embargo, en las provincias que hay más turismo, la tendencía se acentúa aún más que lo que se puede ver en el total nacional. Estas observaciones también son extrapolables a los datos de las comunidades autónomas.
+
+Algo destacable es la gran dispersión que presenta el gráfico de las Islas Baleares, la cual tiene mucho sentido con los estadísticos univariantes antes extraidos, ya que se observaba una media muy alta pero una mediana mucho más baja, en contraposición por ejemplo con Madrid, que tenía valores más parecidos, y como podemos ver,  tiene una dispersión mucho menor.
+
+```{r}
+prov_mensual <- df_Turismo %>%
+  group_by(Region, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ranking_prov <- prov_mensual %>%
+  group_by(Region) %>%
+  summarise(total_acum = sum(Total, na.rm = TRUE), .groups = "drop")
+
+top5 <- ranking_prov %>% slice_max(total_acum, n = 5)
+bottom5 <- ranking_prov %>% slice_min(total_acum, n = 5)
+
+prov_top <- prov_mensual %>% filter(Region %in% top5$Region)
+prov_bottom <- prov_mensual %>% filter(Region %in% bottom5$Region)
+
+ggplot(prov_top, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.3) +
+  facet_wrap(~ Region, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".")) +
+  labs(title = "Serie temporal por provincia: Top 5 con más turismo",
+       x = "Periodo", y = "Total") +
+  theme_minimal() +
+  theme(
+    aspect.ratio = 0.65,
+    strip.text = element_text(size = 9),
+    panel.spacing = unit(1, "lines")
+  )
+
+ggplot(prov_bottom, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.3) +
+  facet_wrap(~ Region, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".")) +
+  labs(title = "Serie temporal por provincia: Bottom 5 con menos turismo",
+       x = "Periodo", y = "Total") +
+  theme_minimal() +
+  theme(
+    aspect.ratio = 0.65,
+    strip.text = element_text(size = 9),
+    panel.spacing = unit(1, "lines")
+  )
 ```
 
 
