@@ -391,7 +391,7 @@ Las variables incluidas son:
 
 - Comunidades.y.Ciudades.Autónomas: incluye las distintas comunidades y el total nacional, que también se eliminará por ser redundante.
 
-- Sector.económico: distingue cuatro sectores: agricultura, industria, construcción y servicios.
+- Sector.económico: distingue cuatro sectores: agricultura, industria, construcción y servicios. En este caso, nos centraremos en el sector servicios, ya que es el que está estrechamente relacionado con el turismo.
 
 - Periodo: año y trimestre.
 
