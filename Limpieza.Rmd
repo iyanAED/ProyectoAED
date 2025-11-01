@@ -16,6 +16,8 @@ library(lubridate)
 library(tidyr)
 library(tidyverse)
 library(scales)
+library(dplyr)
+library(stringr)
 ```
 
 # INTRODUCCIÓN
@@ -165,7 +167,7 @@ df_Turismo <- df_Turismo %>%
   group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones, Residencia..Nivel.2)
 ```
 
-Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función as.yearmon() (paquete zoo), tras reemplazar el carácter “M” por un guion con str_replace().
+Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función ym(), tras reemplazar el carácter “M” por un guion con str_replace().
 
 ```{r}
 df_Turismo <- df_Turismo %>%
@@ -404,17 +406,41 @@ Se comprobó que todas las columnas se importaron como tipo carácter, por lo qu
 ```{r}
 df_Ocupacion %>% glimpse()
 ```
+Para limpiar y preparar la base de datos de ocupación, ha sido necesario realizar los siguientes pasos:
+
+1. Eliminar la columna “Sexo”, ya que únicamente contiene el valor “Ambos sexos” y no aporta información relevante para el análisis.
+
+2. Eliminar números y carácteres especiales de los nombres de las comunidades. Además de filtrar y eliminar el valor “Total nacional” de la variable Comunidades.y.Ciudades.Autónomas, por ser redundante respecto al resto de comunidades y ciudades autónomas. Posteriormente, esta variable se convierte a tipo factor.
+
+3. Filtrar los registros correspondientes al sector “Servicios” dentro de la columna Sector.económico. Dado que la tabla se centrará exclusivamente en este sector, la variable se elimina por resultar redundante.
+
+4. Convertir la variable “Periodo” del formato YYYYTQ (por ejemplo, 2022T3) a un formato de fecha trimestral mediante la función ym() del paquete lubridate, tal y como recomendó el profesor.
+
+5. Normalizar la variable “Total”, eliminando la palabra “miles” y los puntos de millares, sustituyendo la coma decimal por punto, convirtiendo los valores a numéricos y multiplicándolos por 1.000 para expresarlos en personas. De este modo, se mantiene la coherencia de escala con la base de datos de turismo.
 
 ```{r}
-df_Ocupacion_clean <- df_Ocupacion %>%
-  dplyr::filter(Comunidades.y.Ciudades.Autónomas != "Total Nacional") %>% #elimino los totales pq son redundantes
-  dplyr::filter(Sector.económico == "Servicios") %>% #filtro para quedarme solo con el sector servicios que es el que me interesa
-  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>%#elimino la enumeracion de los nombres de las comunidades
-  select(-Sexo, -Sector.económico) %>% 
-  mutate(Periodo = as.yearqtr(str_replace(Periodo, "T", "-"))) %>%
-  rename('Comunidades Autónomas'= Comunidades.y.Ciudades.Autónomas)
-
+df_Ocupacion_clean <-  df_Ocupacion %>% 
+  #1
+  select(-Sexo) %>%
+  #2
+  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>%
+  filter(Comunidades.y.Ciudades.Autónomas != "Total Nacional") %>%
+  mutate(Comunidades.y.Ciudades.Autónomas=as.factor(Comunidades.y.Ciudades.Autónomas)) %>% 
+  #3
+  filter(Sector.económico=='Servicios') %>% 
+  select(-Sector.económico) %>% 
+  #4 
+  mutate(Periodo = str_replace(Periodo, "M", "-"), 
+    Periodo = ym(Periodo)) %>% 
+  #5
+  mutate(
+    Total=str_replace_all(Total, '\\.',""),
+    Total = str_replace(Total, ",", "."),
+    Total = as.numeric(Total)*1000 
+  ) 
 ```
+
+#TODO LAS FECHAS EN FORMATO YM MUESTRAN DIA PERO AQUI SON TRIMESTRES QUE HACEMOS
 
 Para tener una imagen general de como se mueve la ocupación
 ```{r}
