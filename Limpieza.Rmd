@@ -9,6 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls())
 ```
 
 ```{r Librerias}
@@ -160,15 +161,6 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
-Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
-
-```{r}
-df_Turismo <- df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones,
-           Residencia..Nivel.2) %>% 
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
-```
-
 Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función ym(), tras reemplazar el carácter “M” por un guion con str_replace().
 
 ```{r}
@@ -188,8 +180,7 @@ df_Turismo <- df_Turismo %>%
   rename(Residencia=Residencia..Nivel.2)
 ```
 
-Además, se transformó la columna Total a tipo numérico, ya que contiene los valores cuantitativos asociados al número de viajeros o pernoctaciones.
-Esta conversión permitirá realizar operaciones estadísticas y cálculos posteriores sin generar errores de tipo de dato.
+Además, se transformó la columna Total a tipo numérico, ya que contiene los valores cuantitativos asociados al número de viajeros o pernoctaciones. Esta conversión permitirá realizar operaciones estadísticas y cálculos posteriores sin generar errores de tipo de dato.
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
@@ -208,6 +199,15 @@ df_Turismo <- df_Turismo %>%
     Comunidades.y.Ciudades.Autónomas = str_squish(Comunidades.y.Ciudades.Autónomas)
   ) %>%
   mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
+```
+
+Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones,
+           Residencia) %>% 
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 ```
 
 Dado que inicialmente este dataset contenía espacios en blanco, resulta necesario comprobar que, tras el proceso de limpieza, todos los valores se hayan corregido correctamente. Además, se verifica si existen valores faltantes (NA) en las distintas variables.
@@ -424,7 +424,8 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
   #1
   select(-Sexo) %>%
   #2
-  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", "")) %>%
+  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", ""), 
+  Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,                                                   "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1")) %>%
   filter(Comunidades.y.Ciudades.Autónomas != "Total Nacional") %>%
   mutate(Comunidades.y.Ciudades.Autónomas=as.factor(Comunidades.y.Ciudades.Autónomas)) %>% 
   #3
@@ -443,8 +444,69 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 #TODO LAS FECHAS EN FORMATO YM MUESTRAN DIA PERO AQUI SON TRIMESTRES QUE HACEMOS
 
-Para tener una imagen general de como se mueve la ocupación
 ```{r}
+# Total nacional por trimestre
+ocup_nacional <- df_Ocupacion_clean %>%
+  group_by(Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ocup_nacional, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+  labs(title = "Serie temporal de ocupación (sector servicios) — Total nacional (trimestral)",
+       x = "Periodo", y = "Personas ocupadas") +
+  theme_minimal()
 
 ```
+#TODO EXPLICAR
+
+```{r}
+ocup_ccaa <- df_Ocupacion_clean %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ocup_ccaa, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.5) +
+  facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+  labs(title = "Ocupación en el sector servicios por Comunidad Autónoma (trimestral)",
+       x = "Periodo", y = "Personas ocupadas") +
+  theme_minimal() +
+  theme(panel.spacing = unit(1, "lines"),
+        strip.text = element_text(size = 9))
+
+```
+#TODO EXPLICAR
+
+```{r}
+ocup_ccaa_q <- ocup_ccaa %>%
+  mutate(Trimestre = factor(quarter(as.Date(Periodo)), levels = 1:4,
+                            labels = c("Q1","Q2","Q3","Q4")))
+
+outliers_q <- ocup_ccaa_q %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Trimestre) %>%
+  mutate(
+    media_q = mean(Total, na.rm = TRUE),
+    sd_q    = sd(Total, na.rm = TRUE),
+    upLim_q = media_q + 3 * sd_q,
+    lowLim_q= media_q - 3 * sd_q,
+    es_outlier = Total < lowLim_q | Total > upLim_q
+  ) %>%
+  ungroup()
+
+resumen_out_q <- outliers_q %>%
+  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  summarise(
+    n_outliers   = sum(es_outlier, na.rm = TRUE),
+    prop_outliers= mean(es_outlier, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(n_outliers))
+
+resumen_out_q
+
+```
+
+#TODO EXPLICAR
+
 
