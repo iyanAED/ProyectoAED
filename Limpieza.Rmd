@@ -50,7 +50,8 @@ df_Turismo <- read.csv(url_turismo,
 
 df_Ocupacion <- read.csv(url_ocupacion,
                        header = TRUE,
-                       sep = ";", #TODO, ESTA SI QUE TIENE DECIMAL
+                       sep = ";",
+                       dec = ",",
                        encoding = "UTF-8")
 ```
 
@@ -104,7 +105,7 @@ A partir de este análisis se obtuvieron las siguientes observaciones:
 
 - Comunidades.y.Ciudades.Autónomas contiene 20 valores únicos, cuando en realidad existen 19 comunidades y ciudades autónomas, lo que sugiere la posible presencia de algún error o duplicado en los nombres.
 
-- Provincias muestra 51 valores únicos, aunque en España existen 50 provincias, por lo que también será necesario revisar esta variable.
+- Provincias. Para tener una mayor claridad de los datos, nos centraremos en las comunidades autónomas,eliminando esta variable.
 
 - Viajeros.y.Pernoctaciones incluye correctamente 2 valores distintos, lo que confirma su coherencia.
 
@@ -159,12 +160,13 @@ df_Turismo <- df_Turismo %>%
   select(-Residencia..Nivel.1) %>% 
   filter(str_trim(Residencia..Nivel.2) != "")
 ```
-
 Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones, Residencia..Nivel.2)
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones,
+           Residencia..Nivel.2) %>% 
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 ```
 
 Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función ym(), tras reemplazar el carácter “M” por un guion con str_replace().
@@ -184,7 +186,6 @@ df_Turismo <- df_Turismo %>%
   mutate(Viajeros.y.pernoctaciones=as.factor(Viajeros.y.pernoctaciones)) %>% 
   mutate(Residencia..Nivel.2=as.factor(Residencia..Nivel.2)) %>%
   rename(Residencia=Residencia..Nivel.2)
-
 ```
 
 Además, se transformó la columna Total a tipo numérico, ya que contiene los valores cuantitativos asociados al número de viajeros o pernoctaciones.
@@ -195,7 +196,7 @@ df_Turismo <- df_Turismo %>%
   mutate(Total=as.numeric(Total))
 ```
 
-Antes de convertir la variable Comunidades.y.Ciudades.Autónoma (#TODO renombrada como Región) a tipo factor, fue necesario limpiar y estandarizar sus valores.
+Antes de convertir la variable Comunidades.y.Ciudades.Autónoma a tipo factor, fue necesario limpiar y estandarizar sus valores.
 
 Se eliminaron los números iniciales, espacios y caracteres innecesarios, y se ajustó el formato de texto para unificar la escritura de los nombres de las comunidades. Además, se determinó la variable como tipo factor.
 
@@ -207,47 +208,6 @@ df_Turismo <- df_Turismo %>%
     Comunidades.y.Ciudades.Autónomas = str_squish(Comunidades.y.Ciudades.Autónomas)
   ) %>%
   mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
-```
-
-```{r}
-#TODO NO ES LO MISMO QUE HAY ARRIBA??? df_Turismo <- df_Turismo %>%
-#  mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
-```
-
-## ANÁLISIS UNIVARIANTE
-
-Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos de las variables incluidas en el dataset mediante la función summary(). 
-
-```{r}
-summary(df_Turismo)
-```
-
-Aunque al aplicar esta función sobre variables categóricas, no obtenemos información muy relevante a nivel estadístico, muestran la frecuencia de cada categoría, confirmando que los datos son coherentes con lo esperado.
-
-En cuanto a la variable numérica (Total), también se analizó su dispersión mediante la desviación típica:
-
-```{r}
-sd(df_Turismo$Total)
-```
-#TODO POR QUE NA? Esta sd indica que............
-
-Consideramos que analizar el conjunto completo de observaciones puede ocultar las diferencias existentes entre regiones. 
-
-Por ello, se agruparon los datos por comunidad y ciudad autónoma y se calcularon los principales estadísticos descriptivos de la variable Total
-
-```{r}
-df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas) %>%
-  summarise(
-    media = mean(Total, na.rm = TRUE),
-    mediana = median(Total, na.rm = TRUE),
-    desviacion_tipica = sd(Total, na.rm = TRUE),
-    minimo = min(Total, na.rm = TRUE),
-    maximo = max(Total, na.rm = TRUE),
-    n_observaciones = n()
-  ) %>%
-  arrange(desc(media)) %>% 
-  print()
 ```
 
 Dado que inicialmente este dataset contenía espacios en blanco, resulta necesario comprobar que, tras el proceso de limpieza, todos los valores se hayan corregido correctamente. Además, se verifica si existen valores faltantes (NA) en las distintas variables.
@@ -264,25 +224,68 @@ colSums(is.na(df_Turismo))
 
 Se confirma que no hay valores faltantes ni espacios en blanco, por lo que el dataset está limpio y listo para el análisis.
 
-## REPRESENTACIÓN GRÁFICA
+## ANÁLISIS UNIVARIANTE
 
-Para visualizar mejor estos datos, se emplea una representación gráfica. En primer lugar, se analiza el total nacional, con el objetivo de obtener una visión general de las tendencias y dinámicas estacionales presentes en los datos.
+Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos de las variables incluidas en el dataset mediante la función summary(). 
 
-En la gráfica se aprecia una tendencia creciente a lo largo del tiempo y una marcada estacionalidad, factores que se estudiarán con mayor profundidad en apartados posteriores. Además, se observan valores atípicos asociados a la pandemia de la COVID-19, que provocaron una fuerte caída en los registros turísticos.
+```{r}
+summary(df_Turismo)
+```
+### ANÁLISIS UNIVARIANTE EXTENDIDO
+
+A continuación, vamos a extender el análisis ya que, al aplicar esta función sobre variables categóricas, no obtenemos información muy relevante a nivel estadístico. Sin embargo, estos estadísticos muestran la frecuencia de cada categoría, confirmando que los datos son coherentes con lo esperado. 
+
+Para comprender con mayor profundidad la variable Total, convendría agruparla en sus diferentes categorías y, analizar entonces sus estadísticos ya que puede ocultar las diferencias existentes entre regiones. Aunque en este caso estamos involucrando dos variables, hemos considerado ponerlo en este apartado, ya que en el analisis bivariante haremos un estudio más profundo sobre relaciones entre las diferentes características.
+
+```{r}
+df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  ) %>%
+  arrange(desc(media)) %>% 
+  print()
+```
+#TODO EXPLICAR ALGO
+
+A continuación se muestran los estadísticos del Total Nacional agrupando todas las comunidades.
 
 ```{r}
 nacional_mensual <- df_Turismo %>%
   group_by(Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 
+nacional_mensual %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    varianza = var(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  )
+```
+#TODO EXPLICAR
+
+## REPRESENTACIÓN GRÁFICA
+
+Para visualizar mejor estos datos, se emplea una representación gráfica. En primer lugar, se analiza el total nacional, con el objetivo de obtener una visión general de las tendencias y dinámicas estacionales presentes en los datos.
+
+```{r}
 ggplot(nacional_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.8) +
-  scale_y_continuous(labels = label_comma(big.mark = ".")) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
   labs(title = "Serie temporal de viajeros y pernoctaciones españolas por mes",
-       x = "Periodo", y = "Total",
-       color = "Tipo") +
+       x = "Periodo", y = "Total") +
   theme_minimal()
 ```
+En la gráfica se aprecia una tendencia creciente a lo largo del tiempo y una marcada estacionalidad, factores que se estudiarán con mayor profundidad en apartados posteriores. Además, se observan valores atípicos asociados a la pandemia de la COVID-19, que provocaron una fuerte caída en los registros turísticos.
 
 A continuación, se representa gráficamente la serie temporal correspondiente a cada comunidad y ciudad autónoma, con el objetivo de observar la evolución del turismo en cada territorio y comparar sus comportamientos a lo largo del tiempo.
 
@@ -294,7 +297,7 @@ ca_mensual <- df_Turismo %>%
 ggplot(ca_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.6) +
   facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y", ncol = 3) +
-  scale_y_continuous(labels = label_comma(big.mark = ".")) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
   labs(title = "Serie temporal por Comunidad Autónoma",
        x = "Periodo", y = "Total") +
   theme_minimal()
@@ -379,8 +382,6 @@ outliers_estacionales %>%
   ) +
   theme_minimal()
 ```
-
-
 ## OCUPACIÓN
 
 El segundo conjunto de datos corresponde a la ocupación por sectores económicos en España, obtenido del INE.Recoge el número de personas ocupadas (en miles) por comunidad o ciudad autónoma, sector y periodo trimestral.
