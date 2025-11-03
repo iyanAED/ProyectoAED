@@ -1,0 +1,84 @@
+---
+title: "Series de tiempo"
+author: "Juan Alcaraz Otón"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## SERIES DE TIEMPO
+
+La idea es que en ese documento se haga el análisis de series temporales de los datos, dado que todos los datos que se manejan se prestan a ello.
+
+Como los datos son desconocidos será necesario hacer diferentes pruebas para ver qué modelos son más adecuados para el análisis y predicción de cada serie, entonces esas pruebas se harán en el presente documento y los resultados definitivos se expondrán en el documento final del trabajo.
+
+## Análisis de los datos de ocupación
+
+El análisis de los datos de ocupación se agrupará por CC.AA. debido a que hacerlo por provincias sería extremadamente extenso y costoso, además que no se podrían exponer todos los resultados correctamente.
+
+El interés principal para usar las técnicas de análisis de series temporales es la imputación de datos y eliminación de _outliers_. Como es bien sabido, entre los años $2019$ y $2023$ aproximadamente, se produjo una pandemia mundial de _Covid-19_, la cual obligó a mucho países, incluyendo España a imponer importantes restricciones de movilidad tanto a los ciudadanos españoles como los extranjeros. Esto se ve claramente reflejado en los datos de ocupación.
+
+La pregunta principal es si esos datos, pertenecientes a los años de la pandemia, deben interpretarse como _outliers_ o no, y más aún si deberían tenerse en cuenta u obviarse.
+
+También se plantea la pregunta de cómo afectó la pandemia a la tendencia de crecimiento que venía experimentando la ocupación.
+
+Otro aspecto de interés es la detección de patrones estacionales, es bien sabido también que el turismo es un sector estacional, que varía mucho según el periodo del año. Sin embargo los patrones pueden ser distintos según la zona. Mientras que algunas experimentan una gran subida en invierno, otras experimentan una bajada. El objetivo es ver cuales son los comportamientos cíclicos para cada zona. 
+
+Entonces, hay dos enfoques para analizar las series de temporales, el enfoque clásico y el llamado de Box_Jenkins. Haremos ambos para ver cual proporciona una mejor aproximación.
+
+```{r Librerías}
+library(forecast)
+```
+
+```{r Inicialización de las variables}
+# Hay que convertir los datos a una serie temporal de la librería forecast, dado que hay que hacerlo para cada CC.AA. mejor hacer una función
+Convertir_en_Serie <- function(vector, Anio_Inicio, Mes_Inicio, Anio_Final, Mes_Final, frec){
+  return(ts(vector, start = c(Anio_Inicio, Mes_Inicio), end = c(Anio_Final, Mes_Final), frequency = frec))
+}
+```
+
+```{r Gráficos}
+Nombre_graf <- "Seasonal plot: número de pasajeros en aeorpuerto Valencia"
+Nombre_eje <- "Num Pasajeros"
+
+ggseasonplot(Seriea, 
+             year.labels=T, 
+             year.labels.left=F,
+             ylab = Nombre_eje,
+             main = Nombre_graf)
+```
+
+
+### Análisis clásico
+
+```{r Función para el análisis clásico}
+Diferencias <- function(serie){
+  return(serie[2:length(serie)] - serie[1:(length(serie) - 1)])
+}
+Cocientes <- function(serie){
+  return(serie[2:length(serie)] / serie[1:(length(serie) - 1)])
+}
+CV <- function(serie){
+  stopifnot(is.ts(serie))
+  return(sd(serie, na.rm=T) / mean(serie, na.rm=T))
+}
+
+Analisis_Clasico <- function(Serie){
+  # Calculo de la componente tendencial
+  Tendencia <- forecast::ma(Serie, order = frequency(Serie), centre = TRUE)
+  # Hay que ver si tomamos el esquema aditivo o multiplicativo
+  if ( CV(Diferencias(Serie)) < CV(Cocientes(Serie)) ){
+    # En este caso el modelo debe ser aditivo
+    
+  } else {
+    # El caso contrario será multiplicativo
+    
+  }
+}
+```
+
+
+### Análisis de Box-Jenkins
