@@ -34,12 +34,14 @@ url_ocupacion<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
 url_turismo<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
 ```
 
-Antes de proceder a la carga definitiva, se ha comprobado la codificación (encoding) de cada archivo, con el objetivo de evitar posibles problemas de lectura o visualización de caracteres especiales en las tablas. Esto se ha realizado aplicando la función correspondiente para identificar el tipo de codificación de cada dataset.
+Antes de proceder a la carga definitiva, se ha comprobado la codificación (_encoding_) de cada archivo, con el objetivo de evitar posibles problemas de lectura o visualización de caracteres especiales en las tablas. Esto se ha realizado aplicando la función correspondiente para identificar el tipo de codificación de cada dataset.
 
 ```{r Codificación de los archivos}
 guess_encoding(url_turismo)
 guess_encoding(url_ocupacion)
 ```
+
+Tras ver los resultados, lo mejor es usar la codificación UTF-8.
 
 Finalmente, los datos se han importado utilizando la función read_csv(), creando dos dataframes principales:
 
@@ -82,7 +84,7 @@ Las variables incluidas son las siguientes:
 
 En el momento de la importación, todas las variables se cargaron inicialmente con tipo de dato character. Posteriormente, durante la fase de preparación de los datos, se realizará la conversión de aquellas variables que correspondan a fechas, factores o valores numéricos, con el fin de facilitar su análisis estadístico y gráfico.
 
-Como primer paso del análisis exploratorio, se utilizó la función glimpse() (del paquete dplyr) para obtener una visión general de la estructura del dataset.
+Como primer paso del análisis exploratorio, se utilizó la función `glimpse()` (del paquete dplyr) para obtener una visión general de la estructura del dataset.
 
 Gracias a esta función se pudo observar que todas las columnas se importaron como tipo carácter, por lo que será necesario realizar conversiones de tipo en etapas posteriores.
 
@@ -96,7 +98,7 @@ La columna Total presenta puntos como separadores de miles, por lo que, para gar
 df_Turismo <- mutate(df_Turismo, Total = str_replace_all(Total, "\\.", ""))
 ```
 
-Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función sapply() combinada con unique() al dataframe del turismo.
+Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función `sapply()` combinada con `unique()` al dataframe del turismo.
 
 Esta operación permitió obtener los valores únicos presentes en cada una de las columnas, facilitando la identificación de errores o redundancias en los datos.
 
@@ -133,7 +135,7 @@ print(unique(df_Turismo$Residencia..Nivel.2))
 
 Se eliminaron las filas correspondientes al total nacional y a las comunidades autónomas, ya que esta información es redundante y puede obtenerse fácilmente a partir del resto de los registros si fuera necesario.
 
-Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en la variables Comunidades.y.Ciudades.Autónomas, utilizando las funciones select() y filter() del paquete dplyr.
+Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en la variables Comunidades.y.Ciudades.Autónomas, utilizando las funciones `select()` y `filter()` del paquete `dplyr`.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
