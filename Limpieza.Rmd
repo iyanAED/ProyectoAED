@@ -21,6 +21,7 @@ library(dplyr)
 library(stringr)
 library(zoo)
 library(purrr)
+library(forecast)
 ```
 
 # INTRODUCCIÓN
@@ -70,15 +71,15 @@ Las variables incluidas son las siguientes:
 
 - Totales.Territoriales: columna con un único valor (“Total Nacional”). No aporta información relevante para el análisis, por lo que se eliminará en fases posteriores.
 
-- Comunidades.y.Ciudades.Autónomas: identifica la comunidad o ciudad autónoma correspondiente a cada registro.
+- CCAA: identifica la comunidad o ciudad autónoma correspondiente a cada registro.
 
-- Provincias: especifica la provincia asociada a cada comunidad.
+- Provincias: especifica la provincia asociada a cada comunidad. Posteriormente será eliminada ya que la limitación de espacio no nos permite analizar con tanta profundidad.
 
-- Viajeros.y.pernoctaciones: indica el tipo de registro (viajeros o pernoctaciones).
+- Viajeros.y.pernoctaciones: indica el tipo de registro (viajeros o pernoctaciones).En este estudio será eliminada ya que no es de interés.
 
 - Residencia..Nivel.1: variable redundante que contiene el valor “Total” en todas sus observaciones; se eliminará del dataset.
 
-- Residencia..Nivel.2: indica el origen de los viajeros, diferenciando entre residentes en España y residentes en el extranjero.
+- Residencia..Nivel.2: indica el origen de los viajeros, diferenciando entre residentes en España y residentes en el extranjero. En este estudio será eliminada ya que no es de interés.
 
 - Periodo: recoge el año y el mes al que corresponde cada observación.
 
@@ -108,15 +109,7 @@ A partir de este análisis se obtuvieron las siguientes observaciones:
 
 - Totales.Territoriales presenta un único valor (“Total nacional”), por lo que se confirma que esta variable no aporta información útil y será eliminada.
 
-- Comunidades.y.Ciudades.Autónomas contiene 20 valores únicos, cuando en realidad existen 19 comunidades y ciudades autónomas, lo que sugiere la posible presencia de algún error o duplicado en los nombres.
-
-- Provincias. Para tener una mayor claridad de los datos, nos centraremos en las comunidades autónomas,eliminando esta variable.
-
-- Viajeros.y.Pernoctaciones incluye correctamente 2 valores distintos, lo que confirma su coherencia.
-
-- Residencia..Nivel.1 tiene un único valor (“Total”), por lo que se considera redundante.
-
-- Residencia..Nivel.2 presenta 3 valores únicos, cuando solo deberían existir 2 categorías (residentes en España y residentes en el extranjero), lo que indica un posible error en la codificación de algunos registros.
+- Comunidades.y.Ciudades.Autónomas (posteriormente renombrada como CCAA) contiene 20 valores únicos, cuando en realidad existen 19 comunidades y ciudades autónomas, lo que sugiere la posible presencia de algún error o duplicado en los nombres.
 
 - Las variables Periodo y Total no presentan incidencias destacables en esta fase.
 
@@ -126,18 +119,17 @@ Este análisis preliminar permitió detectar columnas redundantes y posibles err
 sapply(df_Turismo, function(x) length(unique(x)))
 ```
 
-Tras analizar los valores únicos, se observó que las variables Comunidades.y.Ciudades.Autónomas, Provincias y Residencia2.Nivel.2 presentaban registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente.
+Tras analizar los valores únicos, se observó que la variable CCAA presentaba registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente.
 
 Estos valores se eliminarán en la fase de limpieza del dataset.
 
 ```{r}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
-print(unique(df_Turismo$Residencia..Nivel.2))
 ```
 
 Se eliminaron las filas correspondientes al total nacional y a las comunidades autónomas, ya que esta información es redundante y puede obtenerse fácilmente a partir del resto de los registros si fuera necesario.
 
-Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en la variables Comunidades.y.Ciudades.Autónomas, utilizando las funciones `select()` y `filter()` del paquete `dplyr`.
+Además, se eliminó la columna Totales.Territoriales y aquellas filas que contenían valores vacíos en la variables CCAA, utilizando las funciones `select()` y `filter()` del paquete `dplyr`.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
@@ -147,41 +139,19 @@ df_Turismo <- df_Turismo %>%
 
 Para simplificar el análisis y la interpretación gráfica, se decidió agrupar la información a nivel de comunidades y ciudades autónomas.
 
-Aunque disponer de datos desagregados por provincia podría resultar interesante para estudios más específicos, en este trabajo se opta por un enfoque autonómico que permite una visión más general y comparativa del turismo en España.
+Aunque disponer de datos desagregados por provincia podría resultar interesante para estudios más específicos, en este trabajo se opta por un enfoque autonómico que permite una visión más general y comparativa del turismo en España. Además, como nuestro enfoque va a ser la comparativa entre turismo y ocupación, las variables relativas a la residencia y a los viajeros y pernoctaciones, serán eliminadas.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
-  select(-Provincias)
+  select(-c(Provincias,Viajeros.y.pernoctaciones,Residencia..Nivel.1,Residencia..Nivel.2))
 ```
 
-Como ya se ha mencionado, la columna Residencia..Nivel.1 contiene un único valor (“Total”) en todas sus observaciones, por lo que no aporta información relevante al análisis.
-
-Se decidió eliminarla junto con las filas vacías de la variable Residencia..Nivel.2.
-
-```{r}
-unique(df_Turismo$Residencia..Nivel.1)
-
-df_Turismo <- df_Turismo %>% 
-  select(-Residencia..Nivel.1) %>% 
-  filter(str_trim(Residencia..Nivel.2) != "")
-```
 Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función ym(), tras reemplazar el carácter “M” por un guion con str_replace().
 
 ```{r}
 df_Turismo <- df_Turismo %>%
   mutate(Periodo = str_replace(Periodo, "M", "-"), 
     Periodo = ym(Periodo))
-```
-
-A continuación, se convirtieron a tipo factor las variables Viajeros.y.pernoctaciones y Residencia..Nivel.2 (renombrada como Residencia), ya que representan categorías con un número limitado de valores posibles.
-
-Transformarlas en factores permite optimizar el uso de memoria, facilitar la agrupación y el filtrado de datos y mejorar la interpretación en análisis estadísticos y representaciones gráficas.
-
-```{r}
-df_Turismo <- df_Turismo %>% 
-  mutate(Viajeros.y.pernoctaciones=as.factor(Viajeros.y.pernoctaciones)) %>% 
-  mutate(Residencia..Nivel.2=as.factor(Residencia..Nivel.2)) %>%
-  rename(Residencia=Residencia..Nivel.2)
 ```
 
 Además, se transformó la columna Total a tipo numérico, ya que contiene los valores cuantitativos asociados al número de viajeros o pernoctaciones. Esta conversión permitirá realizar operaciones estadísticas y cálculos posteriores sin generar errores de tipo de dato.
@@ -197,20 +167,20 @@ Se eliminaron los números iniciales, espacios y caracteres innecesarios, y se a
 
 ```{r}
 df_Turismo <- df_Turismo %>% 
+  rename(CCAA = Comunidades.y.Ciudades.Autónomas) %>% 
   mutate(
-    Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", ""),
-    Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,                                                   "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
-    Comunidades.y.Ciudades.Autónomas = str_squish(Comunidades.y.Ciudades.Autónomas)
+    CCAA = str_replace(CCAA, "^[0-9]+\\s+", ""),
+    CCAA = str_replace(CCAA,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
+    CCAA = str_squish(CCAA)
   ) %>%
-  mutate(Comunidades.y.Ciudades.Autónomas = as.factor(Comunidades.y.Ciudades.Autónomas))
+  mutate(CCAA = as.factor(CCAA))
 ```
 
 Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo, Viajeros.y.pernoctaciones,
-           Residencia) %>% 
+  group_by(CCAA, Periodo) %>% 
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 ```
 
@@ -249,7 +219,7 @@ Para comprender con mayor profundidad la variable Total, convendría agruparla e
 
 ```{r}
 df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  group_by(CCAA) %>%
   summarise(
     media = mean(Total, na.rm = TRUE),
     mediana = median(Total, na.rm = TRUE),
@@ -291,7 +261,7 @@ Para visualizar mejor estos datos, se emplea una representación gráfica. En pr
 ggplot(nacional_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.8) +
   scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
-  labs(title = "Serie temporal de viajeros y pernoctaciones españolas por mes",
+  labs(title = "Serie temporal de viajeros por mes",
        x = "Periodo", y = "Total") +
   theme_minimal()
 ```
@@ -301,12 +271,12 @@ A continuación, se representa gráficamente la serie temporal correspondiente a
 
 ```{r}
 ca_mensual <- df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%
+  group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 
 ggplot(ca_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.6) +
-  facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y", ncol = 3) +
+  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
   scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
   labs(title = "Serie temporal por Comunidad Autónoma",
        x = "Periodo", y = "Total") +
@@ -320,21 +290,22 @@ En términos generales, todas las comunidades presentan una fuerte estacionalida
 Sin embargo, al analizar la tendencia a largo plazo, se aprecia que la Comunidad de Madrid, el País Vasco y Canarias muestran una tendencia claramente creciente, lo que indica un aumento sostenido del turismo en estos territorios.
 Por el contrario, comunidades como Ceuta presentan una evolución más estacionaria, sin una tendencia ascendente evidente.
 
-También se observan diferencias en la variabilidad de las series: en comunidades como Illes Balears, Asturias, Andalucía o la Comunitat Valenciana se aprecia una heterocedasticidad significativa, es decir, una mayor dispersión de los valores a medida que aumenta el número de turistas.
-En cambio, en regiones como Madrid o Canarias, la variabilidad parece mantenerse más constante en el tiempo.
+También se observan diferencias en la variabilidad de las series: en comunidades como Illes Balears, Asturias, Andalucía o la Comunitat Valenciana se aprecia una heterocedasticidad significativa, es decir, una mayor dispersión de los valores a medida que aumenta el número de turistas. En cambio, en regiones como Madrid o Canarias, la variabilidad parece mantenerse más constante en el tiempo.
 
 Finalmente, en todas las comunidades se detecta un descenso abrupto en 2020, correspondiente al impacto de la pandemia de la COVID-19, que afectó de forma notable a la actividad turística.
 
 En el siguiente apartado, se procederá a detectar de forma más formal estos valores atípicos, aplicando el método de detección 3σ de forma estacional (por mes y comunidad autónoma), lo que permite identificar anomalías reales sin confundir los picos de temporada alta o baja con valores atípicos.
 
+## DETECCIÓN DE OUTLIERS
+
 ```{r}
 ca_mensual <- df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%
+  group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop") %>%
   mutate(Mes = month(Periodo, label = TRUE, abbr = TRUE))
 
 outliers_estacionales <- ca_mensual %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Mes) %>%
+  group_by(CCAA, Mes) %>%
   mutate(
     media_mes = mean(Total, na.rm = TRUE),
     sd_mes = sd(Total, na.rm = TRUE),
@@ -345,7 +316,7 @@ outliers_estacionales <- ca_mensual %>%
   ungroup()
 
 resumen_out_estacional <- outliers_estacionales %>%
-  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  group_by(CCAA) %>%
   summarise(
     n_outliers = sum(es_outlier, na.rm = TRUE),
     prop_outliers = mean(es_outlier, na.rm = TRUE),
@@ -369,7 +340,7 @@ En ambos casos, se observa que la gran mayoría de los valores atípicos corresp
 
 ```{r}
 outliers_estacionales %>%
-  filter(Comunidades.y.Ciudades.Autónomas == "Illes Balears") %>%
+  filter(CCAA == "Illes Balears") %>%
   ggplot(aes(Periodo, Total)) +
   geom_line(color = "grey60") +
   geom_point(aes(color = es_outlier), size = 1.5) +
@@ -381,7 +352,7 @@ outliers_estacionales %>%
   theme_minimal()
 
 outliers_estacionales %>%
-  filter(Comunidades.y.Ciudades.Autónomas == "Comunitat Valenciana") %>%
+  filter(CCAA == "Comunitat Valenciana") %>%
   ggplot(aes(Periodo, Total)) +
   geom_line(color = "grey60") +
   geom_point(aes(color = es_outlier), size = 1.5) +
@@ -392,15 +363,131 @@ outliers_estacionales %>%
   ) +
   theme_minimal()
 ```
+
+# IMPUTACIÓN DE OUTLIERS
+
+```{r Inicialización de las variables}
+# Hay que convertir los datos a una serie temporal de la librería forecast, dado que hay que hacerlo para cada CC.AA. mejor hacer una función
+Convertir_en_Serie <- function(vector, Anio_Inicio, Mes_Inicio, Anio_Final, Mes_Final, frec){
+  return(ts(vector, start = c(Anio_Inicio, Mes_Inicio), end = c(Anio_Final, Mes_Final), frequency = frec))
+}
+```
+
+
+### Análisis clásico
+
+```{r Función para el análisis clásico}
+Diferencias <- function(serie){
+  return(serie[2:length(serie)] - serie[1:(length(serie) - 1)])
+}
+Cocientes <- function(serie){
+  return(serie[2:length(serie)] / serie[1:(length(serie) - 1)])
+}
+CV <- function(serie){
+  stopifnot(is.ts(serie))
+  return(sd(serie, na.rm=T) / mean(serie, na.rm=T))
+}
+
+Analisis_Clasico <- function(Serie){
+  # Calculo de la componente tendencial
+  Tendencia <- forecast::ma(Serie, order = frequency(Serie), centre = TRUE)
+  # Hay que ver si tomamos el esquema aditivo o multiplicativo
+  if ( CV(Diferencias(Serie)) < CV(Cocientes(Serie)) ){
+    # En este caso el modelo debe ser aditivo
+    Serie_Sin_Tendencia <- Serie - Tendencia
+    Medias_Est <- tapply(Serie_Sin_Tendencia, cycle(Serie_Sin_Tendencia), mean, na.rm = TRUE)
+    Medias_Est <- Medias_Est - mean(Medias_Est)
+    Estacional <- ts(rep(Medias_Est, length.out = length(Serie)),
+                 start = start(Serie), frequency = frequency(Serie))
+    Ruido <- Serie_Sin_Tendencia - Estacional
+    return(list(type = "Aditivo", trend = Tendencia, seasonal = Estacional,
+       remainder = Ruido, fitted = Tendencia + Estacional))
+    
+  } else {
+    # El caso contrario será multiplicativo
+    Serie_Sin_Tendencia <- Serie / Tendencia
+    Medias_Est <- tapply(Serie_Sin_Tendencia, cycle(Serie_Sin_Tendencia), mean, na.rm = TRUE)
+    Medias_Est <- Medias_Est / mean(Medias_Est)
+    Estacional <- ts(rep(Medias_Est, length.out = length(Serie)),
+                 start = start(Serie), frequency = frequency(Serie))
+    Ruido <- Serie_Sin_Tendencia / Estacional
+    return(list(type = "Multiplicativo", trend = Tendencia, seasonal = Estacional,
+       remainder = Ruido, fitted = Tendencia * Estacional))
+  }
+}
+```
+
+Haremos una función para conocer los errores de los modelos
+
+```{r Errores}
+Errores <- function(Serie, Predic){
+  rmse <- sqrt(mean((Serie - Predic)^2))
+  mape <- 100*mean(abs(Serie - Predic) / Serie)
+  return(list(rmse = rmse, mape = mape))
+}
+```
+
+También es necesario hacer predicciones y ver la calidad de estas. La idea es hacer un ARIMA.
+
+```{r Predicciones}
+Prediccion <- function(Serie, Serie_Completa, H){
+  Modelo <- auto.arima(Serie, stepwise=FALSE, approximation=FALSE)
+  pred <- forecast(Modelo, h=H)
+  
+  df_forecast <- data.frame(
+  tiempo = as.numeric(time(pred$mean)),
+  valor = as.numeric(pred$mean),
+  tipo = "Prediccion")
+  
+  df_serie1 <- data.frame(
+  tiempo = as.numeric(time(Serie_Completa)[1:(length(Serie_Completa)-H)]),
+  valor = as.numeric(Serie_Completa[1:(length(Serie_Completa)-H)]),
+  tipo = "Serie")
+  
+  df_serie2 <- data.frame(
+  tiempo = as.numeric(time(Serie_Completa)[(length(Serie_Completa)-H):length(Serie_Completa)]),
+  valor = as.numeric(Serie_Completa[(length(Serie_Completa)-H):length(Serie_Completa)]),
+  tipo = "Serie")
+  
+  df_ajuste <- data.frame(
+  tiempo = as.numeric(time(Serie)),
+  valor = as.numeric(Serie - residuals(Modelo)),
+  tipo = "Ajuste")
+  
+  df1 <- bind_rows(df_serie1, df_ajuste)
+  df2 <- bind_rows(df_serie2, df_forecast)
+  
+  grafica_Ajuste <- ggplot(df1, aes(x = tiempo, y = valor, color = tipo)) + 
+    geom_line(size = 1) +
+    labs(title = "Gráfica de ajuste")
+  
+  grafica_Prediccion <- ggplot(df2, aes(x = tiempo, y = valor, color = tipo)) + 
+    geom_line(size = 1) +
+    labs(title = "Gráfica de predicción")
+  
+  return(list(Prediccion=pred, 
+              Grafica_Ajuste=grafica_Ajuste, 
+              Grafica_Predic=grafica_Prediccion))
+}
+```
+
+Llamamos a las funciones creadas ara hacer el análisis
+```{r}
+df_Turismo %>% 
+  group_by(CCAA)
+  Convertir_en_Serie
+```
+
+
 ## OCUPACIÓN
 
 El segundo conjunto de datos corresponde a la ocupación por sectores económicos en España, obtenido del INE.Recoge el número de personas ocupadas (en miles) por comunidad o ciudad autónoma, sector y periodo trimestral.
 
 Las variables incluidas son:
 
-- Sexo: único valor (“Ambos sexos”), por lo que se eliminará al no aportar información.
+- Sexo: presenta un valor 'mujer', 'hombre' y 'Ambos sexos'). POsteriormente se eliminará porque no nos interesa.
 
-- Comunidades.y.Ciudades.Autónomas: incluye las distintas comunidades y el total nacional, que también se eliminará por ser redundante.
+- Comunidades.y.Ciudades.Autónomas (CCAA): incluye las distintas comunidades y el total nacional, que también se eliminará por ser redundante.
 
 - Sector.económico: distingue cuatro sectores: agricultura, industria, construcción y servicios. En este caso, nos centraremos en el sector servicios, ya que es el que está estrechamente relacionado con el turismo.
 
@@ -417,27 +504,30 @@ Se comprobó que todas las columnas se importaron como tipo carácter, por lo qu
 ```{r}
 df_Ocupacion %>% glimpse()
 ```
+
 Para limpiar y preparar la base de datos de ocupación, ha sido necesario realizar los siguientes pasos:
 
-1. Eliminar la columna “Sexo”, ya que únicamente contiene el valor “Ambos sexos” y no aporta información relevante para el análisis.
+1. Eliminar la columna “Sexo”.
 
-2. Eliminar números y carácteres especiales de los nombres de las comunidades. Además de filtrar y eliminar el valor “Total nacional” de la variable Comunidades.y.Ciudades.Autónomas, por ser redundante respecto al resto de comunidades y ciudades autónomas. Posteriormente, esta variable se convierte a tipo factor.
+2. Eliminar números y carácteres especiales de los nombres de las comunidades. Además de filtrar y eliminar el valor “Total nacional” de la variable CCAA, por ser redundante respecto al resto de comunidades y ciudades autónomas. Posteriormente, esta variable se convierte a tipo factor.
 
 3. Filtrar los registros correspondientes al sector “Servicios” dentro de la columna Sector.económico. Dado que la tabla se centrará exclusivamente en este sector, la variable se elimina por resultar redundante.
 
-4. Convertir la variable “Periodo” del formato YYYYTQ (por ejemplo, 2022T3) a un formato de fecha trimestral mediante la función ym() del paquete lubridate, tal y como recomendó el profesor.
+4. Convertir la variable “Periodo” del formato YYYYTQ (por ejemplo, 2022T3) a un formato de fecha trimestral mediante la función `as.yearqtr()`.
 
 5. Normalizar la variable “Total”, eliminando la palabra “miles” y los puntos de millares, sustituyendo la coma decimal por punto, convirtiendo los valores a numéricos y multiplicándolos por 1.000 para expresarlos en personas. De este modo, se mantiene la coherencia de escala con la base de datos de turismo.
 
 ```{r}
 df_Ocupacion_clean <-  df_Ocupacion %>% 
   #1
+  filter(Sexo == "Ambos sexos") %>% 
   select(-Sexo) %>%
   #2
-  mutate(Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas, "^[0-9]+\\s+", ""), 
-  Comunidades.y.Ciudades.Autónomas = str_replace(Comunidades.y.Ciudades.Autónomas,                                                   "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1")) %>%
-  filter(Comunidades.y.Ciudades.Autónomas != "Total Nacional") %>%
-  mutate(Comunidades.y.Ciudades.Autónomas=as.factor(Comunidades.y.Ciudades.Autónomas)) %>% 
+  rename(CCAA=Comunidades.y.Ciudades.Autónomas) %>% 
+  mutate(CCAA = str_replace(CCAA, "^[0-9]+\\s+", ""), 
+  CCAA = str_replace(CCAA, "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1")) %>%
+  filter(CCAA != "Total Nacional") %>%
+  mutate(CCAA=as.factor(CCAA)) %>% 
   #3
   filter(Sector.económico=='Servicios') %>% 
   select(-Sector.económico) %>% 
@@ -449,7 +539,8 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
     Total=str_replace_all(Total, '\\.',""),
     Total = str_replace(Total, ",", "."),
     Total = as.numeric(Total)*1000 
-  ) 
+  ) %>% 
+  arrange(CCAA, Periodo)
 ```
 
 #TODO LAS FECHAS EN FORMATO YM MUESTRAN DIA PERO AQUI SON TRIMESTRES QUE HACEMOS
@@ -471,12 +562,12 @@ ggplot(ocup_nacional, aes(Periodo, Total)) +
 
 ```{r}
 ocup_ccaa <- df_Ocupacion_clean %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%
+  group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
 
 ggplot(ocup_ccaa, aes(Periodo, Total)) +
   geom_line(linewidth = 0.5) +
-  facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y", ncol = 3) +
+  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
   scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
   labs(title = "Ocupación en el sector servicios por Comunidad Autónoma (trimestral)",
        x = "Periodo", y = "Personas ocupadas") +
@@ -493,7 +584,7 @@ ocup_ccaa_q <- ocup_ccaa %>%
                             labels = c("Q1","Q2","Q3","Q4")))
 
 outliers_q <- ocup_ccaa_q %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Trimestre) %>%
+  group_by(CCAA, Trimestre) %>%
   mutate(
     media_q = mean(Total, na.rm = TRUE),
     sd_q    = sd(Total, na.rm = TRUE),
@@ -504,7 +595,7 @@ outliers_q <- ocup_ccaa_q %>%
   ungroup()
 
 resumen_out_q <- outliers_q %>%
-  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  group_by(CCAA) %>%
   summarise(
     n_outliers   = sum(es_outlier, na.rm = TRUE),
     prop_outliers= mean(es_outlier, na.rm = TRUE),
@@ -524,11 +615,10 @@ resumen_out_q
 
 ```{r}
 turismo_to_merge <- df_Turismo %>%
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%        # agrupamos por comunidad y mes
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop") %>% # sumamos viajeros + pernoctaciones + todas residencias
-  mutate(Periodo = as.yearqtr(Periodo)) %>%                 # pasamos el mes a trimestre
-  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%   # agrupamos por comunidad y trimestre
-  summarise(Total_turismo = sum(Total, na.rm = TRUE), .groups = "drop")
+  mutate(Periodo = as.yearqtr(Periodo)) %>%
+  group_by(CCAA, Periodo) %>%
+  summarise(Total_turismo = sum(Total, na.rm = TRUE), .groups = "drop") %>% 
+  arrange(CCAA, Periodo)
 ```
 
 #TODO EXPLICAR
@@ -536,10 +626,15 @@ turismo_to_merge <- df_Turismo %>%
 ```{r}
 df_Turismo_Ocupacion <- merge(
   x = turismo_to_merge,
-  y = df_Ocupacion_clean %>% 
-    rename(Numero_ocupados = Total),
-  by.x = c("Comunidades.y.Ciudades.Autónomas", "Periodo"),
-  by.y = c("Comunidades.y.Ciudades.Autónomas", "Periodo"))
+  y = (df_Ocupacion_clean %>% 
+    rename(Numero_ocupados = Total)),
+  by.x = c("CCAA", "Periodo"),
+  by.y = c("CCAA", "Periodo"))
+```
+
+Una vez arreglada la base de datos, la guardamos en un fichero Rdata
+```{r}
+save(df_Turismo_Ocupacion, file='Data/df_Turismo_Ocupacion.RData')
 ```
 
 Ahora vamos a hacer un grafico de dispersion que relacione las variables del nuevo data frame Turismo-NOcupados.
@@ -549,14 +644,14 @@ Ahora vamos a hacer un grafico de dispersion que relacione las variables del nue
 dir.create("graficos_comunidades", showWarnings = FALSE)
 
 # Obtener todas las comunidades únicas
-comunidades <- unique(df_Turismo_Ocupacion$Comunidades.y.Ciudades.Autónomas)
+comunidades <- unique(df_Turismo_Ocupacion$CCAA)
 
 # Bucle para crear un gráfico por comunidad
 for (com in comunidades) {
   
   # Filtrar datos de la comunidad actual
   datos_com <- df_Turismo_Ocupacion %>%
-    filter(Comunidades.y.Ciudades.Autónomas == com)
+    filter(CCAA == com)
   
   # Crear el gráfico
   p <- ggplot(datos_com, aes(x = Total_turismo, y = Numero_ocupados)) +
@@ -564,7 +659,7 @@ for (com in comunidades) {
     geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) + # línea de tendencia
     labs(
       title = paste("Relación entre Turismo y Ocupación -", com),
-      x = "Total Turismo (viajeros + pernoctaciones)",
+      x = "Total Turismo",
       y = "Número de Ocupados (Servicios)"
     ) +
     theme_minimal()
@@ -583,7 +678,7 @@ for (com in comunidades) {
 Cálculo de correlaciones de cada comunidad entre el numero de ocupados y el total del turismo
 ```{r}
 correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
-  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  group_by(CCAA) %>%
   summarise(
     resultado = list(cor.test(Total_turismo, Numero_ocupados, method = "pearson"))
   ) %>%
@@ -591,7 +686,7 @@ correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
     correlacion = map_dbl(resultado, "estimate"),
     p_value = map_dbl(resultado, "p.value")
   ) %>%
-  select(Comunidades.y.Ciudades.Autónomas, correlacion, p_value) %>%
+  select(CCAA, correlacion, p_value) %>%
   arrange(desc(correlacion))
 
 correlaciones_por_comunidad
