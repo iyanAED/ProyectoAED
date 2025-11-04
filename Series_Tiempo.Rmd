@@ -117,9 +117,14 @@ Prediccion <- function(Serie, Serie_Completa, H){
   valor = as.numeric(pred$mean),
   tipo = "Prediccion")
   
-  df_serie <- data.frame(
-  tiempo = as.numeric(time(Serie_Completa)),
-  valor = as.numeric(Serie_Completa),
+  df_serie1 <- data.frame(
+  tiempo = as.numeric(time(Serie_Completa)[1:(length(Serie_Completa)-H)]),
+  valor = as.numeric(Serie_Completa[1:(length(Serie_Completa)-H)]),
+  tipo = "Serie")
+  
+  df_serie2 <- data.frame(
+  tiempo = as.numeric(time(Serie_Completa)[(length(Serie_Completa)-H):length(Serie_Completa)]),
+  valor = as.numeric(Serie_Completa[(length(Serie_Completa)-H):length(Serie_Completa)]),
   tipo = "Serie")
   
   df_ajuste <- data.frame(
@@ -127,9 +132,20 @@ Prediccion <- function(Serie, Serie_Completa, H){
   valor = as.numeric(Serie - residuals(Modelo)),
   tipo = "Ajuste")
   
-  df_all <- bind_rows(df_serie, df_forecast)
-  grafica <- ggplot(df_all, aes(x = tiempo, y = valor, color = tipo)) + geom_line(size = 1)
-  return(list(Prediccion=pred, Grafica=grafica))
+  df1 <- bind_rows(df_serie1, df_ajuste)
+  df2 <- bind_rows(df_serie2, df_forecast)
+  
+  grafica_Ajuste <- ggplot(df1, aes(x = tiempo, y = valor, color = tipo)) + 
+    geom_line(size = 1) +
+    labs(title = "Gráfica de ajuste")
+  
+  grafica_Prediccion <- ggplot(df2, aes(x = tiempo, y = valor, color = tipo)) + 
+    geom_line(size = 1) +
+    labs(title = "Gráfica de predicción")
+  
+  return(list(Prediccion=pred, 
+              Grafica_Ajuste=grafica_Ajuste, 
+              Grafica_Predic=grafica_Prediccion))
 }
 ```
 
