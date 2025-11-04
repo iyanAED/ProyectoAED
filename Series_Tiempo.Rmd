@@ -95,5 +95,26 @@ Analisis_Clasico <- function(Serie){
 }
 ```
 
+Haremos una función para conocer los errores de los modelos
+
+```{r Errores}
+Errores <- function(Serie, Predic){
+  rmse <- sqrt(mean((Serie - Predic)^2))
+  mape <- 100*mean(abs(Serie - Predic) / Serie)
+  return(list(rmse = rmse, mape = mape))
+}
+```
+
+También es necesario hacer predicciones y ver la calidad de estas.
+
+```{r Predicciones}
+
+Prediccion <- function(Serie, Modelo){
+  pred <- predict(Modelo, n.ahead=12, prediction.interval=TRUE, level=0.95) 
+  plot(Modelo, pred)
+}
+
+```
+
 
 ### Análisis de Box-Jenkins
