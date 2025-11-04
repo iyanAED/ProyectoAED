@@ -20,6 +20,7 @@ library(scales)
 library(dplyr)
 library(stringr)
 library(zoo)
+library(purrr)
 ```
 
 # INTRODUCCIÓN
@@ -465,7 +466,6 @@ ggplot(ocup_nacional, aes(Periodo, Total)) +
   labs(title = "Serie temporal de ocupación (sector servicios) — Total nacional (trimestral)",
        x = "Periodo", y = "Personas ocupadas") +
   theme_minimal()
-
 ```
 #TODO EXPLICAR
 
@@ -544,24 +544,57 @@ df_Turismo_Ocupacion <- merge(
 
 Ahora vamos a hacer un grafico de dispersion que relacione las variables del nuevo data frame Turismo-NOcupados.
 
-creamos una columna trimestre que facililite la representacion
 ```{r}
-df_Turismo_Ocupacion %>%
-  mutate(Año = factor(sub("Q.", "", as.character(Periodo)))) %>% 
- ggplot(aes(x = Total_turismo, y = Numero_ocupados, color = Trimestre)) + 
-  geom_point() +
-  facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y") +  # Crea un gráfico por comunidad
-  labs(title = "Gráfico de dispersión: Total Turismo vs. Número de Ocupados por Comunidad Autónoma",
-       x = "Total Turismo (viajeros + pernoctaciones)",
-       y = "Número de Ocupados en el Sector Servicios",
-       color = "Año") +
-  theme_minimal()
+# Crear una carpeta donde guardar los gráficos
+dir.create("graficos_comunidades", showWarnings = FALSE)
+
+# Obtener todas las comunidades únicas
+comunidades <- unique(df_Turismo_Ocupacion$Comunidades.y.Ciudades.Autónomas)
+
+# Bucle para crear un gráfico por comunidad
+for (com in comunidades) {
   
+  # Filtrar datos de la comunidad actual
+  datos_com <- df_Turismo_Ocupacion %>%
+    filter(Comunidades.y.Ciudades.Autónomas == com)
+  
+  # Crear el gráfico
+  p <- ggplot(datos_com, aes(x = Total_turismo, y = Numero_ocupados)) +
+    geom_point(color = "#0072B2", alpha = 0.7) +
+    geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) + # línea de tendencia
+    labs(
+      title = paste("Relación entre Turismo y Ocupación -", com),
+      x = "Total Turismo (viajeros + pernoctaciones)",
+      y = "Número de Ocupados (Servicios)"
+    ) +
+    theme_minimal()
+  
+  # Mostrar el gráfico (opcional)
+  print(p)
+  
+  # Guardar el gráfico como archivo PNG
+  ggsave(filename = paste0("graficos_comunidades/", gsub(" ", "_", com), ".png"),
+         plot = p, width = 7, height = 5)
+}
+
 ```
 
+
+Cálculo de correlaciones de cada comunidad entre el numero de ocupados y el total del turismo
 ```{r}
+correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
+  group_by(Comunidades.y.Ciudades.Autónomas) %>%
+  summarise(
+    resultado = list(cor.test(Total_turismo, Numero_ocupados, method = "pearson"))
+  ) %>%
+  mutate(
+    correlacion = map_dbl(resultado, "estimate"),
+    p_value = map_dbl(resultado, "p.value")
+  ) %>%
+  select(Comunidades.y.Ciudades.Autónomas, correlacion, p_value) %>%
+  arrange(desc(correlacion))
 
+correlaciones_por_comunidad
 ```
-
 
 
