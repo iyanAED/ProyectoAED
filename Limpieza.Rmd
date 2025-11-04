@@ -19,6 +19,7 @@ library(tidyverse)
 library(scales)
 library(dplyr)
 library(stringr)
+library(zoo)
 ```
 
 # INTRODUCCIÓN
@@ -434,8 +435,8 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
   filter(Sector.económico=='Servicios') %>% 
   select(-Sector.económico) %>% 
   #4 
-  mutate(Periodo = str_replace(Periodo, "M", "-"), 
-    Periodo = ym(Periodo)) %>% 
+  mutate(Periodo = str_replace(Periodo, "T", "-"), 
+    Periodo = as.yearqtr(Periodo)) %>% 
   #5
   mutate(
     Total=str_replace_all(Total, '\\.',""),
@@ -511,4 +512,26 @@ resumen_out_q
 
 #TODO EXPLICAR
 
+## LIMPIEZA PARA MERGE
 
+#TODO EXPLICAR
+
+```{r}
+turismo_to_merge <- df_Turismo %>%
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%        # agrupamos por comunidad y mes
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop") %>% # sumamos viajeros + pernoctaciones + todas residencias
+  mutate(Periodo = as.yearqtr(Periodo)) %>%                 # pasamos el mes a trimestre
+  group_by(Comunidades.y.Ciudades.Autónomas, Periodo) %>%   # agrupamos por comunidad y trimestre
+  summarise(Total_turismo = sum(Total, na.rm = TRUE), .groups = "drop")
+```
+
+#TODO EXPLICAR
+
+```{r}
+df_Turismo_Ocupacion <- merge(
+  x = turismo_to_merge,
+  y = df_Ocupacion_clean %>% 
+    rename(Numero_ocupados = Total),
+  by.x = c("Comunidades.y.Ciudades.Autónomas", "Periodo"),
+  by.y = c("Comunidades.y.Ciudades.Autónomas", "Periodo"))
+```
