@@ -227,6 +227,12 @@ colSums(is.na(df_Turismo))
 
 Se confirma que no hay valores faltantes ni espacios en blanco, por lo que el dataset está limpio y listo para el análisis.
 
+Una vez arreglada la base de datos, la guardamos en un fichero Rdata
+```{r}
+save(df_Turismo, file='Data/df_Turismo.RData')
+```
+
+
 ## ANÁLISIS UNIVARIANTE
 
 Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos de las variables incluidas en el dataset mediante la función summary(). 
@@ -535,3 +541,27 @@ df_Turismo_Ocupacion <- merge(
   by.x = c("Comunidades.y.Ciudades.Autónomas", "Periodo"),
   by.y = c("Comunidades.y.Ciudades.Autónomas", "Periodo"))
 ```
+
+Ahora vamos a hacer un grafico de dispersion que relacione las variables del nuevo data frame Turismo-NOcupados.
+
+creamos una columna trimestre que facililite la representacion
+```{r}
+df_Turismo_Ocupacion %>%
+  mutate(Año = factor(sub("Q.", "", as.character(Periodo)))) %>% 
+ ggplot(aes(x = Total_turismo, y = Numero_ocupados, color = Trimestre)) + 
+  geom_point() +
+  facet_wrap(~ Comunidades.y.Ciudades.Autónomas, scales = "free_y") +  # Crea un gráfico por comunidad
+  labs(title = "Gráfico de dispersión: Total Turismo vs. Número de Ocupados por Comunidad Autónoma",
+       x = "Total Turismo (viajeros + pernoctaciones)",
+       y = "Número de Ocupados en el Sector Servicios",
+       color = "Año") +
+  theme_minimal()
+  
+```
+
+```{r}
+
+```
+
+
+
