@@ -105,16 +105,50 @@ Errores <- function(Serie, Predic){
 }
 ```
 
-También es necesario hacer predicciones y ver la calidad de estas.
+También es necesario hacer predicciones y ver la calidad de estas. La idea es hacer un ARIMA.
 
 ```{r Predicciones}
-
-Prediccion <- function(Serie, Modelo){
-  pred <- predict(Modelo, n.ahead=12, prediction.interval=TRUE, level=0.95) 
-  plot(Modelo, pred)
+Prediccion <- function(Serie, Serie_Completa, H){
+  Modelo <- auto.arima(Serie, stepwise=FALSE, approximation=FALSE)
+  pred <- forecast(Modelo, h=H)
+  
+  df_forecast <- data.frame(
+  tiempo = as.numeric(time(pred$mean)),
+  valor = as.numeric(pred$mean),
+  tipo = "Prediccion")
+  
+  df_serie1 <- data.frame(
+  tiempo = as.numeric(time(Serie_Completa)[1:(length(Serie_Completa)-H)]),
+  valor = as.numeric(Serie_Completa[1:(length(Serie_Completa)-H)]),
+  tipo = "Serie")
+  
+  df_serie2 <- data.frame(
+  tiempo = as.numeric(time(Serie_Completa)[(length(Serie_Completa)-H):length(Serie_Completa)]),
+  valor = as.numeric(Serie_Completa[(length(Serie_Completa)-H):length(Serie_Completa)]),
+  tipo = "Serie")
+  
+  df_ajuste <- data.frame(
+  tiempo = as.numeric(time(Serie)),
+  valor = as.numeric(Serie - residuals(Modelo)),
+  tipo = "Ajuste")
+  
+  df1 <- bind_rows(df_serie1, df_ajuste)
+  df2 <- bind_rows(df_serie2, df_forecast)
+  
+  grafica_Ajuste <- ggplot(df1, aes(x = tiempo, y = valor, color = tipo)) + 
+    geom_line(size = 1) +
+    labs(title = "Gráfica de ajuste")
+  
+  grafica_Prediccion <- ggplot(df2, aes(x = tiempo, y = valor, color = tipo)) + 
+    geom_line(size = 1) +
+    labs(title = "Gráfica de predicción")
+  
+  return(list(Prediccion=pred, 
+              Grafica_Ajuste=grafica_Ajuste, 
+              Grafica_Predic=grafica_Prediccion))
 }
-
 ```
+
 
 
 ### Análisis de Box-Jenkins
