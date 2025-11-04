@@ -72,10 +72,25 @@ Analisis_Clasico <- function(Serie){
   # Hay que ver si tomamos el esquema aditivo o multiplicativo
   if ( CV(Diferencias(Serie)) < CV(Cocientes(Serie)) ){
     # En este caso el modelo debe ser aditivo
+    Serie_Sin_Tendencia <- Serie - Tendencia
+    Medias_Est <- tapply(Serie_Sin_Tendencia, cycle(Serie_Sin_Tendencia), mean, na.rm = TRUE)
+    Medias_Est <- Medias_Est - mean(Medias_Est)
+    Estacional <- ts(rep(Medias_Est, length.out = length(Serie)),
+                 start = start(Serie), frequency = frequency(Serie))
+    Ruido <- Serie_Sin_Tendencia - Estacional
+    return(list(type = "Aditivo", trend = Tendencia, seasonal = Estacional,
+       remainder = Ruido, fitted = Tendencia + Estacional))
     
   } else {
     # El caso contrario será multiplicativo
-    
+    Serie_Sin_Tendencia <- Serie / Tendencia
+    Medias_Est <- tapply(Serie_Sin_Tendencia, cycle(Serie_Sin_Tendencia), mean, na.rm = TRUE)
+    Medias_Est <- Medias_Est / mean(Medias_Est)
+    Estacional <- ts(rep(Medias_Est, length.out = length(Serie)),
+                 start = start(Serie), frequency = frequency(Serie))
+    Ruido <- Serie_Sin_Tendencia / Estacional
+    return(list(type = "Multiplicativo", trend = Tendencia, seasonal = Estacional,
+       remainder = Ruido, fitted = Tendencia * Estacional))
   }
 }
 ```
