@@ -1,0 +1,420 @@
+---
+title: Full title of the paper (Capitalized)
+author:
+  - name: Dominik Leutnant
+    affil: 1,2,\ddagger,*
+    orcid: 0000-0003-3293-2315
+  - name: John Doe
+    affil: 2, \dagger, \ddagger
+affiliation:
+  - num: 1
+    address: |
+      Muenster University of Applied Sciences - 
+      Institute for Infrastructure, Water, Resources, Environment
+      Correnstr. 25, 48149 Muenster, Germany
+    email: leutnant@fh-muenster.de
+  - num: 2
+    address: |
+      Your department
+      Street, City, Country
+    email: mail@mail.com
+# author citation list in chicago format
+authorcitation: |
+  Leutnant, D.; Doe, J.
+# firstnote to eighthnote
+firstnote: |
+  Current address: Updated affiliation
+secondnote: |
+  These authors contributed equally to this work.
+correspondence: |
+  leutnant@fh-muenster.de; Tel.: +XX-000-00-0000.
+# document options
+journal: notspecified
+type: article
+status: submit
+# front matter
+simplesummary: |
+  A Simple summary goes here.
+abstract: |
+  A single paragraph of about 200 words maximum. For research articles, 
+  abstracts should give a pertinent overview of the work. We strongly encourage
+  authors to use the following style of structured abstracts, but without 
+  headings: 1) Background: Place the question addressed in a broad context and
+  highlight the purpose of the study; 2) Methods: Describe briefly the main
+  methods or treatments applied; 3) Results: Summarize the article's main 
+  findings; and 4) Conclusion: Indicate the main conclusions or interpretations. 
+  The abstract should be an objective representation of the article, it must not 
+  contain results which are not presented and substantiated in the main text and 
+  should not exaggerate the main conclusions.
+keywords: |
+  keyword 1; keyword 2; keyword 3 (list three to ten pertinent keywords specific 
+  to the article, yet reasonably common within the subject discipline.).
+# back matter
+acknowledgement: |
+  All sources of funding of the study should be disclosed. Please clearly 
+  indicate grants that you have received in support of your research work. 
+  Clearly state if you received funds for covering the costs to publish in open 
+  access.
+authorcontributions: |
+  For research articles with several authors, a short paragraph specifying their 
+  individual contributions must be provided. The following statements should be 
+  used ``X.X. and Y.Y. conceive and designed the experiments; X.X. performed the 
+  experiments; X.X. and Y.Y. analyzed the data; W.W. contributed 
+  reagents/materials/analysis tools; Y.Y. wrote the paper.'' Authorship must be
+  limited to those who have contributed substantially to the work reported.
+funding: |
+  Please add: ``This research received no external funding'' or ``This research 
+  was funded by NAME OF FUNDER grant number XXX.'' and  and ``The APC was funded 
+  by XXX''. Check carefully that the details given are accurate and use the 
+  standard spelling of funding agency names at 
+  \url{https://search.crossref.org/funding}, any errors may affect your future 
+  funding.
+institutionalreview: |
+  In this section, you should add the Institutional Review Board Statement and 
+  approval number, if relevant to your study. You might choose to exclude 
+  this statement if the study did not require ethical approval. Please note 
+  that the Editorial Office might ask you for further information. Please add 
+  “The study was conducted in accordance with the Declaration of Helsinki, 
+  and approved by the Institutional Review Board (or Ethics Committee) of 
+  NAME OF INSTITUTE (protocol code XXX and date of approval).” for studies 
+  involving humans. OR “The animal study protocol was approved by the 
+  Institutional Review Board (or Ethics Committee) of NAME OF INSTITUTE 
+  (protocol code XXX and date of approval).” for studies involving animals. 
+  OR “Ethical review and approval were waived for this study due to REASON 
+  (please provide a detailed justification).” OR “Not applicable” for
+   studies not involving humans or animals.
+informedconsent: |
+  Any research article describing a study involving humans should contain this 
+  statement. Please add ``Informed consent was obtained from all subjects 
+  involved in the study.'' OR ``Patient consent was waived due to REASON 
+  (please provide a detailed justification).'' OR ``Not applicable'' for 
+  studies not involving humans. You might also choose to exclude this statement 
+  if the study did not involve humans.
+  
+  Written informed consent for publication must be obtained from participating 
+  patients who can be identified (including by the patients themselves). Please 
+  state ``Written informed consent has been obtained from the patient(s) to 
+  publish this paper'' if applicable.
+dataavailability: |
+  We encourage all authors of articles published in MDPI journals to share 
+  their research data. In this section, please provide details regarding where 
+  data supporting reported results can be found, including links to publicly 
+  archived datasets analyzed or generated during the study. Where no new data 
+  were created, or where data is unavailable due to privacy or ethical 
+  re-strictions, a statement is still required. Suggested Data Availability 
+  Statements are available in section “MDPI Research Data Policies” at 
+  \url{https://www.mdpi.com/ethics}.
+conflictsofinterest: |
+  Declare conflicts of interest or state 'The authors declare no conflict of 
+  interest.' Authors must identify and declare any personal circumstances or
+  interest that may be perceived as inappropriately influencing the
+  representation or interpretation of reported research results. Any role of the
+  funding sponsors in the design of the study; in the collection, analyses or 
+  interpretation of data in the writing of the manuscript, or in the decision to 
+  publish the results must be declared in this section. If there is no role, 
+  please state 'The founding sponsors had no role in the design of the study; 
+  in the collection, analyses, or interpretation of data; in the writing of the 
+  manuscript, an in the decision to publish the results'.
+supplementary: |
+ The following supporting information can be downloaded at:  
+ \linksupplementary{s1}, Figure S1: title; Table S1: title; Video S1: title.
+abbreviations:
+  - short: MDPI
+    long: Multidisciplinary Digital Publishing Institute
+  - short: DOAJ
+    long: Directory of open access journals
+  - short: TLA
+    long: Three letter acronym
+  - short: LD 
+    long: linear dichroism
+bibliography: mybibfile.bib
+appendix: appendix.tex
+endnotes: false
+output: 
+  rticles::mdpi_article:
+    extra_dependencies: longtable
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls())
+```
+
+```{r Librerias, echo=FALSE}
+library(lubridate)
+library(tidyr)
+library(tidyverse)
+library(scales)
+library(stringr)
+library(zoo)
+library(purrr)
+library(forecast)
+```
+
+# INTRODUCCIÓN
+
+## CONTEXTO GENERAL
+
+El turismo constituye uno de los principales motores económicos de España, aportando una parte significativa al Producto Interior Bruto y al empleo nacional. La actividad turística no solo influye en la generación de riqueza, sino también en el dinamismo de otros sectores, como el transporte, la hostelería o el comercio.
+
+En los últimos años, la evolución del turismo español ha experimentado variaciones notables, especialmente durante el periodo marcado por la pandemia de la COVID-19, que provocó una caída sin precedentes en los flujos de viajeros y en los niveles de ocupación del sector servicios. A partir de 2021, el proceso de recuperación ha sido desigual entre las comunidades autónomas, lo que hace necesario un análisis detallado que permita comprender las tendencias y relaciones entre las distintas variables implicadas.
+
+En este contexto, el presente trabajo realiza un análisis exploratorio a partir de datos oficiales del Instituto Nacional de Estadística (INE), con el objetivo de examinar la evolución del turismo y su relación con la ocupación en el sector servicios. Este enfoque permite no solo identificar patrones y correlaciones, sino también detectar posibles valores atípicos derivados de eventos excepcionales, como la crisis sanitaria, que pueden distorsionar la interpretación de los resultados.
+
+## DESCRIPCIÓN DE LOS DATOS
+
+Para el desarrollo del presente análisis se han empleado dos bases de datos principales.
+
+La primera recoge información sobre el turismo en España, desglosada por comunidades autónomas y provincias, e incluye variables como el número de viajeros y las pernoctaciones registradas a lo largo de varios años.
+
+La segunda base de datos corresponde al sector servicios, concretamente a la ocupación laboral dentro del mismo, y se analiza con el propósito de explorar su relación con la evolución del turismo.
+
+## CUESTIONES A TRATAR
+
+En este estudio se abordan tres cuestiones principales:
+
+1. ¿Cómo tratar los valores atípicos (outliers) asociados al periodo de la pandemia de la COVID-19 (2019-2021)?
+
+2. ¿Qué evolución ha experimentado el turismo en las distintas comunidades autónomas a lo largo del periodo analizado?
+
+3. ¿Qué relación existe entre la evolución del turismo y la ocupación en el sector servicios?
+
+# ANÁLISIS
+
+## TURISMO
+
+### IMPORTACIÓN
+
+Para garantizar el uso de datos actualizados, la importación se realiza directamente desde las URLs oficiales del INE, evitando copias locales.
+
+```{r Enlaces de descarga, echo=FALSE}
+url_ocupacion<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
+url_turismo<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
+```
+
+Antes de la carga definitiva, se comprobó la codificación de los archivos para evitar errores de lectura, optando por el formato UTF-8.
+
+```{r Codificación de los archivos, echo=FALSE}
+guess_encoding(url_turismo)
+guess_encoding(url_ocupacion)
+```
+
+Finalmente, los datos se importaron y almacenaron en dos data frames principales: uno para turismo y otro para ocupación.
+
+```{r Importación, echo=FALSE}
+df_Turismo <- read.csv(url_turismo,
+                       header = TRUE,
+                       sep = ";",
+                       encoding = "UTF-8")
+
+df_Ocupacion <- read.csv(url_ocupacion,
+                       header = TRUE,
+                       sep = ";",
+                       dec = ",",
+                       encoding = "UTF-8")
+```
+
+### LIMPIEZA
+
+Una vez importados los datos, se analizan las características generales del conjunto correspondiente al turismo en España. Este dataset recoge el número de viajeros y pernoctaciones por comunidad y provincia a lo largo del tiempo.
+
+```{r, echo=FALSE, Cálculo dimension}
+dim(df_Turismo)
+```
+En un inicio, este dataset se forma de 134.820 filas y 8 columnas, cuyo nombre resulta completamente representativo.
+
+Las variables incluidas son:
+
+- Totales.Territoriales: columna con un único valor (“Total Nacional”).
+
+- Comunidades.y.Ciudades.Autónomas: variable categórica que representa las comunidades o ciudades autónomas de España.
+
+- Provincias: variable categórica que muestra la provincia asociada.
+
+- Viajeros.y.pernoctaciones: variable categórica. Indica el tipo de registro (viajeros o pernoctaciones).
+
+- Residencia..Nivel.1: variable categórica redundante que contiene el valor “Total” en todas sus observaciones. 
+
+- Residencia..Nivel.2: variable categórica que indica el origen de los viajeros, diferenciando entre residentes en España y residentes en el extranjero.
+
+- Periodo: variable tipo fecha que representa el año y mes de la observación.
+
+- Total: valor numérico de viajeros o pernoctaciones expresado en millones.
+
+Las variables Totales.Territoriales, Viajeros.y.pernoctaciones, Residencia..Nivel.1 y Residencia..Nivel.2, no aportan información relevante y se eliminan en fases posteriores.
+
+A continuación, se utilizó la función `glimpse()` del paquete `dplyr` para obtener una vista general del dataset, comprobando que todas las columnas se importaron como tipo carácter y que será necesario ajustar sus tipos en etapas posteriores.
+
+```{r}
+df_Turismo %>% glimpse()
+```
+Gracias a esto, se observa que todas las columnas se importaron inicialmente como tipo character. Por ello, en la fase de preparación se realizará la conversión a tipos de datos adecuados (fechas, factores y numéricos) para facilitar el análisis estadístico y gráfico.
+
+Para asegurar la correcta manipulación numérica, se eliminaron los puntos utilizados como separadores de miles en la columna Total.
+
+```{r}
+df_Turismo <- df_Turismo %>% mutate(Total = str_replace_all(Total, "\\.", ""))
+```
+
+Posteriormente, se aplicó `sapply()` junto con `unique()` para revisar los valores de cada variable y detectar posibles inconsistencias.
+
+```{r}
+sapply(df_Turismo, function(x) length(unique(x)))
+```
+
+Se identificaron varias incidencias: la columna Totales.Territoriales presentaba un único valor (“Total nacional”), y Comunidades.y.Ciudades.Autónomas incluía 20 categorías en lugar de 19, debido a registros vacíos o duplicados.
+
+```{r}
+print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
+```
+Además, se observó que la variable CCAA presentaba registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente. Estos valores se eliminarán en la fase de limpieza del dataset.
+
+El siguiente paso fue eliminar las filas y columnas redundantes, así como los valores en blanco, manteniendo únicamente la información agregada por comunidades autónomas. 
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  select(-Totales.Territoriales) %>%
+  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "") %>% 
+  arrange(Comunidades.y.Ciudades.Autónomas, Provincias, Periodo)
+```
+
+Posteriormente, con el fin de facilitar la interpretación y el análisis comparativo, se optó por trabajar con los datos agregados a nivel de comunidades y ciudades autónomas. Este enfoque proporciona una visión más general del comportamiento del turismo en España, adecuada para su posterior comparación con la ocupación en el sector servicios.
+
+En consecuencia, se eliminaron las variables no relevantes para este nivel de análisis (Provincias, Viajeros.y.pernoctaciones, Residencia..Nivel.1 y Residencia..Nivel.2).
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  select(-c(Provincias,Viajeros.y.pernoctaciones,
+            Residencia..Nivel.1,
+            Residencia..Nivel.2))
+```
+
+Dado que todas las variables se importaron inicialmente como texto, fue necesario convertir Periodo al formato de fecha. Para ello, se sustituyó el carácter “M” por un guion y se aplicó la función ym() para reconocer correctamente el año y el mes.
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  mutate(Periodo = str_replace(Periodo, "M", "-"), 
+    Periodo = ym(Periodo))
+```
+
+Además, la variable Total se convirtió a tipo numérico para permitir la realización de cálculos y análisis estadísticos sin errores de formato.
+
+```{r}
+df_Turismo <- df_Turismo %>% 
+  mutate(Total=as.numeric(Total))
+```
+
+Antes de convertir la variable Comunidades.y.Ciudades.Autónomas a tipo factor, se limpiaron y estandarizaron sus valores eliminando números, espacios y caracteres innecesarios.
+
+Finalmente, se renombró como CCAA y se definió como variable categórica tipo factor.
+
+```{r}
+df_Turismo <- df_Turismo %>% 
+  rename(CCAA = Comunidades.y.Ciudades.Autónomas) %>% 
+  mutate(
+    CCAA = str_replace(CCAA, "^[0-9]+\\s+", ""),
+    CCAA = str_replace(CCAA,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
+    CCAA = str_squish(CCAA)
+  ) %>%
+  mutate(CCAA = as.factor(CCAA))
+```
+
+Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
+
+```{r}
+df_Turismo <- df_Turismo %>%
+  group_by(CCAA, Periodo) %>% 
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+```
+
+Tras la limpieza, se comprobó la ausencia de espacios en blanco y valores faltantes (NA) para asegurar la integridad del conjunto de datos. Al no detectarse incidencias, el dataset quedó listo para el análisis y se guardó en formato RData.
+
+```{r, echo=FALSE}
+#Huecos en blanco
+sum(df_Turismo == "", na.rm = TRUE)
+colSums(df_Turismo == "", na.rm = TRUE)
+
+#NA
+anyNA(df_Turismo)
+colSums(is.na(df_Turismo))
+```
+
+### ANÁLISIS UNIVARIANTE
+
+Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos mediante la función summary(), con el fin de obtener una visión general de las variables del conjunto de datos.
+
+```{r}
+summary(df_Turismo)
+```
+El resumen estadístico muestra que todas las comunidades autónomas tienen el mismo número de observaciones, con registros trimestrales entre 1999 y 2025. La variable Total presenta un mínimo de 0 (probablemente asociado a la pandemia), una media de 6,27 millones y un máximo de 54 millones, reflejando una notable variabilidad entre regiones y periodos.
+
+Dado que la función `summary()` ofrece información limitada para variables categóricas, se amplió el análisis calculando los principales estadísticos descriptivos de Total por comunidad autónoma. Este enfoque permite comparar la magnitud y variabilidad del turismo entre regiones, antes de profundizar en las relaciones en el análisis bivariante.
+
+```{r}
+df_Turismo %>%
+  group_by(CCAA) %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  ) %>%
+  arrange(desc(media)) %>% 
+  print()
+```
+
+Los resultados muestran que Cataluña presenta la media más alta en el número de turistas, lo que refleja su consolidación como uno de los principales destinos turísticos del país. Le siguen Baleares, Canarias y Andalucía, todas ellas comunidades con una fuerte especialización en el sector turístico.
+
+En el extremo opuesto, Melilla, Ceuta, La Rioja y Navarra registran las medias más bajas, lo que podría deberse a su menor capacidad de atracción turística o a un peso económico menos centrado en este sector.
+
+Para obtener una visión general del comportamiento del turismo en el conjunto del país, se calcularon los principales estadísticos descriptivos del Total Nacional, agregando los valores de todas las comunidades por periodo.
+
+```{r}
+nacional_mensual <- df_Turismo %>%
+  group_by(Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+nacional_mensual %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    varianza = var(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  )
+```
+
+Los resultados agregados a nivel nacional muestran una media de aproximadamente 119 millones de turistas por periodo y una mediana cercana a 112 millones, lo que indica una distribución relativamente equilibrada aunque con cierta asimetría hacia los valores altos.
+
+La desviación típica, de unos 52 millones, junto con una varianza elevada, refleja una alta variabilidad en el volumen de turismo entre periodos.
+
+El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mientras que el máximo (247,9 millones) evidencia los picos alcanzados en los años de mayor actividad turística.
+
+### REPRESENTACIÓN GRÁFICA
+
+Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
+
+```{r}
+ggplot(nacional_mensual, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+  labs(title = "Serie temporal de viajeros por mes",
+       x = "Periodo", y = "Total") +
+  theme_minimal()
+```
+
+La gráfica muestra una tendencia general al alza con una clara estacionalidad anual, marcada por picos recurrentes en los meses de mayor actividad turística. También se identifican valores atípicos durante el periodo de la pandemia de la COVID-19, que reflejan la brusca caída del sector en esos años.
+
+## OCUPACIÓN
+
+### ANÁLISIS UNIVARIANTE
+
+
+## ANÁLISIS BIVARIANTE
+
+# CONCLUSIONES
+
+# ANEXOS
