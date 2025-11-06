@@ -300,102 +300,156 @@ En el siguiente apartado, se procederá a detectar de forma más formal estos va
 ## DETECCIÓN DE OUTLIERS
 
 ```{r Regla 3 Sigma}
-Sigma3 <- function(x){
-  return(abs(x - mean(x)) > 3*sd(x))
+Sigma3_est <- function(x, k = 3) {
+  media <- mean(x, na.rm = TRUE)
+  desv <- sd(x, na.rm = TRUE)
+  abs(x - media) > k * desv
+}
+```
+
+```{r}
+outliers_sigma3_est <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
+  group_by(CCAA, Mes) %>%
+  mutate(
+    es_outlier_sigma3 = Sigma3_est(Total)
+  ) %>%
+  ungroup()
+```
+
+```{r}
+ccaa_lista <- unique(outliers_sigma3_est$CCAA)
+
+for (cc in ccaa_lista) {
+  p <- outliers_sigma3_est %>%
+    filter(CCAA == cc) %>%
+    ggplot(aes(Periodo, Total)) +
+    geom_line(color = "grey70") +
+    geom_point(aes(color = es_outlier_sigma3)) +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+    labs(
+      title = paste("Detección estacional de outliers (3σ) -", cc),
+      x = "Periodo", 
+      y = "Total", 
+      color = "Outlier"
+    ) +
+    theme_minimal()
+  
+  print(p)
 }
 ```
 
 
 ```{r Regla Hampel}
-Hampel <- function(x){
-  MADM <- 1.4826 * (median(abs(x - median(x))))
-  return(x > 3*MADM)
+Hampel_est <- function(x, k = 3) {
+  med <- median(x, na.rm = TRUE)
+  MADM <- 1.4826 * median(abs(x - med), na.rm = TRUE)
+  abs(x - med) > k * MADM
 }
 ```
 
+```{r}
+outliers_hampel_est <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%
+  group_by(CCAA, Mes) %>% 
+  mutate(
+    es_outlier_hampel = Hampel_est(Total)
+  ) %>%
+  ungroup()
+```
 
-```{r Regla Percentil}
-Percentil_1090 <- function(x){
-  q10 <- quantile(x, probs=0.1)
-  q90 <- quantile(x, probs=0.9)
-  return((x < q10) & (x > q90))
+
+```{r}
+ccaa_lista <- unique(outliers_hampel_est$CCAA)
+
+for (cc in ccaa_lista) {
+  p <- outliers_hampel_est %>%
+    filter(CCAA == cc) %>%
+    ggplot(aes(Periodo, Total)) +
+    geom_line(color = "grey70") +
+    geom_point(aes(color = es_outlier_hampel)) +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+    labs(
+      title = paste("Detección estacional de outliers (Hampel) -", cc),
+      x = "Periodo", y = "Total", color = "Outlier"
+    ) +
+    theme_minimal()
+  
+  print(p)
 }
 ```
 
 
 ```{r Regla boxplot}
-Boxplot <- function(x){
-  inf <- median(x) - IQR(x)
-  sup <- median(x) + IQR(x)
-  return((x < inf) | (x > sup))
+Boxplot_est <- function(x, k = 1.5) {
+  Q1 <- quantile(x, 0.25, na.rm = TRUE)
+  Q3 <- quantile(x, 0.75, na.rm = TRUE)
+  IQR_value <- Q3 - Q1
+  inf <- Q1 - k * IQR_value
+  sup <- Q3 + k * IQR_value
+  (x < inf) | (x > sup)
 }
 ```
 
 ```{r}
-ca_mensual <- df_Turismo %>%
-  group_by(CCAA, Periodo) %>%
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop") %>%
-  mutate(Mes = month(Periodo, label = TRUE, abbr = TRUE))
-
-outliers_estacionales <- ca_mensual %>%
+outliers_boxplot_est <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%  # crea la columna Mes
   group_by(CCAA, Mes) %>%
   mutate(
-    media_mes = mean(Total, na.rm = TRUE),
-    sd_mes = sd(Total, na.rm = TRUE),
-    upLim_mes = media_mes + 3 * sd_mes,
-    lowLim_mes = media_mes - 3 * sd_mes,
-    es_outlier = ifelse(Total < lowLim_mes | Total > upLim_mes, TRUE, FALSE)
+    es_outlier_boxplot = Boxplot_est(Total)
   ) %>%
   ungroup()
-
-resumen_out_estacional <- outliers_estacionales %>%
-  group_by(CCAA) %>%
-  summarise(
-    n_outliers = sum(es_outlier, na.rm = TRUE),
-    prop_outliers = mean(es_outlier, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(n_outliers))
-
-resumen_out_estacional
-
 ```
-
-Se observa que las comunidades con mayor número de outliers son Castilla-La Mancha, Comunitat Valenciana y La Rioja, con entre 10 y 11 observaciones atípicas cada una. En general, estas comunidades presentan una mayor variabilidad mensual, lo que puede estar asociado a fluctuaciones puntuales en el turismo o a posibles registros anómalos en los datos.
-
-En el extremo opuesto, comunidades como Canarias, Comunidad de Madrid, País Vasco y Navarra no presentan valores atípicos detectables bajo este método, lo que indica una mayor estabilidad temporal en sus series turísticas.
-
-En términos relativos, la proporción de outliers es reducida en todos los casos (inferior al 4%), lo que sugiere que el conjunto de datos es coherente y sin grandes anomalías, más allá de los valores excepcionales ya identificados durante la pandemia de la COVID-19.
-
-A modo de ejemplo, se representa gráficamente la detección de valores atípicos en el caso de Illes Balears, una comunidad que presenta una alta dispersión entre meses y permite comprobar la correcta aplicación del método 3σ estacional, y en la Comunitat Valenciana, una de las regiones con mayor número de outliers.
-
-En ambos casos, se observa que la gran mayoría de los valores atípicos corresponden al periodo de la pandemia de la COVID-19, lo que confirma las anomalías ya detectadas previamente en la serie temporal nacional y autonómica.
 
 ```{r}
-outliers_estacionales %>%
-  filter(CCAA == "Illes Balears") %>%
-  ggplot(aes(Periodo, Total)) +
-  geom_line(color = "grey60") +
-  geom_point(aes(color = es_outlier), size = 1.5) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  labs(
-    title = "Detección de valores atípicos estacionales (3σ) - Islas Baleares",
-    x = "Periodo", y = "Total", color = "Outlier"
-  ) +
-  theme_minimal()
+ccaa_lista <- unique(outliers_boxplot_est$CCAA)
 
-outliers_estacionales %>%
-  filter(CCAA == "Comunitat Valenciana") %>%
-  ggplot(aes(Periodo, Total)) +
-  geom_line(color = "grey60") +
-  geom_point(aes(color = es_outlier), size = 1.5) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  labs(
-    title = "Detección de valores atípicos estacionales (3σ) - Comunidad Valenciana",
-    x = "Periodo", y = "Total", color = "Outlier"
-  ) +
-  theme_minimal()
+
+for (cc in ccaa_lista) {
+  p <- outliers_boxplot_est %>%
+    filter(CCAA == cc) %>%
+    ggplot(aes(Periodo, Total)) +
+    geom_line(color = "grey70") +
+    geom_point(aes(color = es_outlier_boxplot)) +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+    labs(
+      title = paste("Detección outliers (Boxplot) -", cc),
+      x = "Periodo", y = "Total", color = "Outlier"
+    ) +
+    theme_minimal()
+  
+  print(p)
+}
 ```
+
+```{r}
+df_outliers <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
+  group_by(CCAA, Mes) %>%
+  mutate(
+    out_hampel  = Hampel_est(Total),
+    out_boxplot = Boxplot_est(Total),
+    out_sigma3  = Sigma3_est(Total)
+  ) %>%
+  ungroup()
+```
+
+
+```{r}
+tabla_outliers_ccaa <- df_outliers %>%
+  group_by(CCAA) %>%
+  summarise(
+    n_hampel  = sum(out_hampel,  na.rm = TRUE),
+    n_boxplot = sum(out_boxplot, na.rm = TRUE),
+    n_sigma3  = sum(out_sigma3,  na.rm = TRUE)
+  ) %>%
+  arrange(desc(n_hampel))
+
+tabla_outliers_ccaa
+```
+
+
+
 
 # IMPUTACIÓN DE OUTLIERS
 
@@ -668,6 +722,7 @@ df_Turismo_Ocupacion <- merge(
 Una vez arreglada la base de datos, la guardamos en un fichero Rdata
 ```{r}
 save(df_Turismo_Ocupacion, file='Data/df_Turismo_Ocupacion.RData')
+save(df_Turismo, file='Data/df_Turismo_clean_mensual.RData')
 ```
 
 Ahora vamos a hacer un grafico de dispersion que relacione las variables del nuevo data frame Turismo-NOcupados.
