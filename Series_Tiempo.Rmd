@@ -51,7 +51,6 @@ Cocientes <- function(serie){
   return(serie[2:length(serie)] / serie[1:(length(serie) - 1)])
 }
 CV <- function(serie){
-  stopifnot(is.ts(serie))
   return(sd(serie, na.rm=T) / mean(serie, na.rm=T))
 }
 
@@ -84,6 +83,25 @@ Analisis_Clasico <- function(Serie){
 }
 ```
 
+```{r Prediccion medelo clásico}
+# Serie: es el tramo de la serie con el que se entrenará el modelo
+# Serie
+PrediccionHW <- function(Serie, Serie_test, H, tipo){
+  if (tipo == "Aditivo"){
+    Modelo <- HoltWinters(Serie, seasonal = "additive")
+  }else if (tipo == "Multiplicativo"){
+    Modelo <- HoltWinters(Serie, seasonal = "multiplicative")
+  }
+  pred <- predict(Serie_Suavizada_Add, n.ahead=12)
+  ts.plot(Serie_test, 
+          pred, 
+          lty=1:2,  
+          xlab="Tiempo", 
+          title="Modelo")
+}
+```
+
+
 Haremos una función para conocer los errores de los modelos
 
 ```{r Errores}
@@ -100,31 +118,37 @@ También es necesario hacer predicciones y ver la calidad de estas. La idea es h
 
 ```{r Predicciones}
 # Serie: es la serie que se usará para entrenar el modelo
-# Serie_completa: es la serie completa
-# H: es el número de periodos en el futuro que se pued
-Prediccion <- function(Serie, Serie_Completa, H){
+# Serie_test: es la serie queremos predecir
+# H: es el número de periodos en el futuro que se va a predecir, debe pasar que Serie_test, tenga longitud H
+
+Prediccion <- function(Serie, Serie_test, H){
+  browser()
   Modelo <- auto.arima(Serie, stepwise=FALSE, approximation=FALSE)
   pred <- forecast(Modelo, h=H)
   
+  # Un dataframe con la predicción
   df_forecast <- data.frame(
-  tiempo = as.numeric(time(pred$mean)),
-  valor = as.numeric(pred$mean),
-  tipo = "Prediccion")
+    tiempo = as.numeric(time(pred$mean)),
+    valor = as.numeric(pred$mean),
+    tipo = "Prediccion")
   
+  # Un dataframe con los datos originales del periodo que vamos a predecir
   df_serie1 <- data.frame(
-  tiempo = as.numeric(time(Serie_Completa)[1:(length(Serie_Completa)-H)]),
-  valor = as.numeric(Serie_Completa[1:(length(Serie_Completa)-H)]),
-  tipo = "Serie")
+    tiempo = as.numeric(time(Serie_test)),
+    valor = as.numeric(Serie_test),
+    tipo = "Serie")
   
+  # Un dataframe con la serie que se ha usado para entrenar
   df_serie2 <- data.frame(
-  tiempo = as.numeric(time(Serie_Completa)[(length(Serie_Completa)-H):length(Serie_Completa)]),
-  valor = as.numeric(Serie_Completa[(length(Serie_Completa)-H):length(Serie_Completa)]),
-  tipo = "Serie")
+    tiempo = as.numeric(time(Serie)),
+    valor = as.numeric(Serie),
+    tipo = "Serie")
   
+  # dataframe con los datos ajustados por el modelo
   df_ajuste <- data.frame(
-  tiempo = as.numeric(time(Serie)),
-  valor = as.numeric(Serie - residuals(Modelo)),
-  tipo = "Ajuste")
+    tiempo = as.numeric(time(Serie)),
+    valor = as.numeric(Serie - residuals(Modelo)),
+    tipo = "Ajuste")
   
   df1 <- bind_rows(df_serie1, df_ajuste)
   df2 <- bind_rows(df_serie2, df_forecast)
@@ -137,11 +161,11 @@ Prediccion <- function(Serie, Serie_Completa, H){
     geom_line(size = 1) +
     labs(title = "Gráfica de predicción")
   
-  return(list(Prediccion=pred, 
-              Grafica_Ajuste=grafica_Ajuste, 
-              Grafica_Predic=grafica_Prediccion,
-              errores_predic=Errores(Serie_Completa[(length(Serie_Completa)-H):length(Serie_Completa)], pred$mean),
-              errores_ajuste=Errores(Serie, Serie - residuals(Modelo))))
+  return(list(Prediccion = pred, 
+              Grafica_Ajuste = grafica_Ajuste, 
+              Grafica_Predic = grafica_Prediccion,
+              errores_predic = Errores(Serie_test, pred$mean),
+              errores_ajuste = Errores(Serie, Serie - residuals(Modelo)) ))
 }
 ```
 
@@ -180,4 +204,41 @@ ts.plot(Series[[1]])
 
 Dado que nuestro objetivo es ver si los datos del periodo correspondiente a la vigencia de la pandemia se pueden eliminar o no, vamos a crear una subserie para cada comunidad que abarque desde el inicio de los datos hasta el inicio del confinamiento en España.
 
-Esa fecha es el 14 del mes de marzo de 2020, como se produce amitad
+Esa fecha es el 14 del mes de marzo de 2020, como se produce mitas, así que lo que haremos es tomar el periodo desde el inicio de los registros, hasta febrero de 2020.
+
+```{r Seleccion periodo prepandemia}
+PrePandemia <- lapply(Series, function(x) window(x, start=start(x),end=c(2020, 2)))
+PostPandemia <- lapply(Series, function(x) window(x, start=start(x),end=c(2020, 2)))
+```
+
+Ahora hacemos el análisis con las funciones que hemos definido antes. 
+
+```{r Recorte}
+Recorte <- function(serie, fechaIni=c(2022,2), fechaFin=c(2023, 2)){
+  serie_nueva <- ts(serie, start=fechaIni, end=fechaFin, frequency = 12)
+}
+ 
+PostPandemia <- lapply(Series, Recorte)
+```
+
+```{r}
+Prediccion(PrePandemia[[1]], PostPandemia[[1]], 12)
+PrePandemia[[1]]
+PostPandemia[[1]]
+```
+
+
+```{r Recorte}
+AnalisisBox <- mapply(Prediccion, PrePandemia, PostPandemia, rep(12,10))
+system.time(mapply(Prediccion, PrePandemia, PostPandemia, rep(12,10)))
+AnalisisClasic <- lapply(PrePandemia, Analisis_Clasico)
+```
+
+```{r}
+HacerPrediccion <- function(Serie, Serie_test, Analisis){
+  return(PrediccionHW(Serie, Serie_test, 12, Analisis["type"]))
+}
+
+Prediccion <- mapply(HacerPrediccion, PrePandemia, PostPandemia, AnalisisClasic)
+```
+
