@@ -40,17 +40,6 @@ Convertir_en_Serie <- function(vector, Anio_Inicio, Mes_Inicio, Anio_Final, Mes_
 }
 ```
 
-```{r Gráficos}
-Nombre_graf <- "Seasonal plot: número de pasajeros en aeorpuerto Valencia"
-Nombre_eje <- "Num Pasajeros"
-
-ggseasonplot(Seriea, 
-             year.labels=T, 
-             year.labels.left=F,
-             ylab = Nombre_eje,
-             main = Nombre_graf)
-```
-
 
 ### Análisis clásico
 
@@ -105,9 +94,14 @@ Errores <- function(Serie, Predic){
 }
 ```
 
+### Análisis de Box-Jenkins
+
 También es necesario hacer predicciones y ver la calidad de estas. La idea es hacer un ARIMA.
 
 ```{r Predicciones}
+# Serie: es la serie que se usará para entrenar el modelo
+# Serie_completa: es la serie completa
+# H: es el número de periodos en el futuro que se pued
 Prediccion <- function(Serie, Serie_Completa, H){
   Modelo <- auto.arima(Serie, stepwise=FALSE, approximation=FALSE)
   pred <- forecast(Modelo, h=H)
@@ -145,10 +139,45 @@ Prediccion <- function(Serie, Serie_Completa, H){
   
   return(list(Prediccion=pred, 
               Grafica_Ajuste=grafica_Ajuste, 
-              Grafica_Predic=grafica_Prediccion))
+              Grafica_Predic=grafica_Prediccion,
+              errores_predic=Errores(Serie_Completa[(length(Serie_Completa)-H):length(Serie_Completa)], pred$mean),
+              errores_ajuste=Errores(Serie, Serie - residuals(Modelo))))
 }
 ```
 
+## Importación de los datos
 
+```{r Importación}
+load("Data/df_Turismo_clean_mensual.RData")
+```
 
-### Análisis de Box-Jenkins
+## Creación serie de tiempo
+
+```{r Creación series temporales}
+Creacion <- function(comunidad){
+  return(Convertir_en_Serie(df_Turismo[df_Turismo$CCAA == comunidad,]$Total, 1999, 1, 2025, 9, 12))
+}
+Series <- lapply(levels(df_Turismo$CCAA), Creacion)
+names(Series) <- levels(df_Turismo$CCAA)
+```
+
+Ahora vamos a hacer gráficos para cada comunidad autónoma.
+
+```{r Gráficos estacionales}
+Graficos_Estacionales <- mapply(function (x, nombre) {ggseasonplot(x, 
+             year.labels=T, 
+             year.labels.left=F,
+             ylab = "Turismo",
+             main =paste("Ocupación en", nombre, sep=" "))},
+       Series,
+       names(Series))
+
+Graficos_Estacionales
+ts.plot(Series[[1]])
+```
+
+## Análisis de la serie
+
+Dado que nuestro objetivo es ver si los datos del periodo correspondiente a la vigencia de la pandemia se pueden eliminar o no, vamos a crear una subserie para cada comunidad que abarque desde el inicio de los datos hasta el inicio del confinamiento en España.
+
+Esa fecha es el 14 del mes de marzo de 2020, como se produce amitad
