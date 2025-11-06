@@ -46,7 +46,7 @@ guess_encoding(url_ocupacion)
 
 Tras ver los resultados, lo mejor es usar la codificación UTF-8.
 
-Finalmente, los datos se han importado utilizando la función read_csv(), creando dos dataframes principales:
+Finalmente, los datos se han importado utilizando la función `read_csv()`, creando dos dataframes principales:
 
 ```{r Importación}
 df_Turismo <- read.csv(url_turismo,
@@ -98,7 +98,7 @@ df_Turismo %>% glimpse()
 La columna Total presenta puntos como separadores de miles, por lo que, para garantizar cálculos correctos, se eliminaron.
 
 ```{r}
-df_Turismo <- mutate(df_Turismo, Total = str_replace_all(Total, "\\.", ""))
+df_Turismo <- df_Turismo %>% mutate(Total = str_replace_all(Total, "\\.", ""))
 ```
 
 Con el objetivo de revisar el contenido de cada variable y detectar posibles inconsistencias, se aplicó la función `sapply()` combinada con `unique()` al dataframe del turismo.
@@ -134,7 +134,8 @@ Además, se eliminó la columna Totales.Territoriales y aquellas filas que conte
 ```{r}
 df_Turismo <- df_Turismo %>%
   select(-Totales.Territoriales) %>%
-  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "")
+  filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "") %>% 
+  arrange(Comunidades.y.Ciudades.Autónomas, Provincias, Periodo)
 ```
 
 Para simplificar el análisis y la interpretación gráfica, se decidió agrupar la información a nivel de comunidades y ciudades autónomas.
@@ -146,7 +147,7 @@ df_Turismo <- df_Turismo %>%
   select(-c(Provincias,Viajeros.y.pernoctaciones,Residencia..Nivel.1,Residencia..Nivel.2))
 ```
 
-Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función ym(), tras reemplazar el carácter “M” por un guion con str_replace().
+Como se observó en la exploración inicial, todas las columnas se habían importado como tipo carácter, por lo que, para facilitar el análisis temporal, se modificó el tipo de dato de la variable Periodo, convirtiéndola a formato fecha mediante la función `ym()`, tras reemplazar el carácter “M” por un guion con `str_replace()`.
 
 ```{r}
 df_Turismo <- df_Turismo %>%
@@ -297,6 +298,38 @@ Finalmente, en todas las comunidades se detecta un descenso abrupto en 2020, cor
 En el siguiente apartado, se procederá a detectar de forma más formal estos valores atípicos, aplicando el método de detección 3σ de forma estacional (por mes y comunidad autónoma), lo que permite identificar anomalías reales sin confundir los picos de temporada alta o baja con valores atípicos.
 
 ## DETECCIÓN DE OUTLIERS
+
+```{r Regla 3 Sigma}
+Sigma3 <- function(x){
+  return(abs(x - mean(x)) > 3*sd(x))
+}
+```
+
+
+```{r Regla Hampel}
+Hampel <- function(x){
+  MADM <- 1.4826 * (median(abs(x - median(x))))
+  return(x > 3*MADM)
+}
+```
+
+
+```{r Regla Percentil}
+Percentil_1090 <- function(x){
+  q10 <- quantile(x, probs=0.1)
+  q90 <- quantile(x, probs=0.9)
+  return((x < q10) & (x > q90))
+}
+```
+
+
+```{r Regla boxplot}
+Boxplot <- function(x){
+  inf <- median(x) - IQR(x)
+  sup <- median(x) + IQR(x)
+  return((x < inf) | (x > sup))
+}
+```
 
 ```{r}
 ca_mensual <- df_Turismo %>%
