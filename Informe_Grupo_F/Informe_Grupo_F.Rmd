@@ -336,10 +336,10 @@ anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
 
-Al no detectarse incidencias, el dataset quedó listo para el análisis y se guardó en formato RData.
+Al no detectarse incidencias, el dataset quedó listo para el análisis y se guardó en formato RData.#TODO ARREGLAR ERROR
 
 ```{r}
-save(df_Turismo, file='Data/df_Turismo.RData')
+#save(df_Turismo, file='Data/df_Turismo.RData')
 ```
 
 ## ANÁLISIS UNIVARIANTE
