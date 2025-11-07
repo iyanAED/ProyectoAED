@@ -675,6 +675,8 @@ En el resto de comunidades, las correlaciones son positivas pero de baja magnitu
 
 Cabe recordar que la correlación no implica causalidad, por lo que estos resultados reflejan asociación, pero no necesariamente una relación causa-efecto.
 
+##TODO METER LOS MAPAS Y EXPLICARLO Mas bien, meter el del año 2024 y explicarlo. También estaría bien meter algo más de bivariante
+
 # CONCLUSIONES
 
 # ANEXOS
