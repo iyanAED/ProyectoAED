@@ -116,7 +116,7 @@ ggplot(nuts2) + geom_sf()
 
 
 ```{r Importación de los datos y unión de los dataframe}
-load("df_Turismo_clean_mensual.RData")
+load("Data/df_Turismo_clean_mensual.RData")
 
 
 # nuts2_datos <- nuts %>% left_join(df_Turismo, by = c("CCAA"))
@@ -140,5 +140,22 @@ Creacion_Mapa <- function(df){
   return(ggplot(df) + geom_sf(aes(fill = Total)) + labs(title=titulo))
 }
 ListaMapas <- lapply(Lista2, Creacion_Mapa)
+```
+
+```{r Mapas por años}
+df_total <- df_Turismo %>%  group_by(Anio, CCAA) %>% summarise(DatoAnual=sum(Total))
+Lista3 <- lapply(df_total %>% group_by(Anio) %>% group_split(), as.data.frame)
+Lista4 <- lapply(Lista3, function(x) left_join(nuts2, x, by=c("NAME_LATN" = "CCAA")))
+
+Creacion_Mapa2 <- function(df){
+  titulo <- paste("Datos de turismo de", df$Anio, sep=" ")
+  return(ggplot(df) + geom_sf(aes(fill = DatoAnual)) + labs(title=titulo))
+}
+
+ListaMapasAnio <- lapply(Lista4, Creacion_Mapa2)
+```
+
+```{r}
+
 ```
 
