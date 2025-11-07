@@ -160,7 +160,7 @@ El turismo constituye uno de los principales motores económicos de España, apo
 
 En los últimos años, la evolución del turismo español ha experimentado variaciones notables, especialmente durante el periodo marcado por la pandemia de la COVID-19, que provocó una caída sin precedentes en los flujos de viajeros y en los niveles de ocupación del sector servicios. A partir de 2021, el proceso de recuperación ha sido desigual entre las comunidades autónomas, lo que hace necesario un análisis detallado que permita comprender las tendencias y relaciones entre las distintas variables implicadas.
 
-En este contexto, el presente trabajo realiza un análisis exploratorio a partir de datos oficiales del Instituto Nacional de Estadística (INE), con el objetivo de examinar la evolución del turismo y su relación con la ocupación en el sector servicios. Este enfoque permite no solo identificar patrones y correlaciones, sino también detectar posibles valores atípicos derivados de eventos excepcionales, como la crisis sanitaria, que pueden distorsionar la interpretación de los resultados.
+En este contexto, el presente trabajo realiza un análisis exploratorio a partir de datos oficiales del **Instituto Nacional de Estadística (INE)**, con el objetivo de examinar la evolución del turismo y su relación con la ocupación en el sector servicios. Este enfoque permite no solo identificar patrones y correlaciones, sino también detectar posibles valores atípicos derivados de eventos excepcionales, como la crisis sanitaria, que pueden distorsionar la interpretación de los resultados.
 
 ## DESCRIPCIÓN DE LOS DATOS
 
@@ -172,7 +172,7 @@ La segunda base de datos corresponde al sector servicios, concretamente a la ocu
 
 ## CUESTIONES A TRATAR
 
-En este estudio se abordan tres cuestiones principales:
+En este estudio se abordan **tres** cuestiones principales:
 
 1. ¿Cómo tratar los valores atípicos (outliers) asociados al periodo de la pandemia de la COVID-19 (2019-2021)?
 
@@ -189,7 +189,7 @@ url_ocupacion<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
 url_turismo<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
 ```
 
-Antes de la carga definitiva, se comprobó la codificación de los archivos para evitar errores de lectura, optando por el formato UTF-8.
+Antes de la carga definitiva, se comprobó la codificación de los archivos para evitar errores de lectura, optando por el formato **UTF-8**.
 
 ```{r Codificación de los archivos, include=FALSE}
 guess_encoding(url_turismo)
@@ -228,21 +228,21 @@ En un inicio, este dataset se forma de 134.820 filas y 8 columnas, cuyo nombre r
 
 Las variables incluidas son:
 
-- Totales.Territoriales: columna con un único valor (“Total Nacional”).
+- **Totales.Territoriales**: columna con un único valor (“Total Nacional”).
 
-- Comunidades.y.Ciudades.Autónomas: variable categórica que representa las comunidades o ciudades autónomas de España.
+- **Comunidades.y.Ciudades.Autónomas**: variable categórica que representa las comunidades o ciudades autónomas de España.
 
-- Provincias: variable categórica que muestra la provincia asociada.
+- **Provincias**: variable categórica que muestra la provincia asociada.
 
-- Viajeros.y.pernoctaciones: variable categórica. Indica el tipo de registro (viajeros o pernoctaciones).
+- **Viajeros.y.pernoctaciones**: variable categórica. Indica el tipo de registro (viajeros o pernoctaciones).
 
-- Residencia..Nivel.1: variable categórica redundante que contiene el valor “Total” en todas sus observaciones. 
+- **Residencia..Nivel.1**: variable categórica redundante que contiene el valor “Total” en todas sus observaciones. 
 
-- Residencia..Nivel.2: variable categórica que indica el origen de los viajeros, diferenciando entre residentes en España y residentes en el extranjero.
+- **Residencia..Nivel.2**: variable categórica que indica el origen de los viajeros, diferenciando entre residentes en España y residentes en el extranjero.
 
-- Periodo: variable tipo fecha que representa el año y mes de la observación.
+- **Periodo**: variable tipo fecha que representa el año y mes de la observación.
 
-- Total: valor numérico de viajeros o pernoctaciones expresado en millones.
+- **Total**: valor numérico de viajeros o pernoctaciones expresado en millones.
 
 Las variables Totales.Territoriales, Viajeros.y.pernoctaciones, Residencia..Nivel.1 y Residencia..Nivel.2, no aportan información relevante y se eliminan en fases posteriores.
 
@@ -266,7 +266,7 @@ Posteriormente, se aplicó `sapply()` junto con `unique()` para revisar los valo
 sapply(df_Turismo, function(x) length(unique(x)))
 ```
 
-Se identificaron varias incidencias: la columna Totales.Territoriales presentaba un único valor (“Total nacional”), y Comunidades.y.Ciudades.Autónomas incluía 20 categorías en lugar de 19, debido a registros vacíos o duplicados.
+Se identificaron varias **incidencias**: la columna Totales.Territoriales presentaba un único valor (“Total nacional”), y Comunidades.y.Ciudades.Autónomas incluía 20 categorías en lugar de 19, debido a registros vacíos o duplicados.
 
 ```{r}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
@@ -344,9 +344,13 @@ anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
 
+### Detección de *outliers*
+
+
+
 ### Análisis
 
-Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos mediante la función summary(), con el fin de obtener una visión general de las variables del conjunto de datos.
+Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos.
 
 ```{r}
 summary(df_Turismo)
@@ -364,6 +368,7 @@ df_Turismo %>%
     sd = sd(Total, na.rm = TRUE),
     min = min(Total, na.rm = TRUE),
     max = max(Total, na.rm = TRUE),
+    IQR=IQR(Total, na.rm=TRUE),
     N = n()
   ) %>%
   arrange(desc(media)) %>% 
@@ -449,15 +454,15 @@ El dataset está compuesto por 21.300 observaciones (filas) y 5 variables (colum
 
 Las variables incluidas son:
 
-- Sexo. Variable categórica que presenta el valor “mujer”, “hombre” y “ambos sexos”.
+- **Sexo**. Variable categórica que presenta el valor “mujer”, “hombre” y “ambos sexos”.
 
-- Comunidades.y.Ciudades.Autónomas. Variable categórica que incluye las comunidades Españolas y el total nacional.
+- **Comunidades.y.Ciudades.Autónomas**. Variable categórica que incluye las comunidades Españolas y el total nacional.
 
-- Sector.económico. Variable categórica que clasifica la actividad económica en agricultura, industria, construcción o servicios. 
+- **Sector.económico**. Variable categórica que clasifica la actividad económica en agricultura, industria, construcción o servicios. 
 
-- Periodo. Variable tipo fecha que muestra el año y trimestre.
+- **Periodo**. Variable tipo fecha que muestra el año y trimestre.
 
-- Total. Variable numérica que muestra las personas ocupadas (en miles).
+- **Total**. Variable numérica que muestra las personas ocupadas (en miles).
 
 Como primer paso, se utilizó la función `glimpse()` para revisar la estructura del dataset. Se comprobó que todas las columnas se importaron como tipo carácter, por lo que será necesario ajustar los tipos de datos en los siguientes pasos.
 
@@ -552,37 +557,6 @@ ggplot(ocup_ccaa, aes(Periodo, Total)) +
 ```
 
 Se observa una tendencia al alza más pronunciada en comunidades como Andalucía, Canarias, Madrid y Cataluña, principales motores del sector servicios. Destaca una fuerte estacionalidad en Illes Balears, asociada a la actividad turística, mientras que en la mayoría de regiones la evolución es más estable y con un crecimiento moderado tras la pandemia.
-
-```{r}
-##TODO NO LO HE TOCADO NI EXPLICADO PQ TODAVIA SE ESTABA ACABANDO LO DE LOS OUTLIERS Y NO ESTABA CLARO
-
-ocup_ccaa_q <- ocup_ccaa %>%
-  mutate(Trimestre = factor(quarter(as.Date(Periodo)), levels = 1:4,
-                            labels = c("Q1","Q2","Q3","Q4")))
-
-outliers_q <- ocup_ccaa_q %>%
-  group_by(CCAA, Trimestre) %>%
-  mutate(
-    media_q = mean(Total, na.rm = TRUE),
-    sd_q    = sd(Total, na.rm = TRUE),
-    upLim_q = media_q + 3 * sd_q,
-    lowLim_q= media_q - 3 * sd_q,
-    es_outlier = Total < lowLim_q | Total > upLim_q
-  ) %>%
-  ungroup()
-
-resumen_out_q <- outliers_q %>%
-  group_by(CCAA) %>%
-  summarise(
-    n_outliers   = sum(es_outlier, na.rm = TRUE),
-    prop_outliers= mean(es_outlier, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  arrange(desc(n_outliers))
-
-resumen_out_q
-
-```
 
 
 # ANÁLISIS BIVARIANTE

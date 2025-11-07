@@ -228,7 +228,7 @@ df_Turismo %>%
     min = min(Total, na.rm = TRUE),
     max = max(Total, na.rm = TRUE),
     n = n(),
-    IQR=IQR(Total, na.rm=TRUE) ##CAMBIAR
+    IQR=IQR(Total, na.rm=TRUE)
   ) %>%
   arrange(desc(media)) %>% 
   print()
