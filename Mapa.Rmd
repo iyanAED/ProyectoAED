@@ -84,3 +84,78 @@ gg <- gg + coord_fixed(ratio = 1)
 gg
 ```
 
+```{r Usando leaflet}
+library(leaflet)
+
+# install.packages("sf")
+library(sf)
+# install.packages("dplyr")
+library(dplyr)
+library(tidyr)
+# install.packages("ggplot2")
+library(ggplot2)
+# install.packages("giscoR")
+library(giscoR)
+
+# Año
+año_ref <- 2016
+
+# Datos
+nuts2 <- gisco_get_nuts(year = año_ref,
+                        resolution = 20,
+                        nuts_level = 2,
+                        country = "ES") %>%
+         select(NUTS_ID, NAME_LATN)
+
+# names(nuts2) <- c("NUTS_ID", "CCAA", "geometry")
+
+# Mapa base
+ggplot(nuts2) + geom_sf() 
+```
+
+
+
+```{r Importación de los datos y unión de los dataframe}
+load("Data/df_Turismo_clean_mensual.RData")
+
+
+# nuts2_datos <- nuts %>% left_join(df_Turismo, by = c("CCAA"))
+
+df_Turismo <- df_Turismo %>% separate(col=Periodo, into=c("Anio", "Mes"), sep="-")
+df_Turismo$Mes <- factor(df_Turismo$Mes,
+                          labels = c("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"), 
+                          levels = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"),
+                          ordered=T)
+```
+
+
+```{r Importación de los datos y unión de los dataframe}
+Lista <- lapply(df_Turismo %>% group_by(Anio, Mes) %>% group_split(), as.data.frame)
+Lista2 <- lapply(Lista, function(x) left_join(nuts2, x, by=c("NAME_LATN" = "CCAA")))
+```
+
+```{r Creación de los mapas}
+Creacion_Mapa <- function(df){
+  titulo <- paste(df$Mes, "de", df$Anio, sep=" ")
+  return(ggplot(df) + geom_sf(aes(fill = Total)) + labs(title=titulo))
+}
+ListaMapas <- lapply(Lista2, Creacion_Mapa)
+```
+
+```{r Mapas por años}
+df_total <- df_Turismo %>%  group_by(Anio, CCAA) %>% summarise(DatoAnual=sum(Total))
+Lista3 <- lapply(df_total %>% group_by(Anio) %>% group_split(), as.data.frame)
+Lista4 <- lapply(Lista3, function(x) left_join(nuts2, x, by=c("NAME_LATN" = "CCAA")))
+
+Creacion_Mapa2 <- function(df){
+  titulo <- paste("Datos de turismo de", df$Anio, sep=" ")
+  return(ggplot(df) + geom_sf(aes(fill = DatoAnual)) + labs(title=titulo))
+}
+
+ListaMapasAnio <- lapply(Lista4, Creacion_Mapa2)
+```
+
+```{r}
+
+```
+
