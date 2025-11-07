@@ -133,13 +133,15 @@ endnotes: false
 output: 
   rticles::mdpi_article:
     extra_dependencies: longtable
+  pdf_document:
+    latex_engine: xelatex
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 ```
 
-```{r Librerias, echo=FALSE}
+```{r Librerias, include=FALSE}
 library(lubridate)
 library(tidyr)
 library(tidyverse)
@@ -178,29 +180,25 @@ En este estudio se abordan tres cuestiones principales:
 
 3. ¿Qué relación existe entre la evolución del turismo y la ocupación en el sector servicios?
 
-# ANÁLISIS
-
-## TURISMO
-
-### IMPORTACIÓN
+# IMPORTACIÓN
 
 Para garantizar el uso de datos actualizados, la importación se realiza directamente desde las URLs oficiales del INE, evitando copias locales.
 
-```{r Enlaces de descarga, echo=FALSE}
+```{r Enlaces de descarga, include=FALSE}
 url_ocupacion<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/65311.csv?nocab=1"
 url_turismo<-"https://www.ine.es/jaxiT3/files/t/es/csv_bdsc/67190.csv?nocab=1"
 ```
 
 Antes de la carga definitiva, se comprobó la codificación de los archivos para evitar errores de lectura, optando por el formato UTF-8.
 
-```{r Codificación de los archivos, echo=FALSE}
+```{r Codificación de los archivos, include=FALSE}
 guess_encoding(url_turismo)
 guess_encoding(url_ocupacion)
 ```
 
 Finalmente, los datos se importaron y almacenaron en dos data frames principales: uno para turismo y otro para ocupación.
 
-```{r Importación, echo=FALSE}
+```{r Importación, include=FALSE}
 df_Turismo <- read.csv(url_turismo,
                        header = TRUE,
                        sep = ";",
@@ -213,11 +211,17 @@ df_Ocupacion <- read.csv(url_ocupacion,
                        encoding = "UTF-8")
 ```
 
-### LIMPIEZA
+# ANÁLISIS UNIVARIANTE
+
+Antes de realizar el análisis univariante, es necesario limpiar y preparar las bases de datos. A continuación, se procede al tratamiento individual de cada una: primero la base de turismo y posteriormente la base de ocupación.
+
+## TURISMO
+
+### Limpieza
 
 Una vez importados los datos, se analizan las características generales del conjunto correspondiente al turismo en España. Este dataset recoge el número de viajeros y pernoctaciones por comunidad y provincia a lo largo del tiempo.
 
-```{r, echo=FALSE, Cálculo dimension}
+```{r Cálculo dimension, include=FALSE}
 dim(df_Turismo)
 ```
 En un inicio, este dataset se forma de 134.820 filas y 8 columnas, cuyo nombre resulta completamente representativo.
@@ -252,7 +256,8 @@ Gracias a esto, se observa que todas las columnas se importaron inicialmente com
 Para asegurar la correcta manipulación numérica, se eliminaron los puntos utilizados como separadores de miles en la columna Total.
 
 ```{r}
-df_Turismo <- df_Turismo %>% mutate(Total = str_replace_all(Total, "\\.", ""))
+df_Turismo <- df_Turismo %>% 
+  mutate(Total = str_replace_all(Total, "\\.", ""))
 ```
 
 Posteriormente, se aplicó `sapply()` junto con `unique()` para revisar los valores de cada variable y detectar posibles inconsistencias.
@@ -312,7 +317,8 @@ df_Turismo <- df_Turismo %>%
   rename(CCAA = Comunidades.y.Ciudades.Autónomas) %>% 
   mutate(
     CCAA = str_replace(CCAA, "^[0-9]+\\s+", ""),
-    CCAA = str_replace(CCAA,"^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
+    CCAA = str_replace(CCAA,
+                       "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1"),
     CCAA = str_squish(CCAA)
   ) %>%
   mutate(CCAA = as.factor(CCAA))
@@ -328,7 +334,7 @@ df_Turismo <- df_Turismo %>%
 
 Tras la limpieza, se comprobó la ausencia de espacios en blanco y valores faltantes (NA) para asegurar la integridad del conjunto de datos. Al no detectarse incidencias, el dataset quedó listo para el análisis y se guardó en formato RData.
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 #Huecos en blanco
 sum(df_Turismo == "", na.rm = TRUE)
 colSums(df_Turismo == "", na.rm = TRUE)
@@ -338,7 +344,7 @@ anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
 
-### ANÁLISIS UNIVARIANTE
+### Análisis
 
 Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos mediante la función summary(), con el fin de obtener una visión general de las variables del conjunto de datos.
 
@@ -355,10 +361,10 @@ df_Turismo %>%
   summarise(
     media = mean(Total, na.rm = TRUE),
     mediana = median(Total, na.rm = TRUE),
-    desviacion_tipica = sd(Total, na.rm = TRUE),
-    minimo = min(Total, na.rm = TRUE),
-    maximo = max(Total, na.rm = TRUE),
-    n_observaciones = n()
+    sd = sd(Total, na.rm = TRUE),
+    min = min(Total, na.rm = TRUE),
+    max = max(Total, na.rm = TRUE),
+    N = n()
   ) %>%
   arrange(desc(media)) %>% 
   print()
@@ -379,11 +385,11 @@ nacional_mensual %>%
   summarise(
     media = mean(Total, na.rm = TRUE),
     mediana = median(Total, na.rm = TRUE),
-    desviacion_tipica = sd(Total, na.rm = TRUE),
-    varianza = var(Total, na.rm = TRUE),
-    minimo = min(Total, na.rm = TRUE),
-    maximo = max(Total, na.rm = TRUE),
-    n_observaciones = n()
+    sd = sd(Total, na.rm = TRUE),
+    var = var(Total, na.rm = TRUE),
+    min = min(Total, na.rm = TRUE),
+    max = max(Total, na.rm = TRUE),
+    N = n()
   )
 ```
 
@@ -393,14 +399,14 @@ La desviación típica, de unos 52 millones, junto con una varianza elevada, ref
 
 El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mientras que el máximo (247,9 millones) evidencia los picos alcanzados en los años de mayor actividad turística.
 
-### REPRESENTACIÓN GRÁFICA
+-------
 
 Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
 
 ```{r}
 ggplot(nacional_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.8) +
-  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
   labs(title = "Serie temporal de viajeros por mes",
        x = "Periodo", y = "Total") +
   theme_minimal()
@@ -408,12 +414,286 @@ ggplot(nacional_mensual, aes(Periodo, Total)) +
 
 La gráfica muestra una tendencia general al alza con una clara estacionalidad anual, marcada por picos recurrentes en los meses de mayor actividad turística. También se identifican valores atípicos durante el periodo de la pandemia de la COVID-19, que reflejan la brusca caída del sector en esos años.
 
+A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
+
+```{r}
+ca_mensual <- df_Turismo %>%
+  group_by(CCAA, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ca_mensual, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
+  labs(title = "Serie temporal por Comunidad Autónoma",
+       x = "Periodo", y = "Total") +
+  theme_minimal()
+```
+
+En general, todas las comunidades muestran una marcada estacionalidad, con picos de actividad durante los meses de verano. A largo plazo, Madrid, el País Vasco y Canarias presentan una tendencia claramente creciente, mientras que otras, como Ceuta, mantienen una evolución más estable.
+
+Asimismo, se observa heterocedasticidad en regiones como Illes Balears, Asturias, Andalucía o la Comunitat Valenciana, donde la variabilidad aumenta con el número de turistas, a diferencia de Madrid o Canarias, donde la dispersión se mantiene más constante.
+
+Por último, todas las comunidades registran una caída abrupta en 2020, asociada al impacto de la pandemia de la COVID-19.
+En el siguiente apartado se aplicará el método 3sigma estacional (por mes y comunidad autónoma) para identificar de forma formal los valores atípicos sin confundirlos con la estacionalidad natural de la serie.
+
 ## OCUPACIÓN
 
-### ANÁLISIS UNIVARIANTE
+El segundo conjunto de datos corresponde a la ocupación por sectores económicos en España, obtenido del INE. Contiene el número de personas ocupadas (en miles) por comunidad o ciudad autónoma, sector y periodo trimestral.
+
+```{r, include=FALSE}
+dim(df_Ocupacion)
+```
+
+El dataset está compuesto por 21.300 observaciones (filas) y 5 variables (columnas), cuyos nombres son claros y representativos, lo que facilita su comprensión y manipulación posterior.
+
+Las variables incluidas son:
+
+- Sexo. Variable categórica que presenta el valor “mujer”, “hombre” y “ambos sexos”.
+
+- Comunidades.y.Ciudades.Autónomas. Variable categórica que incluye las comunidades Españolas y el total nacional.
+
+- Sector.económico. Variable categórica que clasifica la actividad económica en agricultura, industria, construcción o servicios. 
+
+- Periodo. Variable tipo fecha que muestra el año y trimestre.
+
+- Total. Variable numérica que muestra las personas ocupadas (en miles).
+
+Como primer paso, se utilizó la función `glimpse()` para revisar la estructura del dataset. Se comprobó que todas las columnas se importaron como tipo carácter, por lo que será necesario ajustar los tipos de datos en los siguientes pasos.
+
+```{r, include=FALSE}
+df_Ocupacion %>% glimpse()
+```
+
+### Limpieza
+
+Para limpiar y preparar la base de datos de ocupación, ha sido necesario realizar los siguientes pasos:
+
+1. Eliminar la columna “Sexo”.
+
+2. Eliminar números y carácteres especiales de los nombres de las comunidades. Además de filtrar y eliminar el valor “Total nacional” de la variable CCAA, por ser redundante respecto al resto de comunidades y ciudades autónomas. Posteriormente, esta variable se convierte a tipo factor.
+
+3. Filtrar los registros correspondientes al sector “Servicios” dentro de la columna Sector.económico. Dado que la tabla se centrará exclusivamente en este sector, la variable se elimina por resultar redundante.
+
+4. Convertir la variable “Periodo” del formato YYYYTQ a un formato de fecha trimestral mediante la función `as.yearqtr()`.
+
+5. Normalizar la variable “Total”, eliminando la palabra “miles” y los puntos de millares, sustituyendo la coma decimal por punto, convirtiendo los valores a numéricos y multiplicándolos por 1.000 para expresarlos en personas. De este modo, se mantiene la coherencia de escala con la base de datos de turismo.
+
+```{r}
+df_Ocupacion_clean <-  df_Ocupacion %>% 
+  #1
+  filter(Sexo == "Ambos sexos") %>% 
+  select(-Sexo) %>%
+  #2
+  rename(CCAA=Comunidades.y.Ciudades.Autónomas) %>% 
+  mutate(CCAA = str_replace(CCAA, "^[0-9]+\\s+", ""), 
+  CCAA = str_replace(CCAA, 
+                     "^\\s*([^,]+?)\\s*,\\s*([^,]+?)\\s*$", "\\2 \\1")) %>%
+  filter(CCAA != "Total Nacional") %>%
+  mutate(CCAA=as.factor(CCAA)) %>% 
+  #3
+  filter(Sector.económico=='Servicios') %>% 
+  select(-Sector.económico) %>% 
+  #4 
+  mutate(Periodo = str_replace(Periodo, "T", "-"), 
+    Periodo = as.yearqtr(Periodo)) %>% 
+  #5
+  mutate(
+    Total=str_replace_all(Total, '\\.',""),
+    Total = str_replace(Total, ",", "."),
+    Total = as.numeric(Total)*1000 
+  ) %>% 
+  arrange(CCAA, Periodo)
+```
+
+### Análisis
+
+A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
+
+```{r}
+# Total nacional por trimestre
+ocup_nacional <- df_Ocupacion_clean %>%
+  group_by(Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ocup_nacional, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
+  labs(title = 
+         "Ocupación total nacional en sector servicios",
+       x = "Periodo", y = "Personas ocupadas") +
+  theme_minimal()
+```
+
+Se observa una caída entre 2010 y 2014, posiblemente asociada a los efectos de la crisis de 2008, seguida de una recuperación sostenida hasta 2019.
+
+En 2020 se produce un descenso notable debido al impacto de la pandemia, tras lo cual la ocupación retoma una tendencia creciente, alcanzando niveles superiores a los anteriores.
+
+Además, se aprecia una estacionalidad clara, con aumentos recurrentes en determinados trimestres, probablemente vinculados a la temporada turística.
+
+Además, también se analiza la **evolución trimestral del empleo en el sector servicios por Comunidad Autónoma**, agrupando los datos por región y periodo. El gráfico permite comparar la dinámica laboral entre territorios a lo largo del tiempo.
+
+```{r}
+ocup_ccaa <- df_Ocupacion_clean %>%
+  group_by(CCAA, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ocup_ccaa, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.5) +
+  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
+  labs(title = 
+         "Ocupación en el sector servicios por Comunidad Autónoma (trimestral)",
+       x = "Periodo", y = "Personas ocupadas") +
+  theme_minimal() +
+  theme(panel.spacing = unit(1, "lines"),
+        strip.text = element_text(size = 9))
+
+```
+
+Se observa una tendencia al alza más pronunciada en comunidades como Andalucía, Canarias, Madrid y Cataluña, principales motores del sector servicios. Destaca una fuerte estacionalidad en Illes Balears, asociada a la actividad turística, mientras que en la mayoría de regiones la evolución es más estable y con un crecimiento moderado tras la pandemia.
+
+```{r}
+##TODO NO LO HE TOCADO NI EXPLICADO PQ TODAVIA SE ESTABA ACABANDO LO DE LOS OUTLIERS Y NO ESTABA CLARO
+
+ocup_ccaa_q <- ocup_ccaa %>%
+  mutate(Trimestre = factor(quarter(as.Date(Periodo)), levels = 1:4,
+                            labels = c("Q1","Q2","Q3","Q4")))
+
+outliers_q <- ocup_ccaa_q %>%
+  group_by(CCAA, Trimestre) %>%
+  mutate(
+    media_q = mean(Total, na.rm = TRUE),
+    sd_q    = sd(Total, na.rm = TRUE),
+    upLim_q = media_q + 3 * sd_q,
+    lowLim_q= media_q - 3 * sd_q,
+    es_outlier = Total < lowLim_q | Total > upLim_q
+  ) %>%
+  ungroup()
+
+resumen_out_q <- outliers_q %>%
+  group_by(CCAA) %>%
+  summarise(
+    n_outliers   = sum(es_outlier, na.rm = TRUE),
+    prop_outliers= mean(es_outlier, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(n_outliers))
+
+resumen_out_q
+
+```
 
 
-## ANÁLISIS BIVARIANTE
+# ANÁLISIS BIVARIANTE
+
+En esta sección se abordará el análisis bivariante, con el objetivo de relacionar las bases de datos de turismo y ocupación para estudiar posibles vínculos entre ambas variables.
+
+Antes de combinar los conjuntos de datos, será necesario estandarizar ciertas variables con el fin de garantizar una fusión correcta (merge) y obtener un marco de datos coherente para el análisis conjunto.
+
+Así pues, se convierte la variable Periodo al formato año-trimestre, luego se agrupan los datos por comunidad y periodo, y se calcula el total de turistas por trimestre y CCAA. Finalmente, se ordenan los registros por comunidad y periodo para facilitar el merge posterior.
+
+```{r}
+turismo_to_merge <- df_Turismo %>%
+  mutate(Periodo = as.yearqtr(Periodo)) %>%
+  group_by(CCAA, Periodo) %>%
+  summarise(Total_turismo = sum(Total, na.rm = TRUE), .groups = "drop") %>% 
+  arrange(CCAA, Periodo)
+```
+
+Mediante la función `merge()`, se unen ambos conjuntos de datos utilizando como claves comunes las variables CCAA y Periodo.
+
+Antes de la unión, en la base de ocupación se renombra la variable Total como Numero_ocupados para distinguirla del total de turistas y evitar ambigüedades en el nuevo dataset combinado (df_Turismo_Ocupacion).
+
+```{r}
+df_Turismo_Ocupacion <- merge(
+  x = turismo_to_merge,
+  y = (df_Ocupacion_clean %>% 
+    rename(Numero_ocupados = Total)),
+  by.x = c("CCAA", "Periodo"),
+  by.y = c("CCAA", "Periodo"))
+```
+
+Finalmente, una vez preparadas y combinadas las bases de datos, se guardan los objetos resultantes en formato `.RData`.
+Esto permite conservar los datos limpios y listos para su análisis, facilitando su carga posterior sin necesidad de repetir el proceso de limpieza y fusión.
+
+```{r, include=FALSE}
+#save(df_Turismo_Ocupacion, file='Data/df_Turismo_Ocupacion.RData')
+#save(df_Turismo, file='Data/df_Turismo_clean_mensual.RData')
+```
+
+-------
+Como primer paso, se generan **gráficos de dispersión por Comunidad Autónoma** para analizar la relación entre el número de turistas y el empleo en el sector servicios.
+
+El proceso automatiza la creación de un gráfico por región, mostrando los puntos de datos y una línea de tendencia lineal que permite visualizar la correlación entre ambas variables.
+Cada gráfico se guarda de forma individual en la carpeta “graficos_comunidades” para su consulta posterior.
+
+```{r, echo=FALSE} 
+## TODO arreglar
+
+# Crear una carpeta donde guardar los gráficos
+dir.create("graficos_comunidades", showWarnings = FALSE)
+
+# Obtener todas las comunidades únicas
+comunidades <- unique(df_Turismo_Ocupacion$CCAA)
+
+# Bucle para crear un gráfico por comunidad
+for (com in comunidades) {
+  
+  # Filtrar datos de la comunidad actual
+  datos_com <- df_Turismo_Ocupacion %>%
+    filter(CCAA == com)
+  
+  # Crear el gráfico
+  p <- ggplot(datos_com, aes(x = Total_turismo, y = Numero_ocupados)) +
+    geom_point(color = "#0072B2", alpha = 0.7) +
+    geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
+    labs(
+      title = paste("Relación entre Turismo y Ocupación -", com),
+      x = "Total Turismo",
+      y = "Número de Ocupados (Servicios)"
+    ) +
+    theme_minimal()
+  
+  # Mostrar el gráfico ##TODO habría que eliminar el print del bucle y ponerlo fuera para que me muestre solo uno o varios, no?
+  print(p)
+  
+  # Guardar el gráfico como archivo PNG
+  ggsave(filename = paste0("graficos_comunidades/", 
+                           gsub(" ", "_", com), ".png"),
+         plot = p, width = 7, height = 5)
+}
+```
+
+A continuación, se calcula la correlación de Pearson entre el número de turistas y el empleo en el sector servicios para cada Comunidad Autónoma.
+
+El objetivo es medir la intensidad y dirección de la relación lineal entre ambas variables, obteniendo el coeficiente de correlación y su p-valor.
+
+Los resultados se ordenan de mayor a menor para identificar las regiones donde el vínculo entre turismo y empleo es más fuerte.
+
+```{r}
+correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
+  group_by(CCAA) %>%
+  summarise(
+    resultado = list(cor.test(Total_turismo, 
+                              Numero_ocupados, method = "pearson"))) %>%
+  mutate(
+    correlacion = map_dbl(resultado, "estimate"),
+    p_value = map_dbl(resultado, "p.value")
+  ) %>%
+  select(CCAA, correlacion, p_value) %>%
+  arrange(desc(correlacion))
+
+correlaciones_por_comunidad
+```
+
+Se observa que Illes Balears presenta la mayor correlación positiva (r = 0.68) entre turismo y empleo en el sector servicios, lo cual resulta coherente dada la fuerte dependencia económica del turismo estival, que genera un notable aumento de la ocupación.
+
+Por el contrario, Melilla muestra una correlación negativa (r = -0.24), lo que podría deberse a una menor vinculación directa entre la llegada de turistas y la creación de empleo local.
+
+En el resto de comunidades, las correlaciones son positivas pero de baja magnitud, lo que sugiere que, aunque el turismo y el empleo tienden a crecer conjuntamente, la relación no es muy fuerte.
+
+Cabe recordar que la correlación no implica causalidad, por lo que estos resultados reflejan asociación, pero no necesariamente una relación causa-efecto.
 
 # CONCLUSIONES
 
