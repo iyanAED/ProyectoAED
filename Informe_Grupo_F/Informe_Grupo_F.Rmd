@@ -347,6 +347,10 @@ colSums(is.na(df_Turismo))
 ### Detección de *outliers*
 
 
+##TODO METER EL APARTADO DE OUTLIERS Y DE ARIMA
+
+ARIMA: Añadir un gráfico de prediccion de aquellos que estan bien ajustados, uno que medio y otro que mal. Este modelo lo usamos para justificar que los outliers deberían eliminarse.
+
 
 ### Análisis
 
@@ -441,6 +445,8 @@ Asimismo, se observa heterocedasticidad en regiones como Illes Balears, Asturias
 
 Por último, todas las comunidades registran una caída abrupta en 2020, asociada al impacto de la pandemia de la COVID-19.
 En el siguiente apartado se aplicará el método 3sigma estacional (por mes y comunidad autónoma) para identificar de forma formal los valores atípicos sin confundirlos con la estacionalidad natural de la serie.
+
+#TODO Añadir los analisis de las series temporales 
 
 ## OCUPACIÓN
 

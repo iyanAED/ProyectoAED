@@ -465,60 +465,7 @@ tabla_outliers_ccaa
 ```
 
 
-
-
-# IMPUTACIÓN DE OUTLIERS
-
-```{r Inicialización de las variables}
-# Hay que convertir los datos a una serie temporal de la librería forecast, dado que hay que hacerlo para cada CC.AA. mejor hacer una función
-Convertir_en_Serie <- function(vector, Anio_Inicio, Mes_Inicio, Anio_Final, Mes_Final, frec){
-  return(ts(vector, start = c(Anio_Inicio, Mes_Inicio), end = c(Anio_Final, Mes_Final), frequency = frec))
-}
-```
-
-
-### Análisis clásico
-
-```{r Función para el análisis clásico}
-Diferencias <- function(serie){
-  return(serie[2:length(serie)] - serie[1:(length(serie) - 1)])
-}
-Cocientes <- function(serie){
-  return(serie[2:length(serie)] / serie[1:(length(serie) - 1)])
-}
-CV <- function(serie){
-  stopifnot(is.ts(serie))
-  return(sd(serie, na.rm=T) / mean(serie, na.rm=T))
-}
-
-Analisis_Clasico <- function(Serie){
-  # Calculo de la componente tendencial
-  Tendencia <- forecast::ma(Serie, order = frequency(Serie), centre = TRUE)
-  # Hay que ver si tomamos el esquema aditivo o multiplicativo
-  if ( CV(Diferencias(Serie)) < CV(Cocientes(Serie)) ){
-    # En este caso el modelo debe ser aditivo
-    Serie_Sin_Tendencia <- Serie - Tendencia
-    Medias_Est <- tapply(Serie_Sin_Tendencia, cycle(Serie_Sin_Tendencia), mean, na.rm = TRUE)
-    Medias_Est <- Medias_Est - mean(Medias_Est)
-    Estacional <- ts(rep(Medias_Est, length.out = length(Serie)),
-                 start = start(Serie), frequency = frequency(Serie))
-    Ruido <- Serie_Sin_Tendencia - Estacional
-    return(list(type = "Aditivo", trend = Tendencia, seasonal = Estacional,
-       remainder = Ruido, fitted = Tendencia + Estacional))
-    
-  } else {
-    # El caso contrario será multiplicativo
-    Serie_Sin_Tendencia <- Serie / Tendencia
-    Medias_Est <- tapply(Serie_Sin_Tendencia, cycle(Serie_Sin_Tendencia), mean, na.rm = TRUE)
-    Medias_Est <- Medias_Est / mean(Medias_Est)
-    Estacional <- ts(rep(Medias_Est, length.out = length(Serie)),
-                 start = start(Serie), frequency = frequency(Serie))
-    Ruido <- Serie_Sin_Tendencia / Estacional
-    return(list(type = "Multiplicativo", trend = Tendencia, seasonal = Estacional,
-       remainder = Ruido, fitted = Tendencia * Estacional))
-  }
-}
-```
+# TRABAJO DE OUTLIERS -ARIMA
 
 Haremos una función para conocer los errores de los modelos
 
@@ -572,13 +519,6 @@ Prediccion <- function(Serie, Serie_Completa, H){
               Grafica_Ajuste=grafica_Ajuste, 
               Grafica_Predic=grafica_Prediccion))
 }
-```
-
-Llamamos a las funciones creadas ara hacer el análisis
-```{r}
-df_Turismo %>% 
-  group_by(CCAA)
-  Convertir_en_Serie
 ```
 
 
