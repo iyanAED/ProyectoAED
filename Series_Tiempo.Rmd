@@ -31,6 +31,7 @@ Entonces, hay dos enfoques para analizar las series de temporales, el enfoque cl
 
 ```{r Librerías}
 library(forecast)
+library(dplyr)
 ```
 
 ```{r Inicialización de las variables}
@@ -122,13 +123,18 @@ También es necesario hacer predicciones y ver la calidad de estas. La idea es h
 # H: es el número de periodos en el futuro que se va a predecir, debe pasar que Serie_test, tenga longitud H
 
 Prediccion <- function(Serie, Serie_test, H){
-  browser()
+  
+  # Código de ayuda por si fuera necesario hacer debuging
+  # browser()
+  # Modelo <- arima(Serie, order=c(1,0,1), seasonal=list(order=c(1,1,1), period=12))
+  
   Modelo <- auto.arima(Serie, stepwise=FALSE, approximation=FALSE)
+  
   pred <- forecast(Modelo, h=H)
   
   # Un dataframe con la predicción
   df_forecast <- data.frame(
-    tiempo = as.numeric(time(pred$mean)),
+    tiempo = as.numeric(time(Serie_test)),
     valor = as.numeric(pred$mean),
     tipo = "Prediccion")
   
@@ -150,8 +156,8 @@ Prediccion <- function(Serie, Serie_test, H){
     valor = as.numeric(Serie - residuals(Modelo)),
     tipo = "Ajuste")
   
-  df1 <- bind_rows(df_serie1, df_ajuste)
-  df2 <- bind_rows(df_serie2, df_forecast)
+  df1 <- bind_rows(df_serie2, df_ajuste)
+  df2 <- bind_rows(df_serie1, df_forecast)
   
   grafica_Ajuste <- ggplot(df1, aes(x = tiempo, y = valor, color = tipo)) + 
     geom_line(size = 1) +
@@ -161,10 +167,15 @@ Prediccion <- function(Serie, Serie_test, H){
     geom_line(size = 1) +
     labs(title = "Gráfica de predicción")
   
+  Serie_aux <- ts(as.numeric(pred$mean), 
+                  start=start(Serie_test), 
+                  end=end(Serie_test),
+                  frequency=frequency(Serie_test))
+  
   return(list(Prediccion = pred, 
               Grafica_Ajuste = grafica_Ajuste, 
               Grafica_Predic = grafica_Prediccion,
-              errores_predic = Errores(Serie_test, pred$mean),
+              errores_predic = Errores(Serie_test, Serie_aux),
               errores_ajuste = Errores(Serie, Serie - residuals(Modelo)) ))
 }
 ```
@@ -214,25 +225,39 @@ PostPandemia <- lapply(Series, function(x) window(x, start=start(x),end=c(2020, 
 Ahora hacemos el análisis con las funciones que hemos definido antes. 
 
 ```{r Recorte}
-Recorte <- function(serie, fechaIni=c(2022,2), fechaFin=c(2023, 2)){
+Recorte <- function(serie, fechaIni=c(2022,3), fechaFin=c(2023, 2)){
   serie_nueva <- ts(serie, start=fechaIni, end=fechaFin, frequency = 12)
 }
  
 PostPandemia <- lapply(Series, Recorte)
 ```
 
-```{r}
-Prediccion(PrePandemia[[1]], PostPandemia[[1]], 12)
-PrePandemia[[1]]
-PostPandemia[[1]]
-```
 
-
-```{r Recorte}
+```{r Prediccion para todas las CCAA}
 AnalisisBox <- mapply(Prediccion, PrePandemia, PostPandemia, rep(12,10))
 system.time(mapply(Prediccion, PrePandemia, PostPandemia, rep(12,10)))
 AnalisisClasic <- lapply(PrePandemia, Analisis_Clasico)
 ```
+
+```{r}
+saveRDS(AnalisisBox, file = "AnalisisBox.rds")
+Analisis <- readRDS("AnalisisBox.rds")
+```
+
+
+```{r}
+for (i in 1:95){
+  ccaa <- levels(df_Turismo$CCAA)
+  nombres1 <- paste("Graficos_Series/Grafico_Ajuste", ccaa, sep = "_")
+  nombres2 <- paste("Graficos_Series/Grafico_Prediccion", ccaa, sep = "_")
+  if (i %% 2 == 0){
+    ggsave(paste(nombres1[i],".pdf", sep=""), plot = AnalisisBox[[i]])
+  }else if(i %% 3 == 0){
+    ggsave(paste(nombres2[i], ".pdf", sep=""), plot = AnalisisBox[[i]])
+  }
+}
+```
+
 
 ```{r}
 HacerPrediccion <- function(Serie, Serie_test, Analisis){
