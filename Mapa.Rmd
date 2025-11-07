@@ -142,6 +142,7 @@ Creacion_Mapa <- function(df){
 ListaMapas <- lapply(Lista2, Creacion_Mapa)
 ```
 
+
 ```{r Mapas por años}
 df_total <- df_Turismo %>%  group_by(Anio, CCAA) %>% summarise(DatoAnual=sum(Total))
 Lista3 <- lapply(df_total %>% group_by(Anio) %>% group_split(), as.data.frame)
@@ -149,10 +150,31 @@ Lista4 <- lapply(Lista3, function(x) left_join(nuts2, x, by=c("NAME_LATN" = "CCA
 
 Creacion_Mapa2 <- function(df){
   titulo <- paste("Datos de turismo de", df$Anio, sep=" ")
-  return(ggplot(df) + geom_sf(aes(fill = DatoAnual)) + labs(title=titulo))
+  return(ggplot(df) + geom_sf(aes(fill = DatoAnual)) + labs(title=titulo) + scale_fill_viridis_c(option = "G"))
 }
 
 ListaMapasAnio <- lapply(Lista4, Creacion_Mapa2)
+```
+La idea es que la paleta de colores no es muy adecuada, pues por ejemplo hay comunidades autónomas que quedan en gris, un color difícilmente reconocible y que además usualmente en este tipo de gráficos se usa para colorear las regiones para las que no hay datos disponibles.
+
+Entonces, para poder hacer un mapa con una escala de color más adecuada nos vemos en la ncesidad de discretizar la variable numérica. Tras esto creamos un vec
+
+```{r Dsicretización}
+df_Turismo$Total <- cut(df_Turismo$Total,
+                        breaks = 5,
+                        labels =c("Muy bajo", "Bajo", "Medio", "Alto", "Muy Alto"))
+```
+
+
+```{r Dsicretización}
+pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
+
+  scale_fill_manual(values = pal,
+                    drop = FALSE,
+                    label = labs_plot,
+                    guide = guide_legend(direction = "horizontal",
+                                         nrow = 1,
+                                         label.position = "bottom"))
 ```
 
 
@@ -161,6 +183,26 @@ nombres <- paste("MapasGraficos/Mapa", seq(1999, 2025,1), ".pdf", sep="")
 for (i in 1:length(ListaMapasAnio)){
   ggsave(nombres[i], plot = ListaMapasAnio[[i]])
 }
+```
+```{r Gráficos mapas con nuevo color}
+Lista3 <- lapply(df_total %>% group_by(Anio) %>% group_split(), as.data.frame)
+Lista4 <- lapply(Lista3, function(x) left_join(nuts2, x, by=c("NAME_LATN" = "CCAA")))
+
+pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
+
+Creacion_Mapa2 <- function(df){
+  titulo <- paste("Datos de turismo de", df$Anio, sep=" ")
+  return(ggplot(df) + geom_sf(aes(fill = DatoAnual)) + 
+         labs(title=titulo) +
+         scale_fill_manual(values = pal,
+                    drop = FALSE,
+                    label = levels(df$Total),
+                    guide = guide_legend(direction = "horizontal",
+                                         nrow = 1,
+                                         label.position = "bottom")))
+}
+
+ListaMapasAnio <- lapply(Lista4, Creacion_Mapa2)
 ```
 
 
