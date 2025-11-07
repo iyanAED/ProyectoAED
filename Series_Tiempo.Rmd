@@ -251,29 +251,7 @@ AnalisisBox <- readRDS("AnalisisBox.rds")
 ```
 
 ```{r}
-names(AnalisisBox)
-```
-
-```{r}
 lapply(AnalisisBox, function(x) inherits(x, "ggplot"))
-```
-
-
-```{r}
-for (x in AnalisisBox){
-  nombres1 <- paste("Graficos_Series/Grafico", 1:38, sep = "_")
-  browser()
-  if (inherits(x, "ggplot")){
-    ggsave(paste(nombres1[i],".pdf", sep=""), plot = x)
-  }
-}
-```
-```{r}
-ggsave("Graficos_Series/Grafico_Murcia.pdf", plot = AnalisisBox[[52]])
-```
-```{r}
-nombres1
-
 ```
 
 
@@ -283,15 +261,15 @@ nombres1 <- paste("Graficos_Series/Grafico_Ajuste", ccaa, sep = "_")
 nombres2 <- paste("Graficos_Series/Grafico_Prediccion", ccaa, sep = "_")
 
 j <- 1
-
+k <- 1
 for (i in 1:95){
   # browser()
   if (i %% 5 == 2){
     ggsave(paste(nombres1[j],".pdf", sep=""), plot = AnalisisBox[[i]])
     j <- j + 1
   }else if(i %% 5 == 3){
-    ggsave(paste(nombres2[j], ".pdf", sep=""), plot = AnalisisBox[[i]])
-    j <- j + 1
+    ggsave(paste(nombres2[k], ".pdf", sep=""), plot = AnalisisBox[[i]])
+    k <- k + 1
   }
 }
 ```
