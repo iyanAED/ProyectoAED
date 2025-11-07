@@ -155,7 +155,12 @@ Creacion_Mapa2 <- function(df){
 ListaMapasAnio <- lapply(Lista4, Creacion_Mapa2)
 ```
 
-```{r}
 
+```{r Guardado de los mapas}
+nombres <- paste("MapasGraficos/Mapa", seq(1999, 2025,1), ".pdf", sep="")
+for (i in 1:length(ListaMapasAnio)){
+  ggsave(nombres[i], plot = ListaMapasAnio[[i]])
+}
 ```
+
 
