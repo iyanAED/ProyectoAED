@@ -30,6 +30,7 @@ Otro aspecto de interés es la detección de patrones estacionales, es bien sabi
 Entonces, hay dos enfoques para analizar las series de temporales, el enfoque clásico y el llamado de Box_Jenkins. Haremos ambos para ver cual proporciona una mejor aproximación.
 
 ```{r Librerías}
+rm(list=ls())
 library(forecast)
 library(dplyr)
 ```
@@ -241,18 +242,23 @@ AnalisisClasic <- lapply(PrePandemia, Analisis_Clasico)
 
 ```{r}
 saveRDS(AnalisisBox, file = "AnalisisBox.rds")
-Analisis <- readRDS("AnalisisBox.rds")
+```
+
+
+```{r}
+AnalisisBox <- readRDS("AnalisisBox.rds")
 ```
 
 
 ```{r}
 for (i in 1:95){
+  browser()
   ccaa <- levels(df_Turismo$CCAA)
   nombres1 <- paste("Graficos_Series/Grafico_Ajuste", ccaa, sep = "_")
   nombres2 <- paste("Graficos_Series/Grafico_Prediccion", ccaa, sep = "_")
-  if (i %% 2 == 0){
+  if (i %% 5 == 2){
     ggsave(paste(nombres1[i],".pdf", sep=""), plot = AnalisisBox[[i]])
-  }else if(i %% 3 == 0){
+  }else if(i %% 5 == 2){
     ggsave(paste(nombres2[i], ".pdf", sep=""), plot = AnalisisBox[[i]])
   }
 }
