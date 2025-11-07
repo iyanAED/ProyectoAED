@@ -225,9 +225,10 @@ df_Turismo %>%
     media = mean(Total, na.rm = TRUE),
     mediana = median(Total, na.rm = TRUE),
     desviacion_tipica = sd(Total, na.rm = TRUE),
-    minimo = min(Total, na.rm = TRUE),
-    maximo = max(Total, na.rm = TRUE),
-    n_observaciones = n()
+    min = min(Total, na.rm = TRUE),
+    max = max(Total, na.rm = TRUE),
+    n = n(),
+    IQR=IQR(Total, na.rm=TRUE) ##CAMBIAR
   ) %>%
   arrange(desc(media)) %>% 
   print()
@@ -303,7 +304,7 @@ En el siguiente apartado, se procederá a detectar de forma más formal estos va
 Sigma3_est <- function(x, k = 3) {
   media <- mean(x, na.rm = TRUE)
   desv <- sd(x, na.rm = TRUE)
-  abs(x - media) > k * desv
+  out <- abs(x - media) > (k * desv)
 }
 ```
 
@@ -339,12 +340,27 @@ for (cc in ccaa_lista) {
 }
 ```
 
+```{r}
+df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
+  group_by(CCAA, Mes) %>%
+  filter(Mes=='jul') %>% 
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    varianza = var(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  ) %>% 
+  arrange(desc(desviacion_tipica))
+```
+
 
 ```{r Regla Hampel}
 Hampel_est <- function(x, k = 3) {
-  med <- median(x, na.rm = TRUE)
-  MADM <- 1.4826 * median(abs(x - med), na.rm = TRUE)
-  abs(x - med) > k * MADM
+  abs(x - median(x)) > k * mad(x)
 }
 ```
 
