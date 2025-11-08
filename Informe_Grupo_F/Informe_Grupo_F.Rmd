@@ -1,14 +1,14 @@
 ---
 title: Análisis de la relación entre la actividad turística y el empleo en el sector servicios en España
 author:
-  - name: "Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón"
+  - name: "Iyán Álvarez, Azahara Martínez, Juan Alcaraz"
   - afiliation: 'Universitat de València'
 date: "`r Sys.Date()`"
 output: 
-  pdf_document:
-    latex_engine: xelatex
   rticles::mdpi_article:
     extra_dependencies: longtable
+  pdf_document:
+    latex_engine: xelatex
   html_document: default
 abstract: |
   El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
@@ -260,7 +260,7 @@ outliers_sigma3_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.height="50%", out.width="100%"}
 if(!dir.exists("graficos_outliers_3sigma")){
   dir.create("graficos_outliers_3sigma")
 }
@@ -304,7 +304,7 @@ outliers_sigma3_est %>%
   theme_minimal()
 ```
 
-```{r, include=FALSE}
+```{r, include=FALSE, out.height="50%", out.width="100%"}
 df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
   group_by(CCAA, Mes) %>%
@@ -339,7 +339,7 @@ outliers_hampel_est <- df_Turismo %>%
 ```
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.height="30%", out.width="100%"}
 if(!dir.exists("graficos_outliers_hampel")){
   dir.create("graficos_outliers_hampel")
 }
@@ -406,7 +406,7 @@ outliers_boxplot_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.height="30%", out.width="100%"}
 if(!dir.exists("graficos_outliers_boxplot")){
   dir.create("graficos_outliers_boxplot")
 }
@@ -601,13 +601,13 @@ AnalisisBox <- readRDS("../AnalisisBox.rds")
 
 Se pueden ver las dierentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
 
-```{r Gráfica de ajuste}
+```{r Gráfica de ajuste, out.height="30%", out.width="100%"}
 AnalisisBox[[2]]
 ```
 Entonces, tras ver que el modelo aproxima de forma razonable los datos prepandemia, hay razones para confiar en las predicciones, las cuales se pueden interpretar como los datos de pernoctaciones que hubieran sucedido en esos meses siguientes a febrero de $2020$ si la pandemia no hubiera azotado.
 
 Lo más interesante ocurre si comparamos esas predicciones con los datos posteriores a la pandemia. Si bien es cierto que hay algunas comunidades para las cuales las predicciones no se ajustan en nada (son los casos de las ciudades autónomas) en el resto de casos se puede ver como la predicción y el valor postpandemia son iguales solo que con cifras algo menores menores.
-```{r Gráfica de predicción buena, echo=FALSE}
+```{r Gráfica de predicción buena, echo=FALSE, out.height="30%", out.width="100%"}
 AnalisisBox[[18]]
 ```
 
@@ -615,7 +615,7 @@ AnalisisBox[[18]]
 AnalisisBox[[83]]
 ```
 
-```{r Gráfica de predicción mala, echo=FALSE}
+```{r Gráfica de predicción mala, echo=FALSE, out.height="30%", out.width="100%"}
 AnalisisBox[[13]]
 ```
 
@@ -679,7 +679,7 @@ El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mient
 
 Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
 
-```{r}
+```{r, out.height="30%", out.width="100%"}
 ggplot(nacional_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.8) +
   scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
@@ -692,7 +692,7 @@ La gráfica muestra una tendencia general al alza con una clara estacionalidad a
 
 A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
 
-```{r}
+```{r, out.height="30%", out.width="100%"}
 ca_mensual <- df_Turismo %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
@@ -789,7 +789,7 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
 
-```{r}
+```{r, out.height="30%", out.width="100%"}
 # Total nacional por trimestre
 ocup_nacional <- df_Ocupacion_clean %>%
   group_by(Periodo) %>%
@@ -812,7 +812,7 @@ Además, se aprecia una estacionalidad clara, con aumentos recurrentes en determ
 
 Además, también se analiza la **evolución trimestral del empleo en el sector servicios por Comunidad Autónoma**, agrupando los datos por región y periodo. El gráfico permite comparar la dinámica laboral entre territorios a lo largo del tiempo.
 
-```{r}
+```{r, out.height="30%", out.width="100%"}
 ocup_ccaa <- df_Ocupacion_clean %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
@@ -1028,7 +1028,7 @@ correlaciones_por_comunidad
 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.height="30%", out.width="100%"}
 ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -1066,7 +1066,7 @@ modelos_por_ccaa <- df_Turismo_Ocupacion %>%
 
 modelos_por_ccaa[,c(1,4)]
 ```
-```{r, echo=FALSE}
+```{r, echo=FALSE, out.height="30%", out.width="100%"}
 año_ref <- 2024
 
 nuts2 <- gisco_get_nuts(year = año_ref,

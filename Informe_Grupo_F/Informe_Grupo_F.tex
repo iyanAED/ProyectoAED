@@ -91,14 +91,14 @@ empleo en el sector servicios en España}
 
 
 % Authors, for the paper (add full first names)
-\Author{Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón$^{}$, $^{}$}
+\Author{Iyán Álvarez, Azahara Martínez, Juan Alcaraz$^{}$, $^{}$}
 
 
 %\longauthorlist{yes}
 
 
 % MDPI internal command: Authors, for metadata in PDF
-\AuthorNames{Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón, }
+\AuthorNames{Iyán Álvarez, Azahara Martínez, Juan Alcaraz, }
 
 % MDPI internal command: Authors, for citation in the left column
 
@@ -554,8 +554,35 @@ valores faltantes (NA) para asegurar la integridad del conjunto de
 datos. Al no detectarse incidencias, el dataset quedó listo para el
 análisis y se guardó en formato RData.
 
-\subsubsection{\texorpdfstring{Detección de
-\textbf{outliers}}{Detección de outliers}}\label{detecciuxf3n-de-outliers}
+\subsubsection{Detección de outliers}\label{detecciuxf3n-de-outliers}
+
+Para la detección de valores atípicos en las series de turismo se
+aplicaron tres métodos estadísticos complementarios:
+
+\begin{itemize}
+\tightlist
+\item
+  Regla 3-sigmas: considera como \emph{outliers} los valores que se
+  alejan más de tres desviaciones típicas respecto a la media.\\
+\item
+  Método de Hampel: utiliza la mediana y la desviación absoluta mediana
+  (MAD) para detectar observaciones atípicas, siendo más robusto frente
+  a valores extremos.\\
+\item
+  Método del Boxplot: identifica \emph{outliers} a partir de los límites
+  del rango intercuartílico (1,5×IQR).
+\end{itemize}
+
+En todos los casos se aplicó una versión estacional del método,
+calculando los parámetros (media, desviación, mediana o cuartiles) por
+mes y comunidad autónoma, con el objetivo de evitar clasificar como
+atípicos los picos o caídas debidos a la estacionalidad turística.
+
+Los gráficos se generaron automáticamente para cada comunidad autónoma,
+aunque solo se muestra un ejemplo en el informe. Todos ellos se han
+guardado en carpetas independientes:\\
+\texttt{graficos\_outliers\_3sigma}, \texttt{graficos\_outliers\_hampel}
+y \texttt{graficos\_outliers\_boxplot}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -567,112 +594,7 @@ análisis y se guardó en formato RData.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{outliers\_sigma3\_est }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}
-    \AttributeTok{es\_outlier\_sigma3 =} \FunctionTok{Sigma3\_est}\NormalTok{(Total)}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ungroup}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ccaa\_lista }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(outliers\_sigma3\_est}\SpecialCharTok{$}\NormalTok{CCAA)}
-
-\ControlFlowTok{for}\NormalTok{ (cc }\ControlFlowTok{in}\NormalTok{ ccaa\_lista) \{}
-\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ outliers\_sigma3\_est }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{==}\NormalTok{ cc) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey70"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ es\_outlier\_sigma3)) }\SpecialCharTok{+}
-    \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FALSE"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"TRUE"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}
-      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Detección estacional de outliers (3 sigma) {-}"}\NormalTok{, cc),}
-      \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }
-      \AttributeTok{y =} \StringTok{"Total"}\NormalTok{, }
-      \AttributeTok{color =} \StringTok{"Outlier"}
-\NormalTok{    ) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{()}
-  
-  \FunctionTok{print}\NormalTok{(p)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-2.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-3.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-4.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-5.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-6.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-7.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-8.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-9.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-10.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-11.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-12.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-13.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-14.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-15.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-16.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-17.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-18.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-19.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{filter}\NormalTok{(Mes}\SpecialCharTok{==}\StringTok{\textquotesingle{}jul\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{summarise}\NormalTok{(}
-    \AttributeTok{media =} \FunctionTok{mean}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{varianza =} \FunctionTok{var}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{mediana =} \FunctionTok{median}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{desviacion\_tipica =} \FunctionTok{sd}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{minimo =} \FunctionTok{min}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{maximo =} \FunctionTok{max}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{n\_observaciones =} \FunctionTok{n}\NormalTok{()}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(desviacion\_tipica))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## `summarise()` has grouped output by 'CCAA'. You can override using the
-## `.groups` argument.
-\end{verbatim}
-
-\begin{verbatim}
-## # A tibble: 19 x 9
-## # Groups:   CCAA [19]
-##    CCAA            Mes    media varianza mediana desviacion_tipica minimo maximo
-##    <fct>           <ord>  <dbl>    <dbl>   <dbl>             <dbl>  <dbl>  <dbl>
-##  1 Illes Balears   jul   4.24e7  8.28e13  4.27e7          9100956. 8.45e6 5.21e7
-##  2 Cataluña        jul   3.41e7  6.21e13  3.50e7          7880467. 1.05e7 4.37e7
-##  3 Canarias        jul   2.19e7  4.62e13  2.18e7          6799406. 4.96e6 3.05e7
-##  4 Andalucía       jul   2.77e7  3.70e13  2.77e7          6086041. 1.36e7 3.59e7
-##  5 Comunitat Vale~ jul   1.50e7  1.03e13  1.52e7          3208243. 6.34e6 1.92e7
-##  6 Comunidad de M~ jul   9.23e6  9.29e12  9.11e6          3048000. 2.70e6 1.40e7
-##  7 Galicia         jul   5.92e6  1.41e12  5.76e6          1185336. 3.49e6 7.84e6
-##  8 País Vasco      jul   3.07e6  9.74e11  3.21e6           987078. 1.74e6 4.95e6
-##  9 Castilla y León jul   4.62e6  4.79e11  4.52e6           692094. 2.63e6 5.73e6
-## 10 Aragón          jul   2.78e6  2.89e11  2.58e6           537925. 1.79e6 3.59e6
-## 11 Principado de ~ jul   2.53e6  2.48e11  2.45e6           497782. 1.66e6 3.33e6
-## 12 Región de Murc~ jul   1.71e6  9.22e10  1.69e6           303717. 8.73e5 2.23e6
-## 13 Cantabria       jul   2.22e6  8.74e10  2.17e6           295558. 1.82e6 2.70e6
-## 14 Castilla - La ~ jul   1.95e6  5.81e10  1.95e6           241007. 1.15e6 2.28e6
-## 15 Extremadura     jul   1.18e6  4.90e10  1.14e6           221419. 7.73e5 1.51e6
-## 16 Comunidad Fora~ jul   1.01e6  4.06e10  1.00e6           201469. 6.42e5 1.30e6
-## 17 La Rioja        jul   5.21e5  6.58e 9  5.22e5            81122. 3.10e5 6.93e5
-## 18 Melilla         jul   2.94e4  5.61e 7  3.19e4             7489. 1.29e4 3.92e4
-## 19 Ceuta           jul   4.40e4  5.29e 7  4.46e4             7272. 1.88e4 5.45e4
-## # i 1 more variable: n_observaciones <int>
-\end{verbatim}
+\includegraphics[width=1\linewidth,height=0.5\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -682,59 +604,7 @@ análisis y se guardó en formato RData.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{outliers\_hampel\_est }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{mutate}\NormalTok{(}
-    \AttributeTok{es\_outlier\_hampel =} \FunctionTok{Hampel\_est}\NormalTok{(Total)}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ungroup}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ccaa\_lista }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(outliers\_hampel\_est}\SpecialCharTok{$}\NormalTok{CCAA)}
-
-\ControlFlowTok{for}\NormalTok{ (cc }\ControlFlowTok{in}\NormalTok{ ccaa\_lista) \{}
-\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ outliers\_hampel\_est }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{==}\NormalTok{ cc) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey70"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ es\_outlier\_hampel)) }\SpecialCharTok{+}
-    \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FALSE"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"TRUE"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}
-      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Detección estacional de outliers (Hampel) {-}"}\NormalTok{, cc),}
-      \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total"}\NormalTok{, }\AttributeTok{color =} \StringTok{"Outlier"}
-\NormalTok{    ) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{()}
-  
-  \FunctionTok{print}\NormalTok{(p)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-2.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-3.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-4.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-5.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-6.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-7.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-8.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-9.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-10.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-11.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-12.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-13.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-14.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-15.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-16.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-17.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-18.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-19.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -749,89 +619,7 @@ análisis y se guardó en formato RData.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{outliers\_boxplot\_est }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# crea la columna Mes}
-  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}
-    \AttributeTok{es\_outlier\_boxplot =} \FunctionTok{Boxplot\_est}\NormalTok{(Total)}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ungroup}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ccaa\_lista }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(outliers\_boxplot\_est}\SpecialCharTok{$}\NormalTok{CCAA)}
-
-
-\ControlFlowTok{for}\NormalTok{ (cc }\ControlFlowTok{in}\NormalTok{ ccaa\_lista) \{}
-\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ outliers\_boxplot\_est }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{==}\NormalTok{ cc) }\SpecialCharTok{\%\textgreater{}\%}
-    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
-    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey70"}\NormalTok{) }\SpecialCharTok{+}
-    \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ es\_outlier\_boxplot)) }\SpecialCharTok{+}
-    \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FALSE"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"TRUE"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
-    \FunctionTok{labs}\NormalTok{(}
-      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Detección outliers (Boxplot) {-}"}\NormalTok{, cc),}
-      \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total"}\NormalTok{, }\AttributeTok{color =} \StringTok{"Outlier"}
-\NormalTok{    ) }\SpecialCharTok{+}
-    \FunctionTok{theme\_minimal}\NormalTok{()}
-  
-  \FunctionTok{print}\NormalTok{(p)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-2.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-3.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-4.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-5.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-6.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-7.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-8.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-9.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-10.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-11.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-12.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-13.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-14.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-15.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-16.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-17.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-18.pdf}
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-19.pdf}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{df\_outliers }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
-  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{mutate}\NormalTok{(}
-    \AttributeTok{out\_hampel  =} \FunctionTok{Hampel\_est}\NormalTok{(Total),}
-    \AttributeTok{out\_boxplot =} \FunctionTok{Boxplot\_est}\NormalTok{(Total),}
-    \AttributeTok{out\_sigma3  =} \FunctionTok{Sigma3\_est}\NormalTok{(Total)}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{ungroup}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{tabla\_outliers\_ccaa }\OtherTok{\textless{}{-}}\NormalTok{ df\_outliers }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{group\_by}\NormalTok{(CCAA) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{summarise}\NormalTok{(}
-    \AttributeTok{n\_hampel  =} \FunctionTok{sum}\NormalTok{(out\_hampel,  }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{n\_boxplot =} \FunctionTok{sum}\NormalTok{(out\_boxplot, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
-    \AttributeTok{n\_sigma3  =} \FunctionTok{sum}\NormalTok{(out\_sigma3,  }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
-  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(n\_hampel))}
-
-\NormalTok{tabla\_outliers\_ccaa}
-\end{Highlighting}
-\end{Shaded}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1}
 
 \begin{verbatim}
 ## # A tibble: 19 x 4
@@ -857,6 +645,37 @@ análisis y se guardó en formato RData.
 ## 18 Comunidad de Madrid               0         0        0
 ## 19 País Vasco                        0         0        0
 \end{verbatim}
+
+Durante la aplicación de los distintos métodos de detección de valores
+atípicos (3-sigma, Hampel y Boxplot) se observó que algunas comunidades
+autónomas no presentaban \emph{outliers}, lo cual resultaba poco
+coherente con la evolución visible de sus series temporales.
+
+Para contrastar esta situación, se analizaron los estadísticos
+descriptivos de los valores mensuales (media, varianza y desviación
+típica). Este análisis permitió comprobar que, en algunos casos, como el
+de la Comunidad de Madrid, la desviación típica estacional es elevada
+debido a un crecimiento sostenido en los últimos años.
+
+Esto implica que, aunque la variabilidad dentro de cada año es baja, la
+variabilidad entre estaciones es alta, provocando que el método 3-sigma
+no identifique correctamente ciertos valores que visualmente podrían
+considerarse atípicos.
+
+Este comportamiento también se repite en otras comunidades de similares
+características, donde las medias y la dispersión entre estaciones son
+altas.
+
+Dado que los resultados sugieren que los métodos tradicionales no captan
+adecuadamente todas las anomalías, y teniendo en cuenta el conocimiento
+contextual del fenómeno turístico, se ha decidido considerar como
+valores atípicos comunes el periodo comprendido entre marzo de 2020 y
+febrero de 2021, correspondiente al impacto más severo de la pandemia de
+la COVID-19.
+
+Este enfoque permite homogeneizar el tratamiento de outliers en todas
+las comunidades, evitando que diferencias en la dispersión estacional
+alteren la comparación entre regiones.
 
 \subsubsection{Análisis de series de
 tiempo}\label{anuxe1lisis-de-series-de-tiempo}
@@ -921,7 +740,7 @@ muestran resultados similares. Ponemos el caso de \textbf{Andalucía}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1}
 Entonces, tras ver que el modelo aproxima de forma razonable los datos
 prepandemia, hay razones para confiar en las predicciones, las cuales se
 pueden interpretar como los datos de pernoctaciones que hubieran
@@ -934,11 +753,12 @@ para las cuales las predicciones no se ajustan en nada (son los casos de
 las ciudades autónomas) en el resto de casos se puede ver como la
 predicción y el valor postpandemia son iguales solo que con cifras algo
 menores menores.
-\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf}
+
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1}
 
 \includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1}
 
 \subsubsection{Análisis}\label{anuxe1lisis}
 
@@ -1090,7 +910,7 @@ tendencias y patrones estacionales.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1}
 
 La gráfica muestra una tendencia general al alza con una clara
 estacionalidad anual, marcada por picos recurrentes en los meses de
@@ -1118,7 +938,7 @@ comportamientos a lo largo del tiempo.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1}
 
 En general, todas las comunidades muestran una marcada estacionalidad,
 con picos de actividad durante los meses de verano. A largo plazo,
@@ -1268,7 +1088,7 @@ temporal mediante un gráfico de líneas.
 ## generated.
 \end{verbatim}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1}
 
 Se observa una caída entre 2010 y 2014, posiblemente asociada a los
 efectos de la crisis de 2008, seguida de una recuperación sostenida
@@ -1306,13 +1126,62 @@ territorios a lo largo del tiempo.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1}
 
 Se observa una tendencia al alza más pronunciada en comunidades como
 Andalucía, Canarias, Madrid y Cataluña, principales motores del sector
 servicios. Destaca una fuerte estacionalidad en Illes Balears, asociada
 a la actividad turística, mientras que en la mayoría de regiones la
 evolución es más estable y con un crecimiento moderado tras la pandemia.
+
+\subsubsection{Detección de outliers}\label{detecciuxf3n-de-outliers-1}
+
+Aplicando los tres métodos de detección de valores atípicos, al igual
+que en la base de datos del turismo, se obtiene el siguiente número de
+outliers identificados por cada método:
+
+\begin{verbatim}
+## # A tibble: 19 x 4
+##    CCAA                       n_hampel n_boxplot n_sigma3
+##    <fct>                         <int>     <int>    <int>
+##  1 Extremadura                       6         8        0
+##  2 Principado de Asturias            5         7        0
+##  3 Castilla - La Mancha              3         0        0
+##  4 La Rioja                          3         1        0
+##  5 Comunidad de Madrid               2         1        0
+##  6 Andalucía                         1         3        0
+##  7 Cataluña                          1         0        0
+##  8 Galicia                           1         0        0
+##  9 País Vasco                        1         3        0
+## 10 Aragón                            0         0        0
+## 11 Canarias                          0         0        0
+## 12 Cantabria                         0         3        0
+## 13 Castilla y León                   0         0        0
+## 14 Ceuta                             0         0        0
+## 15 Comunidad Foral de Navarra        0         0        0
+## 16 Comunitat Valenciana              0         5        0
+## 17 Illes Balears                     0         0        0
+## 18 Melilla                           0         0        0
+## 19 Región de Murcia                  0         0        0
+\end{verbatim}
+
+El número de valores atípicos detectados en la serie de ocupación es
+reducido y no presenta un patrón sistemático entre comunidades
+autónomas. En la mayoría de los casos, estas observaciones reflejan
+variaciones reales del empleo, asociadas al crecimiento estructural del
+mercado laboral o a episodios económicos concretos, como la crisis de
+2008.
+
+A diferencia de lo ocurrido en la base de datos turística ---donde los
+outliers correspondientes al periodo de la pandemia de la COVID-19 se
+eliminaron por representar una disrupción excepcional---, en este caso
+se considera que las fluctuaciones detectadas forman parte del
+comportamiento normal de la serie.
+
+Por tanto, no se eliminarán las observaciones atípicas y se mantendrán
+en el análisis, tomando como referencia el método de detección 3-sigma,
+que ofrece una estimación más estable y coherente con la naturaleza de
+estos datos.
 
 \section{ANÁLISIS BIVARIANTE}\label{anuxe1lisis-bivariante}
 
@@ -1476,7 +1345,7 @@ y significativo.
 ## 19 Ceuta                      0.0834 4.89e- 1 No
 \end{verbatim}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-36-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-40-1}
 
 Se observa que Illes Balears presenta la mayor correlación positiva (r =
 0.68) entre turismo y empleo en el sector servicios, reflejando su
@@ -1531,7 +1400,7 @@ explicada por el turismo.
 ## 19 Región de Murcia           0.122
 \end{verbatim}
 
-\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-38-1.pdf}
+\includegraphics[width=1\linewidth,height=0.3\textheight]{Informe_Grupo_F_files/figure-latex/unnamed-chunk-42-1}
 
 En general, se observa que los valores son moderados o bajos, lo que
 indica que, aunque existe cierta relación entre ambas variables, el
