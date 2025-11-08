@@ -230,8 +230,171 @@ anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
 
-### Detección de *outliers*
+### Detección de **outliers**
 
+```{r Regla 3 Sigma}
+Sigma3_est <- function(x, k = 3) {
+  media <- mean(x, na.rm = TRUE)
+  desv <- sd(x, na.rm = TRUE)
+  out <- abs(x - media) > (k * desv)
+}
+```
+
+```{r}
+outliers_sigma3_est <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
+  group_by(CCAA, Mes) %>%
+  mutate(
+    es_outlier_sigma3 = Sigma3_est(Total)
+  ) %>%
+  ungroup()
+```
+
+```{r}
+ccaa_lista <- unique(outliers_sigma3_est$CCAA)
+
+for (cc in ccaa_lista) {
+  p <- outliers_sigma3_est %>%
+    filter(CCAA == cc) %>%
+    ggplot(aes(Periodo, Total)) +
+    geom_line(color = "grey70") +
+    geom_point(aes(color = es_outlier_sigma3)) +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+    labs(
+      title = paste("Detección estacional de outliers (3σ) -", cc),
+      x = "Periodo", 
+      y = "Total", 
+      color = "Outlier"
+    ) +
+    theme_minimal()
+  
+  print(p)
+}
+```
+
+```{r}
+df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
+  group_by(CCAA, Mes) %>%
+  filter(Mes=='jul') %>% 
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    varianza = var(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    desviacion_tipica = sd(Total, na.rm = TRUE),
+    minimo = min(Total, na.rm = TRUE),
+    maximo = max(Total, na.rm = TRUE),
+    n_observaciones = n()
+  ) %>% 
+  arrange(desc(desviacion_tipica))
+```
+
+
+```{r Regla Hampel}
+Hampel_est <- function(x, k = 3) {
+  abs(x - median(x)) > k * mad(x)
+}
+```
+
+```{r}
+outliers_hampel_est <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%
+  group_by(CCAA, Mes) %>% 
+  mutate(
+    es_outlier_hampel = Hampel_est(Total)
+  ) %>%
+  ungroup()
+```
+
+
+```{r}
+ccaa_lista <- unique(outliers_hampel_est$CCAA)
+
+for (cc in ccaa_lista) {
+  p <- outliers_hampel_est %>%
+    filter(CCAA == cc) %>%
+    ggplot(aes(Periodo, Total)) +
+    geom_line(color = "grey70") +
+    geom_point(aes(color = es_outlier_hampel)) +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+    labs(
+      title = paste("Detección estacional de outliers (Hampel) -", cc),
+      x = "Periodo", y = "Total", color = "Outlier"
+    ) +
+    theme_minimal()
+  
+  print(p)
+}
+```
+
+
+```{r Regla boxplot}
+Boxplot_est <- function(x, k = 1.5) {
+  Q1 <- quantile(x, 0.25, na.rm = TRUE)
+  Q3 <- quantile(x, 0.75, na.rm = TRUE)
+  IQR_value <- Q3 - Q1
+  inf <- Q1 - k * IQR_value
+  sup <- Q3 + k * IQR_value
+  (x < inf) | (x > sup)
+}
+```
+
+```{r}
+outliers_boxplot_est <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%  # crea la columna Mes
+  group_by(CCAA, Mes) %>%
+  mutate(
+    es_outlier_boxplot = Boxplot_est(Total)
+  ) %>%
+  ungroup()
+```
+
+```{r}
+ccaa_lista <- unique(outliers_boxplot_est$CCAA)
+
+
+for (cc in ccaa_lista) {
+  p <- outliers_boxplot_est %>%
+    filter(CCAA == cc) %>%
+    ggplot(aes(Periodo, Total)) +
+    geom_line(color = "grey70") +
+    geom_point(aes(color = es_outlier_boxplot)) +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+    labs(
+      title = paste("Detección outliers (Boxplot) -", cc),
+      x = "Periodo", y = "Total", color = "Outlier"
+    ) +
+    theme_minimal()
+  
+  print(p)
+}
+```
+
+```{r}
+df_outliers <- df_Turismo %>%
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
+  group_by(CCAA, Mes) %>%
+  mutate(
+    out_hampel  = Hampel_est(Total),
+    out_boxplot = Boxplot_est(Total),
+    out_sigma3  = Sigma3_est(Total)
+  ) %>%
+  ungroup()
+```
+
+
+```{r}
+tabla_outliers_ccaa <- df_outliers %>%
+  group_by(CCAA) %>%
+  summarise(
+    n_hampel  = sum(out_hampel,  na.rm = TRUE),
+    n_boxplot = sum(out_boxplot, na.rm = TRUE),
+    n_sigma3  = sum(out_sigma3,  na.rm = TRUE)
+  ) %>%
+  arrange(desc(n_hampel))
+
+tabla_outliers_ccaa
+```
 
 ### Análisis de series de tiempo
 
@@ -352,6 +515,18 @@ AnalisisBox[[83]]
 AnalisisBox[[13]]
 ```
 
+
+##TODO**Base de datos actualizada con los valores imputados**
+
+```{r}
+# Definir los periodos COVID que vamos a imputar
+covid_inicio <- as.yearmon("2020-01")
+covid_fin    <- as.yearmon("2021-12")
+
+
+
+```
+
 ### Análisis
 
 Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos.
@@ -446,7 +621,6 @@ Asimismo, se observa heterocedasticidad en regiones como Illes Balears, Asturias
 Por último, todas las comunidades registran una caída abrupta en 2020, asociada al impacto de la pandemia de la COVID-19.
 En el siguiente apartado se aplicará el método 3sigma estacional (por mes y comunidad autónoma) para identificar de forma formal los valores atípicos sin confundirlos con la estacionalidad natural de la serie.
 
-#TODO Añadir los analisis de las series temporales 
 
 ##TODO METER LOS MAPAS Y EXPLICARLO Mas bien, meter el del año 2024 y explicarlo. También estaría bien meter algo más de bivariante
 
@@ -570,17 +744,57 @@ Se observa una tendencia al alza más pronunciada en comunidades como Andalucía
 
 ```{r Dataframe con las predicciones}
 AnalisisBox <- readRDS("../AnalisisBox.rds")
-df <- data.frame(matrix(nrow = 12, ncol = 0))
+
+df <- data.frame(matrix(nrow = 0, ncol = 12))
 ccaa <- levels(df_Turismo$CCAA)
 j <- 1
+
 for (x in AnalisisBox){
   if (inherits(x, "forecast")){
-    df[[ccaa[[j]]]] <- x$mean
+    df[j, ] <- x$mean 
+    rownames(df)[j] <- ccaa[[j]]
     j <- j + 1
   }
 }
+
 ```
 
+```{r}
+# Definimos el rango de meses a sustituir
+inicio_covid <- as.Date("2020-03-01")
+fin_covid    <- as.Date("2021-03-30")
+
+# Identificamos los periodos (meses) dentro de ese rango en df_Turismo
+periodos_covid <- df_Turismo %>%
+  filter(Periodo >= inicio_covid & Periodo <= fin_covid) %>%
+  distinct(Periodo) %>%
+  arrange(Periodo) %>%
+  pull(Periodo)
+
+# Convertimos df de predicciones (12 o más filas, columnas = CCAA) a formato largo
+df_pred <- df %>%
+  mutate(Periodo = periodos_covid) %>%   # asigna las fechas COVID a las filas del df
+  pivot_longer(
+    cols = -Periodo,
+    names_to = "CCAA",
+    values_to = "Total_imputado"
+  )
+
+# Sustituimos en df_Turismo los valores originales por los imputados en ese periodo
+df_Turismo_corregido <- df_Turismo %>%
+  left_join(df_pred, by = c("CCAA", "Periodo")) %>%
+  mutate(
+    Total = if_else(
+      !is.na(Total_imputado),       # si hay predicción
+      as.numeric(Total_imputado),   # usamos la imputada
+      as.numeric(Total)             # si no, mantenemos la original
+    )
+  ) %>%
+  select(-Total_imputado)
+
+
+
+```
 
 En esta sección se abordará el análisis bivariante, con el objetivo de relacionar las bases de datos de turismo y ocupación para estudiar posibles vínculos entre ambas variables.
 
