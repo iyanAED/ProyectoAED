@@ -515,18 +515,6 @@ AnalisisBox[[83]]
 AnalisisBox[[13]]
 ```
 
-
-##TODO**Base de datos actualizada con los valores imputados**
-
-```{r}
-# Definir los periodos COVID que vamos a imputar
-covid_inicio <- as.yearmon("2020-01")
-covid_fin    <- as.yearmon("2021-12")
-
-
-
-```
-
 ### Análisis
 
 Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos.
@@ -742,6 +730,10 @@ Se observa una tendencia al alza más pronunciada en comunidades como Andalucía
 
 # ANÁLISIS BIVARIANTE
 
+##TODO
+
+**Base de datos actualizada con los valores imputados**
+
 ```{r Dataframe con las predicciones}
 AnalisisBox <- readRDS("../AnalisisBox.rds")
 
@@ -760,39 +752,46 @@ for (x in AnalisisBox){
 ```
 
 ```{r}
-# Definimos el rango de meses a sustituir
+# Copia del data frame original
+df_Turismo_corregido <- df_Turismo
+
+# Ordenar por CCAA y Periodo para tener los meses en orden dentro de cada comunidad
+df_Turismo_corregido <- df_Turismo_corregido %>%
+  arrange(CCAA, Periodo)
+
+# Definir rango COVID (12 meses: 2020-03 a 2021-02)
 inicio_covid <- as.Date("2020-03-01")
-fin_covid    <- as.Date("2021-03-30")
+fin_covid    <- as.Date("2021-02-01")
 
-# Identificamos los periodos (meses) dentro de ese rango en df_Turismo
-periodos_covid <- df_Turismo %>%
-  filter(Periodo >= inicio_covid & Periodo <= fin_covid) %>%
-  distinct(Periodo) %>%
-  arrange(Periodo) %>%
-  pull(Periodo)
+# Aseguramos que df es data.frame y tiene dimensiones
 
-# Convertimos df de predicciones (12 o más filas, columnas = CCAA) a formato largo
-df_pred <- df %>%
-  mutate(Periodo = periodos_covid) %>%   # asigna las fechas COVID a las filas del df
-  pivot_longer(
-    cols = -Periodo,
-    names_to = "CCAA",
-    values_to = "Total_imputado"
+
+# Número de meses que tenemos predichos (columnas de df)
+n_meses <- ncol(df)
+
+# Comunidades en el mismo orden para df
+ccaa_niveles <- levels(df_Turismo_corregido$CCAA)
+
+# Opcional pero útil: asignar nombres de fila a df según las CCAA
+if (nrow(df) == length(ccaa_niveles)) {
+  rownames(df) <- ccaa_niveles
+}
+
+# Bucle: para cada CCAA, sustituir los 12 meses de COVID por los del df
+for (ccaa_actual in ccaa_niveles) {
+  
+  # índices de las filas de esa CCAA en el periodo COVID
+  idx <- which(
+    df_Turismo_corregido$CCAA   == ccaa_actual &
+    df_Turismo_corregido$Periodo >= inicio_covid &
+    df_Turismo_corregido$Periodo <= fin_covid
   )
-
-# Sustituimos en df_Turismo los valores originales por los imputados en ese periodo
-df_Turismo_corregido <- df_Turismo %>%
-  left_join(df_pred, by = c("CCAA", "Periodo")) %>%
-  mutate(
-    Total = if_else(
-      !is.na(Total_imputado),       # si hay predicción
-      as.numeric(Total_imputado),   # usamos la imputada
-      as.numeric(Total)             # si no, mantenemos la original
-    )
-  ) %>%
-  select(-Total_imputado)
-
-
+  
+  # si hay tantas filas como meses predichos, sustituimos
+  if (length(idx) == n_meses && ccaa_actual %in% rownames(df)) {
+    df_Turismo_corregido$Total[idx] <- as.numeric(df[ccaa_actual, 1:n_meses])
+  }
+}
 
 ```
 
@@ -803,7 +802,7 @@ Antes de combinar los conjuntos de datos, será necesario estandarizar ciertas v
 Así pues, se convierte la variable Periodo al formato año-trimestre, luego se agrupan los datos por comunidad y periodo, y se calcula el total de turistas por trimestre y CCAA. Finalmente, se ordenan los registros por comunidad y periodo para facilitar el merge posterior.
 
 ```{r}
-turismo_to_merge <- df_Turismo %>%
+turismo_to_merge <- df_Turismo_corregido %>%
   mutate(Periodo = as.yearqtr(Periodo)) %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total_turismo = sum(Total, na.rm = TRUE), .groups = "drop") %>% 
