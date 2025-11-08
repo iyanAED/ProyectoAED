@@ -473,7 +473,19 @@ Prediccion <- function(Serie, Serie_test, H){
 ```
 
 ```{r Creación y análisis de las series, include=FALSE}
+
 # Las siguientes líneas son las usadas para extraer la información del dataframe
+
+Convertir_en_Serie <- function(vector, Anio_Inicio, Mes_Inicio, Anio_Final, Mes_Final, frec){
+  return(ts(vector, start = c(Anio_Inicio, Mes_Inicio), end = c(Anio_Final, Mes_Final), frequency = frec))
+}
+
+Creacion <- function(comunidad){
+  return(Convertir_en_Serie(df_Turismo[df_Turismo$CCAA == comunidad,]$Total, 1999, 1, 2025, 9, 12))
+}
+Series <- lapply(levels(df_Turismo$CCAA), Creacion)
+names(Series) <- levels(df_Turismo$CCAA)
+
 PrePandemia <- lapply(Series, function(x) window(x, start=start(x),end=c(2020, 2)))
 Recorte <- function(serie, fechaIni=c(2022,3), fechaFin=c(2023, 2)){
   serie_nueva <- ts(serie, start=fechaIni, end=fechaFin, frequency = 12)
@@ -484,7 +496,7 @@ PostPandemia <- lapply(Series, Recorte)
 ```
 
 ```{r Análisis, include=FALSE}
--------------------------### IMPORTANTE ###-----------------------------
+# -------------------------### IMPORTANTE ###-----------------------------
 # El proceso de ajustar el modelo arima para cada comunidad lleva un tiempo de computación elevado, por eso la línea siguiente está comentada, para ejecutar solo hay que descomentarla
 # AnalisisBox <- mapply(Prediccion, PrePandemia, PostPandemia, rep(12,10))
 ```

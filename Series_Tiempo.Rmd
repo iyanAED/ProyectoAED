@@ -282,3 +282,24 @@ HacerPrediccion <- function(Serie, Serie_test, Analisis){
 Prediccion <- mapply(HacerPrediccion, PrePandemia, PostPandemia, AnalisisClasic)
 ```
 
+
+
+```{r}
+
+AnalisisBox <- readRDS("AnalisisBox.rds")
+
+lista <- list()
+ccaa <- levels(df_Turismo$CCAA)
+j <- 1
+
+for (x in AnalisisBox){
+  if (inherits(x, "forecast")){
+    # browser()
+    lista[j] <- x
+    j <- j + 1
+  }
+}
+# Predicciones <- lapply(lista, function(x) forecast(x, 36))
+
+```
+
