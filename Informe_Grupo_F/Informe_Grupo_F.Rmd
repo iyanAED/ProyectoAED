@@ -1,140 +1,19 @@
 ---
-title: Full title of the paper (Capitalized)
+title: Análisis de la relación entre la actividad turística y el empleo en el sector servicios en España
 author:
-  - name: Dominik Leutnant
-    affil: 1,2,\ddagger,*
-    orcid: 0000-0003-3293-2315
-  - name: John Doe
-    affil: 2, \dagger, \ddagger
-affiliation:
-  - num: 1
-    address: |
-      Muenster University of Applied Sciences - 
-      Institute for Infrastructure, Water, Resources, Environment
-      Correnstr. 25, 48149 Muenster, Germany
-    email: leutnant@fh-muenster.de
-  - num: 2
-    address: |
-      Your department
-      Street, City, Country
-    email: mail@mail.com
-# author citation list in chicago format
-authorcitation: |
-  Leutnant, D.; Doe, J.
-# firstnote to eighthnote
-firstnote: |
-  Current address: Updated affiliation
-secondnote: |
-  These authors contributed equally to this work.
-correspondence: |
-  leutnant@fh-muenster.de; Tel.: +XX-000-00-0000.
-# document options
-journal: notspecified
-type: article
-status: submit
-# front matter
-simplesummary: |
-  A Simple summary goes here.
-abstract: |
-  A single paragraph of about 200 words maximum. For research articles, 
-  abstracts should give a pertinent overview of the work. We strongly encourage
-  authors to use the following style of structured abstracts, but without 
-  headings: 1) Background: Place the question addressed in a broad context and
-  highlight the purpose of the study; 2) Methods: Describe briefly the main
-  methods or treatments applied; 3) Results: Summarize the article's main 
-  findings; and 4) Conclusion: Indicate the main conclusions or interpretations. 
-  The abstract should be an objective representation of the article, it must not 
-  contain results which are not presented and substantiated in the main text and 
-  should not exaggerate the main conclusions.
-keywords: |
-  keyword 1; keyword 2; keyword 3 (list three to ten pertinent keywords specific 
-  to the article, yet reasonably common within the subject discipline.).
-# back matter
-acknowledgement: |
-  All sources of funding of the study should be disclosed. Please clearly 
-  indicate grants that you have received in support of your research work. 
-  Clearly state if you received funds for covering the costs to publish in open 
-  access.
-authorcontributions: |
-  For research articles with several authors, a short paragraph specifying their 
-  individual contributions must be provided. The following statements should be 
-  used ``X.X. and Y.Y. conceive and designed the experiments; X.X. performed the 
-  experiments; X.X. and Y.Y. analyzed the data; W.W. contributed 
-  reagents/materials/analysis tools; Y.Y. wrote the paper.'' Authorship must be
-  limited to those who have contributed substantially to the work reported.
-funding: |
-  Please add: ``This research received no external funding'' or ``This research 
-  was funded by NAME OF FUNDER grant number XXX.'' and  and ``The APC was funded 
-  by XXX''. Check carefully that the details given are accurate and use the 
-  standard spelling of funding agency names at 
-  \url{https://search.crossref.org/funding}, any errors may affect your future 
-  funding.
-institutionalreview: |
-  In this section, you should add the Institutional Review Board Statement and 
-  approval number, if relevant to your study. You might choose to exclude 
-  this statement if the study did not require ethical approval. Please note 
-  that the Editorial Office might ask you for further information. Please add 
-  “The study was conducted in accordance with the Declaration of Helsinki, 
-  and approved by the Institutional Review Board (or Ethics Committee) of 
-  NAME OF INSTITUTE (protocol code XXX and date of approval).” for studies 
-  involving humans. OR “The animal study protocol was approved by the 
-  Institutional Review Board (or Ethics Committee) of NAME OF INSTITUTE 
-  (protocol code XXX and date of approval).” for studies involving animals. 
-  OR “Ethical review and approval were waived for this study due to REASON 
-  (please provide a detailed justification).” OR “Not applicable” for
-   studies not involving humans or animals.
-informedconsent: |
-  Any research article describing a study involving humans should contain this 
-  statement. Please add ``Informed consent was obtained from all subjects 
-  involved in the study.'' OR ``Patient consent was waived due to REASON 
-  (please provide a detailed justification).'' OR ``Not applicable'' for 
-  studies not involving humans. You might also choose to exclude this statement 
-  if the study did not involve humans.
-  
-  Written informed consent for publication must be obtained from participating 
-  patients who can be identified (including by the patients themselves). Please 
-  state ``Written informed consent has been obtained from the patient(s) to 
-  publish this paper'' if applicable.
-dataavailability: |
-  We encourage all authors of articles published in MDPI journals to share 
-  their research data. In this section, please provide details regarding where 
-  data supporting reported results can be found, including links to publicly 
-  archived datasets analyzed or generated during the study. Where no new data 
-  were created, or where data is unavailable due to privacy or ethical 
-  re-strictions, a statement is still required. Suggested Data Availability 
-  Statements are available in section “MDPI Research Data Policies” at 
-  \url{https://www.mdpi.com/ethics}.
-conflictsofinterest: |
-  Declare conflicts of interest or state 'The authors declare no conflict of 
-  interest.' Authors must identify and declare any personal circumstances or
-  interest that may be perceived as inappropriately influencing the
-  representation or interpretation of reported research results. Any role of the
-  funding sponsors in the design of the study; in the collection, analyses or 
-  interpretation of data in the writing of the manuscript, or in the decision to 
-  publish the results must be declared in this section. If there is no role, 
-  please state 'The founding sponsors had no role in the design of the study; 
-  in the collection, analyses, or interpretation of data; in the writing of the 
-  manuscript, an in the decision to publish the results'.
-supplementary: |
- The following supporting information can be downloaded at:  
- \linksupplementary{s1}, Figure S1: title; Table S1: title; Video S1: title.
-abbreviations:
-  - short: MDPI
-    long: Multidisciplinary Digital Publishing Institute
-  - short: DOAJ
-    long: Directory of open access journals
-  - short: TLA
-    long: Three letter acronym
-  - short: LD 
-    long: linear dichroism
-bibliography: mybibfile.bib
-appendix: appendix.tex
-endnotes: false
+  - name: "Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón"
+  afiliation: 'Universitat de València'
+date: "`r Sys.Date()`"
 output: 
   rticles::mdpi_article:
     extra_dependencies: longtable
   pdf_document:
     latex_engine: xelatex
+abstract: |
+  El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
+  Los resultados muestran una clara tendencia creciente y estacional en la actividad turística, así como una relación positiva y estadísticamente significativa entre el turismo y el empleo en la mayoría de las comunidades autónomas. Sin embargo, las elasticidades obtenidas son bajas, lo que indica que, aunque ambas variables evolucionan conjuntamente, el empleo responde de forma inelástica a las variaciones del turismo. 
+  En conjunto, los resultados sugieren que el turismo constituye un motor relevante del empleo en los servicios, aunque su efecto es moderado y depende de la estructura económica de cada territorio.
+
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -150,6 +29,12 @@ library(stringr)
 library(zoo)
 library(purrr)
 library(forecast)
+library(leaflet)
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(giscoR)
+library(pacman)
 ```
 
 # INTRODUCCIÓN
@@ -448,6 +333,8 @@ En el siguiente apartado se aplicará el método 3sigma estacional (por mes y co
 
 #TODO Añadir los analisis de las series temporales 
 
+##TODO METER LOS MAPAS Y EXPLICARLO Mas bien, meter el del año 2024 y explicarlo. También estaría bien meter algo más de bivariante
+
 ## OCUPACIÓN
 
 El segundo conjunto de datos corresponde a la ocupación por sectores económicos en España, obtenido del INE. Contiene el número de personas ocupadas (en miles) por comunidad o ciudad autónoma, sector y periodo trimestral.
@@ -564,7 +451,6 @@ ggplot(ocup_ccaa, aes(Periodo, Total)) +
 
 Se observa una tendencia al alza más pronunciada en comunidades como Andalucía, Canarias, Madrid y Cataluña, principales motores del sector servicios. Destaca una fuerte estacionalidad en Illes Balears, asociada a la actividad turística, mientras que en la mayoría de regiones la evolución es más estable y con un crecimiento moderado tras la pandemia.
 
-
 # ANÁLISIS BIVARIANTE
 
 En esta sección se abordará el análisis bivariante, con el objetivo de relacionar las bases de datos de turismo y ocupación para estudiar posibles vínculos entre ambas variables.
@@ -595,6 +481,7 @@ df_Turismo_Ocupacion <- merge(
 ```
 
 Finalmente, una vez preparadas y combinadas las bases de datos, se guardan los objetos resultantes en formato `.RData`.
+
 Esto permite conservar los datos limpios y listos para su análisis, facilitando su carga posterior sin necesidad de repetir el proceso de limpieza y fusión.
 
 ```{r, include=FALSE}
@@ -603,79 +490,149 @@ Esto permite conservar los datos limpios y listos para su análisis, facilitando
 ```
 
 -------
-Como primer paso, se generan **gráficos de dispersión por Comunidad Autónoma** para analizar la relación entre el número de turistas y el empleo en el sector servicios.
 
-El proceso automatiza la creación de un gráfico por región, mostrando los puntos de datos y una línea de tendencia lineal que permite visualizar la correlación entre ambas variables.
-Cada gráfico se guarda de forma individual en la carpeta “graficos_comunidades” para su consulta posterior.
+**Correlaciones de Pearson**
 
-```{r, echo=FALSE} 
-## TODO arreglar
+Como primer paso, se calcula la correlación de Pearson entre el número de turistas y el empleo en el sector servicios para cada Comunidad Autónoma.
 
-# Crear una carpeta donde guardar los gráficos
-dir.create("graficos_comunidades", showWarnings = FALSE)
+El objetivo es medir la intensidad y dirección de la relación lineal entre ambas variables, obteniendo tanto el coeficiente de correlación como su p-valor para evaluar la significatividad estadística.
 
-# Obtener todas las comunidades únicas
-comunidades <- unique(df_Turismo_Ocupacion$CCAA)
+Además, se incorpora un indicador de nivel de significación (p < 0.05), que permite identificar en qué comunidades la relación es estadísticamente relevante.
 
-# Bucle para crear un gráfico por comunidad
-for (com in comunidades) {
-  
-  # Filtrar datos de la comunidad actual
-  datos_com <- df_Turismo_Ocupacion %>%
-    filter(CCAA == com)
-  
-  # Crear el gráfico
-  p <- ggplot(datos_com, aes(x = Total_turismo, y = Numero_ocupados)) +
-    geom_point(color = "#0072B2", alpha = 0.7) +
-    geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
-    labs(
-      title = paste("Relación entre Turismo y Ocupación -", com),
-      x = "Total Turismo",
-      y = "Número de Ocupados (Servicios)"
-    ) +
-    theme_minimal()
-  
-  # Mostrar el gráfico ##TODO habría que eliminar el print del bucle y ponerlo fuera para que me muestre solo uno o varios, no?
-  print(p)
-  
-  # Guardar el gráfico como archivo PNG
-  ggsave(filename = paste0("graficos_comunidades/", 
-                           gsub(" ", "_", com), ".png"),
-         plot = p, width = 7, height = 5)
-}
-```
+Los resultados se ordenan de mayor a menor correlación, destacando aquellas regiones donde el vínculo entre turismo y empleo es más fuerte y significativo.
 
-A continuación, se calcula la correlación de Pearson entre el número de turistas y el empleo en el sector servicios para cada Comunidad Autónoma.
-
-El objetivo es medir la intensidad y dirección de la relación lineal entre ambas variables, obteniendo el coeficiente de correlación y su p-valor.
-
-Los resultados se ordenan de mayor a menor para identificar las regiones donde el vínculo entre turismo y empleo es más fuerte.
-
-```{r}
+```{r, echo=FALSE}
 correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
   group_by(CCAA) %>%
   summarise(
     resultado = list(cor.test(Total_turismo, 
                               Numero_ocupados, method = "pearson"))) %>%
   mutate(
-    correlacion = map_dbl(resultado, "estimate"),
+    cor = map_dbl(resultado, "estimate"),
     p_value = map_dbl(resultado, "p.value")
   ) %>%
-  select(CCAA, correlacion, p_value) %>%
-  arrange(desc(correlacion))
+  select(CCAA, cor, p_value) %>%
+  arrange(desc(cor)) %>% 
+   mutate(sign = ifelse(p_value <= 0.05, "Sí", "No"))
 
 correlaciones_por_comunidad
+
 ```
 
-Se observa que Illes Balears presenta la mayor correlación positiva (r = 0.68) entre turismo y empleo en el sector servicios, lo cual resulta coherente dada la fuerte dependencia económica del turismo estival, que genera un notable aumento de la ocupación.
+```{r, echo=FALSE}
+ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(title = "Correlación entre Turismo y Ocupación por Comunidad Autónoma",
+       x = "Comunidad Autónoma", y = "Coeficiente de correlación de Pearson") +
+  theme_minimal()
 
-Por el contrario, Melilla muestra una correlación negativa (r = -0.24), lo que podría deberse a una menor vinculación directa entre la llegada de turistas y la creación de empleo local.
+```
 
-En el resto de comunidades, las correlaciones son positivas pero de baja magnitud, lo que sugiere que, aunque el turismo y el empleo tienden a crecer conjuntamente, la relación no es muy fuerte.
+Se observa que Illes Balears presenta la mayor correlación positiva (r = 0.68) entre turismo y empleo en el sector servicios, reflejando su fuerte dependencia del turismo estival. En el extremo opuesto, Melilla muestra una correlación negativa (r = -0.24), probablemente por una menor relación directa entre la llegada de turistas y el empleo local.
 
-Cabe recordar que la correlación no implica causalidad, por lo que estos resultados reflejan asociación, pero no necesariamente una relación causa-efecto.
+En general, las correlaciones son positivas pero de magnitud moderada, indicando que ambas variables tienden a evolucionar conjuntamente, aunque con distinta intensidad según la región.
 
-##TODO METER LOS MAPAS Y EXPLICARLO Mas bien, meter el del año 2024 y explicarlo. También estaría bien meter algo más de bivariante
+En la mayoría de comunidades, la relación es estadísticamente significativa (p < 0.05), mientras que en Ceuta, La Rioja, Cataluña y Asturias no se observa significatividad, posiblemente por el menor peso del turismo en su economía o por una mayor volatilidad en los datos.
+
+Por último, cabe señalar que la correlación no implica causalidad: los resultados reflejan asociación, pero no necesariamente una relación directa de causa y efecto.
+
+**Análisis de regresión lineal simple**
+
+Además, modelamos para cada comunidad una regresión  simple con el objetivo de conocer la **bondad de ajuste** (`R^2`), lo cual permitea valorar qué proporción de la variabilidad en el empleo es explicada por el turismo.
+
+```{r, echo=FALSE}
+modelos_por_ccaa <- df_Turismo_Ocupacion %>%
+  group_by(CCAA) %>%
+  do(modelo = lm(Numero_ocupados ~ Total_turismo, data = .)) %>%
+  mutate(
+    R2 = summary(modelo)$r.squared,
+    R2         = summary(modelo)$r.squared,
+    pendiente  = coef(modelo)[2], #β₁
+    intercepto = coef(modelo)[1], #β₀
+    p_value    = summary(modelo)$coefficients[2, 4]
+  ) %>%
+  select(CCAA, pendiente, intercepto, R2, p_value)
+
+modelos_por_ccaa[,c(1,4)]
+```
+```{r, echo=FALSE}
+año_ref <- 2024
+
+nuts2 <- gisco_get_nuts(year = año_ref,
+                        resolution = 20,
+                        nuts_level = 2,
+                        country = "ES") %>%
+         select(NUTS_ID, NAME_LATN)
+
+nuts2 <- nuts2 %>%
+  mutate(NAME_LATN = recode(
+    NAME_LATN,
+    "Comunidad Valenciana"      = "Comunitat Valenciana",
+    "Castilla-La Mancha"        = "Castilla - La Mancha",
+    "Ciudad Autónoma de Ceuta"  = "Ceuta",
+    "Ciudad Autónoma de Melilla"= "Melilla"
+  ))
+
+R2_por_ccaa <- modelos_por_ccaa %>%
+  select(CCAA, R2)
+
+mapa_R2 <- nuts2 %>%
+  left_join(R2_por_ccaa, by = c("NAME_LATN" = "CCAA"))
+
+ggplot(mapa_R2) +
+  geom_sf(aes(fill = R2), color = "white") +
+  scale_fill_gradientn(
+    colours = hcl.colors(7, "Inferno", rev = TRUE),
+    name = expression(R^2)
+  ) +
+  labs(
+    title = "Bondad de ajuste por CCAA",
+    subtitle = "Coeficiente de determinación (R²)",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+```
+
+En general, se observa que los valores son moderados o bajos, lo que indica que, aunque existe cierta relación entre ambas variables, el turismo no explica completamente la evolución del empleo, y probablemente influyen otros factores económicos o estructurales.
+
+Las comunidades con mayor ajuste del modelo son Aragón (R² = 0.25), Castilla y León (R² = 0.24), Cantabria (R² = 0.22) y Canarias (R² = 0.22), donde alrededor de una cuarta parte de la variabilidad en el empleo se asocia con los cambios en el turismo.
+
+Por el contrario, en Ceuta (R² ≈ 0) y Cataluña (R² ≈ 0.05) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
+
+A partir del modelo de regresión lineal calculado anteriormente, se estima la **elasticidad** del empleo respecto al turismo, utilizando la pendiente de la recta de regresión como medida del impacto del turismo sobre el empleo en cada comunidad autónoma.
+
+```{r, echo=FALSE}
+elasticidad_por_ccaa <- df_Turismo_Ocupacion %>%
+  group_by(CCAA) %>%
+  summarise(
+    media_turismo = mean(Total_turismo, na.rm = TRUE),
+    media_ocupados = mean(Numero_ocupados, na.rm = TRUE)
+  ) %>%
+  left_join(modelos_por_ccaa, by = "CCAA") %>%
+  mutate(
+    elasticidad = pendiente * (media_turismo / media_ocupados),
+    int=ifelse(elasticidad>=1, 'Elástico', 'Inelástico') #interpretación
+  ) %>%
+  select(CCAA, elasticidad, int) %>% 
+  arrange(desc(elasticidad))
+  
+elasticidad_por_ccaa
+
+```
+
+Los valores de elasticidad, comprendidos entre -0.09 y 0.19, muestran que en todas las comunidades autónomas la relación entre turismo y empleo es inelástica (ya que <1), es decir, el empleo en el sector servicios apenas varía ante los cambios en la actividad turística. Esto sugiere que un aumento del turismo no se traduce proporcionalmente en un mayor nivel de empleo.
+
+Esta baja respuesta puede deberse a que parte del empleo es estructural o fijo, a la existencia de desfases temporales entre el incremento del turismo y la contratación de personal, o a que las variables se miden en frecuencias distintas (mensual para el turismo y trimestral para el empleo), lo que suaviza la relación observada.
+
+En regiones como Canarias (≈0.19), donde la elasticidad es algo mayor, el empleo muestra una mayor sensibilidad a las variaciones del turismo, coherente con su elevada dependencia económica de esta actividad.
+
+Aunque las correlaciones y la bondad de ajuste indicaban una relación fuerte y significativa entre turismo y empleo, las elasticidades calculadas son bajas. Esto no representa una contradicción, sino una diferencia en la interpretación: mientras la correlación mide la fuerza de la relación, la elasticidad cuantifica su intensidad relativa.
+
+En otras palabras, aunque el turismo y el empleo evolucionan de forma coordinada, el impacto porcentual del turismo sobre el empleo es reducido, lo que sugiere que otros factores —como la estacionalidad o la estabilidad estructural del mercado laboral— también influyen en la evolución del empleo.
+
 
 # CONCLUSIONES
 
