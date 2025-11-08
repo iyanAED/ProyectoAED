@@ -229,7 +229,18 @@ anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
 
-### Detección de **outliers**
+### Detección de outliers
+
+Para la detección de valores atípicos en las series de turismo se aplicaron tres métodos estadísticos complementarios:
+
+- Regla 3-sigmas: considera como *outliers* los valores que se alejan más de tres desviaciones típicas respecto a la media.  
+- Método de Hampel: utiliza la mediana y la desviación absoluta mediana (MAD) para detectar observaciones atípicas, siendo más robusto frente a valores extremos.  
+- Método del Boxplot: identifica *outliers* a partir de los límites del rango intercuartílico (1,5×IQR).  
+
+En todos los casos se aplicó una versión estacional del método, calculando los parámetros (media, desviación, mediana o cuartiles) por mes y comunidad autónoma, con el objetivo de evitar clasificar como atípicos los picos o caídas debidos a la estacionalidad turística.  
+
+Los gráficos se generaron automáticamente para cada comunidad autónoma, aunque solo se muestra un ejemplo en el informe. Todos ellos se han guardado en carpetas independientes:  
+`graficos_outliers_3sigma`, `graficos_outliers_hampel` y `graficos_outliers_boxplot`.
 
 ```{r Regla 3 Sigma}
 Sigma3_est <- function(x, k = 3) {
@@ -239,7 +250,7 @@ Sigma3_est <- function(x, k = 3) {
 }
 ```
 
-```{r}
+```{r, echo=FALSE}
 outliers_sigma3_est <- df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
   group_by(CCAA, Mes) %>%
@@ -293,7 +304,7 @@ outliers_sigma3_est %>%
   theme_minimal()
 ```
 
-```{r}
+```{r, include=FALSE}
 df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
   group_by(CCAA, Mes) %>%
@@ -317,7 +328,7 @@ Hampel_est <- function(x, k = 3) {
 }
 ```
 
-```{r}
+```{r, echo=FALSE}
 outliers_hampel_est <- df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%
   group_by(CCAA, Mes) %>% 
@@ -385,7 +396,7 @@ Boxplot_est <- function(x, k = 1.5) {
 }
 ```
 
-```{r}
+```{r, echo=FALSE}
 outliers_boxplot_est <- df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%
   group_by(CCAA, Mes) %>%
@@ -395,7 +406,7 @@ outliers_boxplot_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r}
+```{r, echo=FALSE}
 if(!dir.exists("graficos_outliers_boxplot")){
   dir.create("graficos_outliers_boxplot")
 }
@@ -439,7 +450,7 @@ outliers_boxplot_est %>%
   theme_minimal()
 ```
 
-```{r}
+```{r, echo=FALSE}
 df_outliers <- df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
   group_by(CCAA, Mes) %>%
@@ -452,7 +463,7 @@ df_outliers <- df_Turismo %>%
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 tabla_outliers_ccaa <- df_outliers %>%
   group_by(CCAA) %>%
   summarise(
@@ -464,6 +475,18 @@ tabla_outliers_ccaa <- df_outliers %>%
 
 tabla_outliers_ccaa
 ```
+
+Durante la aplicación de los distintos métodos de detección de valores atípicos (3-sigma, Hampel y Boxplot) se observó que algunas comunidades autónomas no presentaban *outliers*, lo cual resultaba poco coherente con la evolución visible de sus series temporales.
+
+Para contrastar esta situación, se analizaron los estadísticos descriptivos de los valores mensuales (media, varianza y desviación típica). Este análisis permitió comprobar que, en algunos casos, como el de la Comunidad de Madrid, la desviación típica estacional es elevada debido a un crecimiento sostenido en los últimos años.  
+
+Esto implica que, aunque la variabilidad dentro de cada año es baja, la variabilidad entre estaciones es alta, provocando que el método 3-sigma no identifique correctamente ciertos valores que visualmente podrían considerarse atípicos.
+
+Este comportamiento también se repite en otras comunidades de similares características, donde las medias y la dispersión entre estaciones son altas.  
+
+Dado que los resultados sugieren que los métodos tradicionales no captan adecuadamente todas las anomalías, y teniendo en cuenta el conocimiento contextual del fenómeno turístico, se ha decidido considerar como valores atípicos comunes el periodo comprendido entre marzo de 2020 y febrero de 2021, correspondiente al impacto más severo de la pandemia de la COVID-19.  
+
+Este enfoque permite homogeneizar el tratamiento de outliers en todas las comunidades, evitando que diferencias en la dispersión estacional alteren la comparación entre regiones.
 
 ### Análisis de series de tiempo
 
