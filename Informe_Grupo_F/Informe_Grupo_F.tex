@@ -1,0 +1,1695 @@
+%  LaTeX support: latex@mdpi.com
+%  For support, please attach all files needed for compiling as well as the log file, and specify your operating system, LaTeX version, and LaTeX editor.
+
+%=================================================================
+% pandoc conditionals added to preserve backwards compatibility with previous versions of rticles
+
+\documentclass[,,,moreauthors,pdftex]{Definitions/mdpi}
+
+
+%% Some pieces required from the pandoc template
+\setlist[itemize]{leftmargin=*,labelsep=5.8mm}
+\setlist[enumerate]{leftmargin=*,labelsep=4.9mm}
+
+
+%--------------------
+% Class Options:
+%--------------------
+%----------
+% journal
+%----------
+% Choose between the following MDPI journals:
+% acoustics, actuators, addictions, admsci, adolescents, aerobiology, aerospace, agriculture, agriengineering, agrochemicals, agronomy, ai, air, algorithms, allergies, alloys, analytica, analytics, anatomia, animals, antibiotics, antibodies, antioxidants, applbiosci, appliedchem, appliedmath, applmech, applmicrobiol, applnano, applsci, aquacj, architecture, arm, arthropoda, arts, asc, asi, astronomy, atmosphere, atoms, audiolres, automation, axioms, bacteria, batteries, bdcc, behavsci, beverages, biochem, bioengineering, biologics, biology, biomass, biomechanics, biomed, biomedicines, biomedinformatics, biomimetics, biomolecules, biophysica, biosensors, biotech, birds, bloods, blsf, brainsci, breath, buildings, businesses, cancers, carbon, cardiogenetics, catalysts, cells, ceramics, challenges, chemengineering, chemistry, chemosensors, chemproc, children, chips, cimb, civileng, cleantechnol, climate, clinpract, clockssleep, cmd, coasts, coatings, colloids, colorants, commodities, compounds, computation, computers, condensedmatter, conservation, constrmater, cosmetics, covid, crops, cryptography, crystals, csmf, ctn, curroncol, cyber, dairy, data, ddc, dentistry, dermato, dermatopathology, designs, devices, diabetology, diagnostics, dietetics, digital, disabilities, diseases, diversity, dna, drones, dynamics, earth, ebj, ecologies, econometrics, economies, education, ejihpe, electricity, electrochem, electronicmat, electronics, encyclopedia, endocrines, energies, eng, engproc, entomology, entropy, environments, environsciproc, epidemiologia, epigenomes, est, fermentation, fibers, fintech, fire, fishes, fluids, foods, forecasting, forensicsci, forests, foundations, fractalfract, fuels, future, futureinternet, futurepharmacol, futurephys, futuretransp, galaxies, games, gases, gastroent, gastrointestdisord, gels, genealogy, genes, geographies, geohazards, geomatics, geosciences, geotechnics, geriatrics, grasses, gucdd, hazardousmatters, healthcare, hearts, hemato, hematolrep, heritage, higheredu, highthroughput, histories, horticulturae, hospitals, humanities, humans, hydrobiology, hydrogen, hydrology, hygiene, idr, ijerph, ijfs, ijgi, ijms, ijns, ijpb, ijtm, ijtpp, ime, immuno, informatics, information, infrastructures, inorganics, insects, instruments, inventions, iot, j, jal, jcdd, jcm, jcp, jcs, jcto, jdb, jeta, jfb, jfmk, jimaging, jintelligence, jlpea, jmmp, jmp, jmse, jne, jnt, jof, joitmc, jor, journalmedia, jox, jpm, jrfm, jsan, jtaer, jvd, jzbg, kidneydial, kinasesphosphatases, knowledge, land, languages, laws, life, liquids, literature, livers, logics, logistics, lubricants, lymphatics, machines, macromol, magnetism, magnetochemistry, make, marinedrugs, materials, materproc, mathematics, mca, measurements, medicina, medicines, medsci, membranes, merits, metabolites, metals, meteorology, methane, metrology, micro, microarrays, microbiolres, micromachines, microorganisms, microplastics, minerals, mining, modelling, molbank, molecules, mps, msf, mti, muscles, nanoenergyadv, nanomanufacturing,\gdef\@continuouspages{yes}} nanomaterials, ncrna, ndt, network, neuroglia, neurolint, neurosci, nitrogen, notspecified, %%nri, nursrep, nutraceuticals, nutrients, obesities, oceans, ohbm, onco, %oncopathology, optics, oral, organics, organoids, osteology, oxygen, parasites, parasitologia, particles, pathogens, pathophysiology, pediatrrep, pharmaceuticals, pharmaceutics, pharmacoepidemiology,\gdef\@ISSN{2813-0618}\gdef\@continuous pharmacy, philosophies, photochem, photonics, phycology, physchem, physics, physiologia, plants, plasma, platforms, pollutants, polymers, polysaccharides, poultry, powders, preprints, proceedings, processes, prosthesis, proteomes, psf, psych, psychiatryint, psychoactives, publications, quantumrep, quaternary, qubs, radiation, reactions, receptors, recycling, regeneration, religions, remotesensing, reports, reprodmed, resources, rheumato, risks, robotics, ruminants, safety, sci, scipharm, sclerosis, seeds, sensors, separations, sexes, signals, sinusitis, skins, smartcities, sna, societies, socsci, software, soilsystems, solar, solids, spectroscj, sports, standards, stats, std, stresses, surfaces, surgeries, suschem, sustainability, symmetry, synbio, systems, targets, taxonomy, technologies, telecom, test, textiles, thalassrep, thermo, tomography, tourismhosp, toxics, toxins, transplantology, transportation, traumacare, traumas, tropicalmed, universe, urbansci, uro, vaccines, vehicles, venereology, vetsci, vibration, virtualworlds, viruses, vision, waste, water, wem, wevj, wind, women, world, youth, zoonoticdis 
+% For posting an early version of this manuscript as a preprint, you may use "preprints" as the journal. Changing "submit" to "accept" before posting will remove line numbers.
+
+%---------
+% article
+%---------
+% The default type of manuscript is "article", but can be replaced by: 
+% abstract, addendum, article, book, bookreview, briefreport, casereport, comment, commentary, communication, conferenceproceedings, correction, conferencereport, entry, expressionofconcern, extendedabstract, datadescriptor, editorial, essay, erratum, hypothesis, interestingimage, obituary, opinion, projectreport, reply, retraction, review, perspective, protocol, shortnote, studyprotocol, systematicreview, supfile, technicalnote, viewpoint, guidelines, registeredreport, tutorial
+% supfile = supplementary materials
+
+%----------
+% submit
+%----------
+% The class option "submit" will be changed to "accept" by the Editorial Office when the paper is accepted. This will only make changes to the frontpage (e.g., the logo of the journal will get visible), the headings, and the copyright information. Also, line numbering will be removed. Journal info and pagination for accepted papers will also be assigned by the Editorial Office.
+
+%------------------
+% moreauthors
+%------------------
+% If there is only one author the class option oneauthor should be used. Otherwise use the class option moreauthors.
+
+%---------
+% pdftex
+%---------
+% The option pdftex is for use with pdfLaTeX. Remove "pdftex" for (1) compiling with LaTeX & dvi2pdf (if eps figures are used) or for (2) compiling with XeLaTeX.
+
+%=================================================================
+% MDPI internal commands - do not modify
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2024}
+\copyrightyear{2024}
+%\externaleditor{Academic Editor: Firstname Lastname}
+\datereceived{ } 
+\daterevised{ } % Comment out if no revised date
+\dateaccepted{ } 
+\datepublished{ } 
+%\datecorrected{} % For corrected papers: "Corrected: XXX" date in the original paper.
+%\dateretracted{} % For corrected papers: "Retracted: XXX" date in the original paper.
+\hreflink{https://doi.org/} % If needed use \linebreak
+%\doinum{}
+%\pdfoutput=1 % Uncommented for upload to arXiv.org
+%\CorrStatement{yes}  % For updates
+
+
+%=================================================================
+% Add packages and commands here. The following packages are loaded in our class file: fontenc, inputenc, calc, indentfirst, fancyhdr, graphicx, epstopdf, lastpage, ifthen, float, amsmath, amssymb, lineno, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, tabto, xcolor, colortbl, soul, multirow, microtype, tikz, totcount, changepage, attrib, upgreek, array, tabularx, pbox, ragged2e, tocloft, marginnote, marginfix, enotez, amsthm, natbib, hyperref, cleveref, scrextend, url, geometry, newfloat, caption, draftwatermark, seqsplit
+% cleveref: load \crefname definitions after \begin{document}
+
+%=================================================================
+% Please use the following mathematics environments: Theorem, Lemma, Corollary, Proposition, Characterization, Property, Problem, Example, ExamplesandDefinitions, Hypothesis, Remark, Definition, Notation, Assumption
+%% For proofs, please use the proof environment (the amsthm package is loaded by the MDPI class).
+
+%=================================================================
+% Full title of the paper (Capitalized)
+\Title{Análisis de la relación entre la actividad turística y el empleo
+en el sector servicios en España}
+
+% MDPI internal command: Title for citation in the left column
+\TitleCitation{Análisis de la relación entre la actividad turística y el
+empleo en el sector servicios en España}
+
+% Author Orchid ID: enter ID or remove command
+%\newcommand{\orcidauthorA}{0000-0000-0000-000X} % Add \orcidA{} behind the author's name
+%\newcommand{\orcidauthorB}{0000-0000-0000-000X} % Add \orcidB{} behind the author's name
+
+
+% Authors, for the paper (add full first names)
+\Author{Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón$^{}$, $^{}$}
+
+
+%\longauthorlist{yes}
+
+
+% MDPI internal command: Authors, for metadata in PDF
+\AuthorNames{Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón, }
+
+% MDPI internal command: Authors, for citation in the left column
+
+% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
+\address{%
+}
+
+% Contact information of the corresponding author
+\corres{Correspondence: }
+
+% Current address and/or shared authorship
+
+
+
+
+
+
+
+
+% The commands \thirdnote{} till \eighthnote{} are available for further notes
+
+% Simple summary
+
+%\conference{} % An extended version of a conference paper
+
+% Abstract (Do not insert blank lines, i.e. \\)
+\abstract{El presente informe analiza la evolución del turismo en España
+y su relación con la ocupación en el sector servicios, a partir de datos
+oficiales del INE. Se integraron dos bases de datos ---una sobre
+viajeros y pernoctaciones, y otra sobre empleo por sectores--- para
+realizar un análisis exploratorio, univariante y bivariante a nivel de
+comunidad autónoma. Los resultados muestran una clara tendencia
+creciente y estacional en la actividad turística, así como una relación
+positiva y estadísticamente significativa entre el turismo y el empleo
+en la mayoría de las comunidades autónomas. Sin embargo, las
+elasticidades obtenidas son bajas, lo que indica que, aunque ambas
+variables evolucionan conjuntamente, el empleo responde de forma
+inelástica a las variaciones del turismo. En conjunto, los resultados
+sugieren que el turismo constituye un motor relevante del empleo en los
+servicios, aunque su efecto es moderado y depende de la estructura
+económica de cada territorio.}
+
+
+% Keywords
+
+% The fields PACS, MSC, and JEL may be left empty or commented out if not applicable
+%\PACS{J0101}
+%\MSC{}
+%\JEL{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Diversity
+%\LSID{\url{http://}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Applied Sciences
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Data
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Toxins
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Encyclopedia
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Only for the journal Advances in Respiratory Medicine
+%\addhighlights{yes}
+%\renewcommand{\addhighlights}{%
+
+%\noindent This is an obligatory section in “Advances in Respiratory Medicine”, whose goal is to increase the discoverability and readability of the article via search engines and other scholars. Highlights should not be a copy of the abstract, but a simple text allowing the reader to quickly and simplified find out what the article is about and what can be cited from it. Each of these parts should be devoted up to 2~bullet points.\vspace{3pt}\\
+%\textbf{What are the main findings?}
+% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+% \item First bullet.
+% \item Second bullet.
+% \end{itemize}\vspace{3pt}
+%\textbf{What is the implication of the main finding?}
+% \begin{itemize}[labelsep=2.5mm,topsep=-3pt]
+% \item First bullet.
+% \item Second bullet.
+% \end{itemize}
+%}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pandoc syntax highlighting
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+
+% tightlist command for lists without linebreak
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+% Add imagehandling
+
+
+
+\usepackage{longtable}
+
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{INTRODUCCIÓN}\label{introducciuxf3n}
+
+\subsection{CONTEXTO GENERAL}\label{contexto-general}
+
+El turismo constituye uno de los principales motores económicos de
+España, aportando una parte significativa al Producto Interior Bruto y
+al empleo nacional. La actividad turística no solo influye en la
+generación de riqueza, sino también en el dinamismo de otros sectores,
+como el transporte, la hostelería o el comercio.
+
+En los últimos años, la evolución del turismo español ha experimentado
+variaciones notables, especialmente durante el periodo marcado por la
+pandemia de la COVID-19, que provocó una caída sin precedentes en los
+flujos de viajeros y en los niveles de ocupación del sector servicios. A
+partir de 2021, el proceso de recuperación ha sido desigual entre las
+comunidades autónomas, lo que hace necesario un análisis detallado que
+permita comprender las tendencias y relaciones entre las distintas
+variables implicadas.
+
+En este contexto, el presente trabajo realiza un análisis exploratorio a
+partir de datos oficiales del \textbf{Instituto Nacional de Estadística
+(INE)}, con el objetivo de examinar la evolución del turismo y su
+relación con la ocupación en el sector servicios. Este enfoque permite
+no solo identificar patrones y correlaciones, sino también detectar
+posibles valores atípicos derivados de eventos excepcionales, como la
+crisis sanitaria, que pueden distorsionar la interpretación de los
+resultados.
+
+\subsection{DESCRIPCIÓN DE LOS DATOS}\label{descripciuxf3n-de-los-datos}
+
+Para el desarrollo del presente análisis se han empleado dos bases de
+datos principales.
+
+La primera recoge información sobre el turismo en España, desglosada por
+comunidades autónomas y provincias, e incluye variables como el número
+de viajeros y las pernoctaciones registradas a lo largo de varios años.
+
+La segunda base de datos corresponde al sector servicios, concretamente
+a la ocupación laboral dentro del mismo, y se analiza con el propósito
+de explorar su relación con la evolución del turismo.
+
+\subsection{CUESTIONES A TRATAR}\label{cuestiones-a-tratar}
+
+En este estudio se abordan \textbf{tres} cuestiones principales:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  ¿Cómo tratar los valores atípicos (outliers) asociados al periodo de
+  la pandemia de la COVID-19 (2019-2021)?
+\item
+  ¿Qué evolución ha experimentado el turismo en las distintas
+  comunidades autónomas a lo largo del periodo analizado?
+\item
+  ¿Qué relación existe entre la evolución del turismo y la ocupación en
+  el sector servicios?
+\end{enumerate}
+
+\section{IMPORTACIÓN}\label{importaciuxf3n}
+
+Para garantizar el uso de datos actualizados, la importación se realiza
+directamente desde las URLs oficiales del INE, evitando copias locales.
+
+Antes de la carga definitiva, se comprobó la codificación de los
+archivos para evitar errores de lectura, optando por el formato
+\textbf{UTF-8}.
+
+Finalmente, los datos se importaron y almacenaron en dos data frames
+principales: uno para turismo y otro para ocupación.
+
+\section{ANÁLISIS UNIVARIANTE}\label{anuxe1lisis-univariante}
+
+Antes de realizar el análisis univariante, es necesario limpiar y
+preparar las bases de datos. A continuación, se procede al tratamiento
+individual de cada una: primero la base de turismo y posteriormente la
+base de ocupación.
+
+\subsection{TURISMO}\label{turismo}
+
+\subsubsection{Limpieza}\label{limpieza}
+
+Una vez importados los datos, se analizan las características generales
+del conjunto correspondiente al turismo en España. Este dataset recoge
+el número de viajeros y pernoctaciones por comunidad y provincia a lo
+largo del tiempo.
+
+En un inicio, este dataset se forma de 134.820 filas y 8 columnas, cuyo
+nombre resulta completamente representativo.
+
+Las variables incluidas son:
+
+\begin{itemize}
+\item
+  \textbf{Totales.Territoriales}: columna con un único valor (``Total
+  Nacional'').
+\item
+  \textbf{Comunidades.y.Ciudades.Autónomas}: variable categórica que
+  representa las comunidades o ciudades autónomas de España.
+\item
+  \textbf{Provincias}: variable categórica que muestra la provincia
+  asociada.
+\item
+  \textbf{Viajeros.y.pernoctaciones}: variable categórica. Indica el
+  tipo de registro (viajeros o pernoctaciones).
+\item
+  \textbf{Residencia..Nivel.1}: variable categórica redundante que
+  contiene el valor ``Total'' en todas sus observaciones.
+\item
+  \textbf{Residencia..Nivel.2}: variable categórica que indica el origen
+  de los viajeros, diferenciando entre residentes en España y residentes
+  en el extranjero.
+\item
+  \textbf{Periodo}: variable tipo fecha que representa el año y mes de
+  la observación.
+\item
+  \textbf{Total}: valor numérico de viajeros o pernoctaciones expresado
+  en millones.
+\end{itemize}
+
+Las variables Totales.Territoriales, Viajeros.y.pernoctaciones,
+Residencia..Nivel.1 y Residencia..Nivel.2, no aportan información
+relevante y se eliminan en fases posteriores.
+
+A continuación, se utilizó la función \texttt{glimpse()} del paquete
+\texttt{dplyr} para obtener una vista general del dataset, comprobando
+que todas las columnas se importaron como tipo carácter y que será
+necesario ajustar sus tipos en etapas posteriores.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{glimpse}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Rows: 134,820
+## Columns: 8
+## $ Totales.Territoriales            <chr> "Total Nacional", "Total Nacional", "~
+## $ Comunidades.y.Ciudades.Autónomas <chr> "", "", "", "", "", "", "", "", "", "~
+## $ Provincias                       <chr> "", "", "", "", "", "", "", "", "", "~
+## $ Viajeros.y.pernoctaciones        <chr> "Viajero", "Viajero", "Viajero", "Via~
+## $ Residencia..Nivel.1              <chr> "Total", "Total", "Total", "Total", "~
+## $ Residencia..Nivel.2              <chr> "", "", "", "", "", "", "", "", "", "~
+## $ Periodo                          <chr> "2025M09", "2025M08", "2025M07", "202~
+## $ Total                            <chr> "12.050.972", "13.828.672", "13.044.7~
+\end{verbatim}
+
+Gracias a esto, se observa que todas las columnas se importaron
+inicialmente como tipo character. Por ello, en la fase de preparación se
+realizará la conversión a tipos de datos adecuados (fechas, factores y
+numéricos) para facilitar el análisis estadístico y gráfico.
+
+Para asegurar la correcta manipulación numérica, se eliminaron los
+puntos utilizados como separadores de miles en la columna Total.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Total =} \FunctionTok{str\_replace\_all}\NormalTok{(Total, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{."}\NormalTok{, }\StringTok{""}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Posteriormente, se aplicó \texttt{sapply()} junto con \texttt{unique()}
+para revisar los valores de cada variable y detectar posibles
+inconsistencias.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{sapply}\NormalTok{(df\_Turismo, }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(x)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Totales.Territoriales Comunidades.y.Ciudades.Autónomas 
+##                                1                               20 
+##                       Provincias        Viajeros.y.pernoctaciones 
+##                               51                                2 
+##              Residencia..Nivel.1              Residencia..Nivel.2 
+##                                1                                3 
+##                          Periodo                            Total 
+##                              321                            95210
+\end{verbatim}
+
+Se identificaron varias \textbf{incidencias}: la columna
+Totales.Territoriales presentaba un único valor (``Total nacional''), y
+Comunidades.y.Ciudades.Autónomas incluía 20 categorías en lugar de 19,
+debido a registros vacíos o duplicados.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{unique}\NormalTok{(df\_Turismo}\SpecialCharTok{$}\NormalTok{Comunidades.y.Ciudades.Autónomas))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] ""                               "01 Andalucía"                  
+##  [3] "02 Aragón"                      "03 Asturias, Principado de"    
+##  [5] "04 Balears, Illes"              "05 Canarias"                   
+##  [7] "06 Cantabria"                   "07 Castilla y León"            
+##  [9] "08 Castilla - La Mancha"        "09 Cataluña"                   
+## [11] "10 Comunitat Valenciana"        "11 Extremadura"                
+## [13] "12 Galicia"                     "13 Madrid, Comunidad de"       
+## [15] "14 Murcia, Región de"           "15 Navarra, Comunidad Foral de"
+## [17] "16 País Vasco"                  "17 Rioja, La"                  
+## [19] "18 Ceuta"                       "19 Melilla"
+\end{verbatim}
+
+Además, se observó que la variable CCAA presentaba registros vacíos o en
+blanco, lo que explica las discrepancias detectadas anteriormente. Estos
+valores se eliminarán en la fase de limpieza del dataset.
+
+El siguiente paso fue eliminar las filas y columnas redundantes, así
+como los valores en blanco, manteniendo únicamente la información
+agregada por comunidades autónomas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Totales.Territoriales) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(}\FunctionTok{str\_trim}\NormalTok{(Comunidades.y.Ciudades.Autónomas) }\SpecialCharTok{!=} \StringTok{""}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{arrange}\NormalTok{(Comunidades.y.Ciudades.Autónomas, Provincias, Periodo)}
+\end{Highlighting}
+\end{Shaded}
+
+Posteriormente, con el fin de facilitar la interpretación y el análisis
+comparativo, se optó por trabajar con los datos agregados a nivel de
+comunidades y ciudades autónomas. Este enfoque proporciona una visión
+más general del comportamiento del turismo en España, adecuada para su
+posterior comparación con la ocupación en el sector servicios.
+
+En consecuencia, se eliminaron las variables no relevantes para este
+nivel de análisis (Provincias, Viajeros.y.pernoctaciones,
+Residencia..Nivel.1 y Residencia..Nivel.2).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(Provincias,Viajeros.y.pernoctaciones,}
+\NormalTok{            Residencia..Nivel}\FloatTok{.1}\NormalTok{,}
+\NormalTok{            Residencia..Nivel}\FloatTok{.2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Dado que todas las variables se importaron inicialmente como texto, fue
+necesario convertir Periodo al formato de fecha. Para ello, se sustituyó
+el carácter ``M'' por un guion y se aplicó la función \texttt{ym()} para
+reconocer correctamente el año y el mes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Periodo =} \FunctionTok{str\_replace}\NormalTok{(Periodo, }\StringTok{"M"}\NormalTok{, }\StringTok{"{-}"}\NormalTok{), }
+    \AttributeTok{Periodo =} \FunctionTok{ym}\NormalTok{(Periodo))}
+\end{Highlighting}
+\end{Shaded}
+
+Además, la variable Total se convirtió a tipo numérico para permitir la
+realización de cálculos y análisis estadísticos sin errores de formato.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Total=}\FunctionTok{as.numeric}\NormalTok{(Total))}
+\end{Highlighting}
+\end{Shaded}
+
+Antes de convertir la variable Comunidades.y.Ciudades.Autónomas a tipo
+factor, se limpiaron y estandarizaron sus valores eliminando números,
+espacios y caracteres innecesarios.
+
+Finalmente, se renombró como CCAA y se definió como variable categórica
+tipo factor.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{CCAA =}\NormalTok{ Comunidades.y.Ciudades.Autónomas) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{CCAA =} \FunctionTok{str\_replace}\NormalTok{(CCAA, }\StringTok{"\^{}[0{-}9]+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+"}\NormalTok{, }\StringTok{""}\NormalTok{),}
+    \AttributeTok{CCAA =} \FunctionTok{str\_replace}\NormalTok{(CCAA,}
+                       \StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*([\^{},]+?)}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*,}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*([\^{},]+?)}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*$"}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{2 }\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{1"}\NormalTok{),}
+    \AttributeTok{CCAA =} \FunctionTok{str\_squish}\NormalTok{(CCAA)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{CCAA =} \FunctionTok{as.factor}\NormalTok{(CCAA))}
+\end{Highlighting}
+\end{Shaded}
+
+Para continuar con el análisis, se creó un nuevo conjunto de datos
+agregado a nivel de comunidad autónoma.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Periodo) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total =} \FunctionTok{sum}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Tras la limpieza, se comprobó la ausencia de espacios en blanco y
+valores faltantes (NA) para asegurar la integridad del conjunto de
+datos. Al no detectarse incidencias, el dataset quedó listo para el
+análisis y se guardó en formato RData.
+
+\subsubsection{\texorpdfstring{Detección de
+\textbf{outliers}}{Detección de outliers}}\label{detecciuxf3n-de-outliers}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Sigma3\_est }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, }\AttributeTok{k =} \DecValTok{3}\NormalTok{) \{}
+\NormalTok{  media }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(x, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  desv }\OtherTok{\textless{}{-}} \FunctionTok{sd}\NormalTok{(x, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  out }\OtherTok{\textless{}{-}} \FunctionTok{abs}\NormalTok{(x }\SpecialCharTok{{-}}\NormalTok{ media) }\SpecialCharTok{\textgreater{}}\NormalTok{ (k }\SpecialCharTok{*}\NormalTok{ desv)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers\_sigma3\_est }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{es\_outlier\_sigma3 =} \FunctionTok{Sigma3\_est}\NormalTok{(Total)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ccaa\_lista }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(outliers\_sigma3\_est}\SpecialCharTok{$}\NormalTok{CCAA)}
+
+\ControlFlowTok{for}\NormalTok{ (cc }\ControlFlowTok{in}\NormalTok{ ccaa\_lista) \{}
+\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ outliers\_sigma3\_est }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{==}\NormalTok{ cc) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey70"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ es\_outlier\_sigma3)) }\SpecialCharTok{+}
+    \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FALSE"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"TRUE"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}
+      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Detección estacional de outliers (3 sigma) {-}"}\NormalTok{, cc),}
+      \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }
+      \AttributeTok{y =} \StringTok{"Total"}\NormalTok{, }
+      \AttributeTok{color =} \StringTok{"Outlier"}
+\NormalTok{    ) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{()}
+  
+  \FunctionTok{print}\NormalTok{(p)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-2.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-3.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-4.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-5.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-6.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-7.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-8.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-9.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-10.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-11.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-12.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-13.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-14.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-15.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-16.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-17.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-18.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-19.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Mes}\SpecialCharTok{==}\StringTok{\textquotesingle{}jul\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{media =} \FunctionTok{mean}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{varianza =} \FunctionTok{var}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{mediana =} \FunctionTok{median}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{desviacion\_tipica =} \FunctionTok{sd}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{minimo =} \FunctionTok{min}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{maximo =} \FunctionTok{max}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{n\_observaciones =} \FunctionTok{n}\NormalTok{()}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(desviacion\_tipica))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `summarise()` has grouped output by 'CCAA'. You can override using the
+## `.groups` argument.
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 19 x 9
+## # Groups:   CCAA [19]
+##    CCAA            Mes    media varianza mediana desviacion_tipica minimo maximo
+##    <fct>           <ord>  <dbl>    <dbl>   <dbl>             <dbl>  <dbl>  <dbl>
+##  1 Illes Balears   jul   4.24e7  8.28e13  4.27e7          9100956. 8.45e6 5.21e7
+##  2 Cataluña        jul   3.41e7  6.21e13  3.50e7          7880467. 1.05e7 4.37e7
+##  3 Canarias        jul   2.19e7  4.62e13  2.18e7          6799406. 4.96e6 3.05e7
+##  4 Andalucía       jul   2.77e7  3.70e13  2.77e7          6086041. 1.36e7 3.59e7
+##  5 Comunitat Vale~ jul   1.50e7  1.03e13  1.52e7          3208243. 6.34e6 1.92e7
+##  6 Comunidad de M~ jul   9.23e6  9.29e12  9.11e6          3048000. 2.70e6 1.40e7
+##  7 Galicia         jul   5.92e6  1.41e12  5.76e6          1185336. 3.49e6 7.84e6
+##  8 País Vasco      jul   3.07e6  9.74e11  3.21e6           987078. 1.74e6 4.95e6
+##  9 Castilla y León jul   4.62e6  4.79e11  4.52e6           692094. 2.63e6 5.73e6
+## 10 Aragón          jul   2.78e6  2.89e11  2.58e6           537925. 1.79e6 3.59e6
+## 11 Principado de ~ jul   2.53e6  2.48e11  2.45e6           497782. 1.66e6 3.33e6
+## 12 Región de Murc~ jul   1.71e6  9.22e10  1.69e6           303717. 8.73e5 2.23e6
+## 13 Cantabria       jul   2.22e6  8.74e10  2.17e6           295558. 1.82e6 2.70e6
+## 14 Castilla - La ~ jul   1.95e6  5.81e10  1.95e6           241007. 1.15e6 2.28e6
+## 15 Extremadura     jul   1.18e6  4.90e10  1.14e6           221419. 7.73e5 1.51e6
+## 16 Comunidad Fora~ jul   1.01e6  4.06e10  1.00e6           201469. 6.42e5 1.30e6
+## 17 La Rioja        jul   5.21e5  6.58e 9  5.22e5            81122. 3.10e5 6.93e5
+## 18 Melilla         jul   2.94e4  5.61e 7  3.19e4             7489. 1.29e4 3.92e4
+## 19 Ceuta           jul   4.40e4  5.29e 7  4.46e4             7272. 1.88e4 5.45e4
+## # i 1 more variable: n_observaciones <int>
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Hampel\_est }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, }\AttributeTok{k =} \DecValTok{3}\NormalTok{) \{}
+  \FunctionTok{abs}\NormalTok{(x }\SpecialCharTok{{-}} \FunctionTok{median}\NormalTok{(x)) }\SpecialCharTok{\textgreater{}}\NormalTok{ k }\SpecialCharTok{*} \FunctionTok{mad}\NormalTok{(x)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers\_hampel\_est }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{es\_outlier\_hampel =} \FunctionTok{Hampel\_est}\NormalTok{(Total)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ccaa\_lista }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(outliers\_hampel\_est}\SpecialCharTok{$}\NormalTok{CCAA)}
+
+\ControlFlowTok{for}\NormalTok{ (cc }\ControlFlowTok{in}\NormalTok{ ccaa\_lista) \{}
+\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ outliers\_hampel\_est }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{==}\NormalTok{ cc) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey70"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ es\_outlier\_hampel)) }\SpecialCharTok{+}
+    \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FALSE"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"TRUE"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}
+      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Detección estacional de outliers (Hampel) {-}"}\NormalTok{, cc),}
+      \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total"}\NormalTok{, }\AttributeTok{color =} \StringTok{"Outlier"}
+\NormalTok{    ) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{()}
+  
+  \FunctionTok{print}\NormalTok{(p)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-2.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-3.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-4.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-5.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-6.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-7.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-8.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-9.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-10.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-11.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-12.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-13.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-14.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-15.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-16.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-17.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-18.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-19.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Boxplot\_est }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, }\AttributeTok{k =} \FloatTok{1.5}\NormalTok{) \{}
+\NormalTok{  Q1 }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(x, }\FloatTok{0.25}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  Q3 }\OtherTok{\textless{}{-}} \FunctionTok{quantile}\NormalTok{(x, }\FloatTok{0.75}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  IQR\_value }\OtherTok{\textless{}{-}}\NormalTok{ Q3 }\SpecialCharTok{{-}}\NormalTok{ Q1}
+\NormalTok{  inf }\OtherTok{\textless{}{-}}\NormalTok{ Q1 }\SpecialCharTok{{-}}\NormalTok{ k }\SpecialCharTok{*}\NormalTok{ IQR\_value}
+\NormalTok{  sup }\OtherTok{\textless{}{-}}\NormalTok{ Q3 }\SpecialCharTok{+}\NormalTok{ k }\SpecialCharTok{*}\NormalTok{ IQR\_value}
+\NormalTok{  (x }\SpecialCharTok{\textless{}}\NormalTok{ inf) }\SpecialCharTok{|}\NormalTok{ (x }\SpecialCharTok{\textgreater{}}\NormalTok{ sup)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{outliers\_boxplot\_est }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}  \CommentTok{\# crea la columna Mes}
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{es\_outlier\_boxplot =} \FunctionTok{Boxplot\_est}\NormalTok{(Total)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ccaa\_lista }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(outliers\_boxplot\_est}\SpecialCharTok{$}\NormalTok{CCAA)}
+
+
+\ControlFlowTok{for}\NormalTok{ (cc }\ControlFlowTok{in}\NormalTok{ ccaa\_lista) \{}
+\NormalTok{  p }\OtherTok{\textless{}{-}}\NormalTok{ outliers\_boxplot\_est }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{==}\NormalTok{ cc) }\SpecialCharTok{\%\textgreater{}\%}
+    \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{color =} \StringTok{"grey70"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{color =}\NormalTok{ es\_outlier\_boxplot)) }\SpecialCharTok{+}
+    \FunctionTok{scale\_color\_manual}\NormalTok{(}\AttributeTok{values =} \FunctionTok{c}\NormalTok{(}\StringTok{"FALSE"} \OtherTok{=} \StringTok{"black"}\NormalTok{, }\StringTok{"TRUE"} \OtherTok{=} \StringTok{"red"}\NormalTok{)) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}
+      \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(}\StringTok{"Detección outliers (Boxplot) {-}"}\NormalTok{, cc),}
+      \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total"}\NormalTok{, }\AttributeTok{color =} \StringTok{"Outlier"}
+\NormalTok{    ) }\SpecialCharTok{+}
+    \FunctionTok{theme\_minimal}\NormalTok{()}
+  
+  \FunctionTok{print}\NormalTok{(p)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-2.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-3.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-4.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-5.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-6.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-7.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-8.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-9.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-10.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-11.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-12.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-13.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-14.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-15.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-16.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-17.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-18.pdf}
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-19.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_outliers }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Mes =} \FunctionTok{month}\NormalTok{(}\FunctionTok{as.Date}\NormalTok{(Periodo), }\AttributeTok{label =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{abbr =} \ConstantTok{TRUE}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Mes) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{out\_hampel  =} \FunctionTok{Hampel\_est}\NormalTok{(Total),}
+    \AttributeTok{out\_boxplot =} \FunctionTok{Boxplot\_est}\NormalTok{(Total),}
+    \AttributeTok{out\_sigma3  =} \FunctionTok{Sigma3\_est}\NormalTok{(Total)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{ungroup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tabla\_outliers\_ccaa }\OtherTok{\textless{}{-}}\NormalTok{ df\_outliers }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{n\_hampel  =} \FunctionTok{sum}\NormalTok{(out\_hampel,  }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{n\_boxplot =} \FunctionTok{sum}\NormalTok{(out\_boxplot, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{n\_sigma3  =} \FunctionTok{sum}\NormalTok{(out\_sigma3,  }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(n\_hampel))}
+
+\NormalTok{tabla\_outliers\_ccaa}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 19 x 4
+##    CCAA                       n_hampel n_boxplot n_sigma3
+##    <fct>                         <int>     <int>    <int>
+##  1 Ceuta                            20        21        8
+##  2 Illes Balears                    18        17        8
+##  3 Castilla - La Mancha             14        16       11
+##  4 Castilla y León                  13        14        9
+##  5 Comunitat Valenciana             12        13       10
+##  6 La Rioja                         12        15       10
+##  7 Región de Murcia                 12        13        8
+##  8 Cantabria                        11        13        7
+##  9 Andalucía                        10        12        9
+## 10 Extremadura                      10        11        7
+## 11 Aragón                            9         9        6
+## 12 Galicia                           9        12        6
+## 13 Melilla                           7         4        1
+## 14 Principado de Asturias            6         9        3
+## 15 Cataluña                          5         6        3
+## 16 Comunidad Foral de Navarra        1         1        0
+## 17 Canarias                          0         0        0
+## 18 Comunidad de Madrid               0         0        0
+## 19 País Vasco                        0         0        0
+\end{verbatim}
+
+\subsubsection{Análisis de series de
+tiempo}\label{anuxe1lisis-de-series-de-tiempo}
+
+Los datos de turismo referentes al periodo de la pandemia son claramente
+\emph{outlier}, la pregunta principal a la que se debe hacer frente es
+si eliminarlo o si tenerlos en cuenta para posteriores análisis. Esta
+pregunta no es sencilla pues para ciertas CCAA, como se ha mencionado,
+hay métodos de detección de \emph{outliers} que no los clasifican como
+tales.
+
+La idea para justificar qué debemos hacer con estos datos anómalos es la
+siguiente, en general, si representamos la serie temporal de una
+comunidad autónoma se puede ver que la gran bajada del número de
+pernoctaciones a partir del mes de marzo de 2020, lo cual está
+directamente relacionado con el inicio del estado de alarma y la
+cuarentena nacional.
+
+Tras esto se mantienen unas cifras muy bajas hasta aproximadamente dos
+años después (dependiendo de la comunidad), coincidiendo con la
+declaración del final de la pandemia por parte de la OMS, los datos de
+estancias vuelven prácticamente a los niveles prepandemia, lo cual
+sugiere que aunque la pandemia afectó de forma muy negativa al sector de
+la hostelería y el turismo, también este sector recuperó de forma
+bastante rápida cuando la situación sanitaria lo permitió.
+
+Esto hace pensar que la pandemia simplemente puso una ``pausa'' al
+turismo y que tras esta pausa la actividad en este sector continuó
+desarrollándose de la misma forma que lo venía haciendo en los últimos
+años, aunque si es cierto que el crecimiento se desaceleró ligeramente.
+Lo cual sugiere que los datos de la pandemia no aportan ningún tipo de
+información relevante que pueda ayudar a predecir o explicar el futuro
+del sector del turismo.
+
+Pues no solo no aportan información relevante, si no que además
+añadirían ruido a los datos afectando de forma negativa a los posibles
+análisis que puedan hacerse.
+
+Para darle respaldo a esta hipótesis nos proponemos hacer un análisis de
+la serie de datos de cada CCAA, cosa que es muy natural por la forma en
+la que están organizados los datos.
+
+Entonces, se tomarán los datos previos a la pandemia y se utilizarán
+para crear un modelo \(ARIMA(p, d, q)(P, D, Q)\), el ajuste de los
+parámetros se hace de forma automática con las función
+\texttt{auto.arima}. Tras el ajuste se usa la función \texttt{forecast}
+que permite utilizar el modelo para predecir una serie de valores en el
+futuro, en este caso de predicen los \(12\) meses siguientes.
+
+Los resultados para cada comunidad se guardaron en un archivo llamado
+\texttt{AnalisisBox.rsd}. Se trata de una lista, si queremos acceder a
+ellos se pueden importar con el comando
+\texttt{readRSD("AnálisisBox.rsd")} y asignándolo a una variable.
+
+Se pueden ver las dierentes gráficas de juste para cada comunidad, como
+son muchos gráficos se muestra solo uno, pero se puede ver que el resto
+muestran resultados similares. Ponemos el caso de \textbf{Andalucía}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{AnalisisBox[[}\DecValTok{2}\NormalTok{]]}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf}
+Entonces, tras ver que el modelo aproxima de forma razonable los datos
+prepandemia, hay razones para confiar en las predicciones, las cuales se
+pueden interpretar como los datos de pernoctaciones que hubieran
+sucedido en esos meses siguientes a febrero de \(2020\) si la pandemia
+no hubiera azotado.
+
+Lo más interesante ocurre si comparamos esas predicciones con los datos
+posteriores a la pandemia. Si bien es cierto que hay algunas comunidades
+para las cuales las predicciones no se ajustan en nada (son los casos de
+las ciudades autónomas) en el resto de casos se puede ver como la
+predicción y el valor postpandemia son iguales solo que con cifras algo
+menores menores.
+\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf}
+
+\subsubsection{Análisis}\label{anuxe1lisis}
+
+Como primer paso del análisis univariante, se calcularon los
+estadísticos descriptivos básicos con el fin de obtener una visión
+general de las variables del conjunto de datos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(df\_Turismo)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                    CCAA         Periodo               Total         
+##  Andalucía           : 321   Min.   :1999-01-01   Min.   :       0  
+##  Aragón              : 321   1st Qu.:2005-09-01   1st Qu.:  818367  
+##  Canarias            : 321   Median :2012-05-01   Median : 1978968  
+##  Cantabria           : 321   Mean   :2012-05-01   Mean   : 6265921  
+##  Castilla - La Mancha: 321   3rd Qu.:2019-01-01   3rd Qu.: 7983666  
+##  Castilla y León     : 321   Max.   :2025-09-01   Max.   :54032304  
+##  (Other)             :4173
+\end{verbatim}
+
+El resumen estadístico muestra que todas las comunidades autónomas
+tienen el mismo número de observaciones, con registros trimestrales
+entre 1999 y 2025. La variable Total presenta un mínimo de 0
+(probablemente asociado a la pandemia), una media de 6,27 millones y un
+máximo de 54 millones, reflejando una notable variabilidad entre
+regiones y periodos.
+
+Dado que la función \texttt{summary()} ofrece información limitada para
+variables categóricas, se amplió el análisis calculando los principales
+estadísticos descriptivos de Total por comunidad autónoma. Este enfoque
+permite comparar la magnitud y variabilidad del turismo entre regiones,
+antes de profundizar en las relaciones en el análisis bivariante.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{media =} \FunctionTok{mean}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{mediana =} \FunctionTok{median}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{sd =} \FunctionTok{sd}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{min =} \FunctionTok{min}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{max =} \FunctionTok{max}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{IQR=}\FunctionTok{IQR}\NormalTok{(Total, }\AttributeTok{na.rm=}\ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{N =} \FunctionTok{n}\NormalTok{()}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(media)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{print}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 19 x 8
+##    CCAA                           media mediana     sd   min    max    IQR     N
+##    <fct>                          <dbl>   <dbl>  <dbl> <dbl>  <dbl>  <dbl> <int>
+##  1 Cataluña                   20162927.  1.82e7 1.11e7     0 4.62e7 1.74e7   321
+##  2 Illes Balears              19915553.  1.41e7 1.73e7     0 5.40e7 3.30e7   321
+##  3 Canarias                   19889672.  2.02e7 6.40e6     0 3.25e7 9.84e6   321
+##  4 Andalucía                  19415478.  1.88e7 8.28e6     0 3.95e7 1.29e7   321
+##  5 Comunitat Valenciana       10438034.  1.00e7 4.12e6     0 2.10e7 5.60e6   321
+##  6 Comunidad de Madrid         9063390.  9.19e6 2.98e6     0 1.51e7 4.74e6   321
+##  7 Castilla y León             3752446.  3.81e6 1.26e6     0 6.91e6 1.75e6   321
+##  8 Galicia                     3739708.  3.21e6 1.98e6     0 9.75e6 2.63e6   321
+##  9 País Vasco                  2295078.  2.11e6 1.00e6     0 5.41e6 1.33e6   321
+## 10 Aragón                      2254042.  2.18e6 7.28e5     0 4.60e6 8.69e5   321
+## 11 Castilla - La Mancha        1767775.  1.82e6 4.56e5     0 2.81e6 6.30e5   321
+## 12 Principado de Asturias      1506391.  1.33e6 8.70e5     0 4.02e6 1.11e6   321
+## 13 Región de Murcia            1270981.  1.27e6 4.45e5     0 2.54e6 6.22e5   321
+## 14 Cantabria                   1212464.  1.04e6 7.35e5     0 3.19e6 9.70e5   321
+## 15 Extremadura                 1078914.  1.09e6 3.26e5     0 1.89e6 4.72e5   321
+## 16 Comunidad Foral de Navarra   766060.  7.27e5 3.13e5     0 1.63e6 4.71e5   321
+## 17 La Rioja                     458772.  4.65e5 1.54e5     0 9.40e5 2.12e5   321
+## 18 Ceuta                         37138.  3.78e4 9.27e3     0 6.47e4 9.14e3   321
+## 19 Melilla                       27683.  2.80e4 8.34e3     0 4.88e4 1.12e4   321
+\end{verbatim}
+
+Los resultados muestran que Cataluña presenta la media más alta en el
+número de turistas, lo que refleja su consolidación como uno de los
+principales destinos turísticos del país. Le siguen Baleares, Canarias y
+Andalucía, todas ellas comunidades con una fuerte especialización en el
+sector turístico.
+
+En el extremo opuesto, Melilla, Ceuta, La Rioja y Navarra registran las
+medias más bajas, lo que podría deberse a su menor capacidad de
+atracción turística o a un peso económico menos centrado en este sector.
+
+Para obtener una visión general del comportamiento del turismo en el
+conjunto del país, se calcularon los principales estadísticos
+descriptivos del Total Nacional, agregando los valores de todas las
+comunidades por periodo.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nacional\_mensual }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Periodo) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total =} \FunctionTok{sum}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
+
+\NormalTok{nacional\_mensual }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{media =} \FunctionTok{mean}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{mediana =} \FunctionTok{median}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{sd =} \FunctionTok{sd}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{var =} \FunctionTok{var}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{min =} \FunctionTok{min}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{max =} \FunctionTok{max}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{),}
+    \AttributeTok{N =} \FunctionTok{n}\NormalTok{()}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 7
+##        media   mediana        sd     var   min       max     N
+##        <dbl>     <dbl>     <dbl>   <dbl> <dbl>     <dbl> <int>
+## 1 119052505. 111782620 52682662. 2.78e15     0 247949935   321
+\end{verbatim}
+
+Los resultados agregados a nivel nacional muestran una media de
+aproximadamente 119 millones de turistas por periodo y una mediana
+cercana a 112 millones, lo que indica una distribución relativamente
+equilibrada aunque con cierta asimetría hacia los valores altos.
+
+La desviación típica, de unos 52 millones, junto con una varianza
+elevada, refleja una alta variabilidad en el volumen de turismo entre
+periodos.
+
+El valor mínimo (0) corresponde al impacto de la pandemia de la
+COVID-19, mientras que el máximo (247,9 millones) evidencia los picos
+alcanzados en los años de mayor actividad turística.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+Para ilustrar la evolución del turismo en el conjunto nacional, se
+elaboró una serie temporal que permite observar las principales
+tendencias y patrones estacionales.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(nacional\_mensual, }\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{linewidth =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =} \FunctionTok{label\_comma}\NormalTok{(}\AttributeTok{big.mark =} \StringTok{"."}\NormalTok{, }\AttributeTok{decimal.mark =} \StringTok{","}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Serie temporal de viajeros por mes"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+La gráfica muestra una tendencia general al alza con una clara
+estacionalidad anual, marcada por picos recurrentes en los meses de
+mayor actividad turística. También se identifican valores atípicos
+durante el periodo de la pandemia de la COVID-19, que reflejan la brusca
+caída del sector en esos años.
+
+A continuación, se representa la serie temporal de cada comunidad y
+ciudad autónoma para analizar la evolución del turismo y comparar sus
+comportamientos a lo largo del tiempo.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ca\_mensual }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Periodo) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total =} \FunctionTok{sum}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(ca\_mensual, }\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{linewidth =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ CCAA, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =} \FunctionTok{label\_comma}\NormalTok{(}\AttributeTok{big.mark =} \StringTok{"."}\NormalTok{, }\AttributeTok{decimal.mark =} \StringTok{","}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Serie temporal por Comunidad Autónoma"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Total"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+En general, todas las comunidades muestran una marcada estacionalidad,
+con picos de actividad durante los meses de verano. A largo plazo,
+Madrid, el País Vasco y Canarias presentan una tendencia claramente
+creciente, mientras que otras, como Ceuta, mantienen una evolución más
+estable.
+
+Asimismo, se observa heterocedasticidad en regiones como Illes Balears,
+Asturias, Andalucía o la Comunitat Valenciana, donde la variabilidad
+aumenta con el número de turistas, a diferencia de Madrid o Canarias,
+donde la dispersión se mantiene más constante.
+
+Por último, todas las comunidades registran una caída abrupta en 2020,
+asociada al impacto de la pandemia de la COVID-19. En el siguiente
+apartado se aplicará el método 3sigma estacional (por mes y comunidad
+autónoma) para identificar de forma formal los valores atípicos sin
+confundirlos con la estacionalidad natural de la serie.
+
+\#\#TODO METER LOS MAPAS Y EXPLICARLO Mas bien, meter el del año 2024 y
+explicarlo. También estaría bien meter algo más de bivariante
+
+\subsection{OCUPACIÓN}\label{ocupaciuxf3n}
+
+El segundo conjunto de datos corresponde a la ocupación por sectores
+económicos en España, obtenido del INE. Contiene el número de personas
+ocupadas (en miles) por comunidad o ciudad autónoma, sector y periodo
+trimestral.
+
+El dataset está compuesto por 21.300 observaciones (filas) y 5 variables
+(columnas), cuyos nombres son claros y representativos, lo que facilita
+su comprensión y manipulación posterior.
+
+Las variables incluidas son:
+
+\begin{itemize}
+\item
+  \textbf{Sexo}. Variable categórica que presenta el valor ``mujer'',
+  ``hombre'' y ``ambos sexos''.
+\item
+  \textbf{Comunidades.y.Ciudades.Autónomas}. Variable categórica que
+  incluye las comunidades Españolas y el total nacional.
+\item
+  \textbf{Sector.económico}. Variable categórica que clasifica la
+  actividad económica en agricultura, industria, construcción o
+  servicios.
+\item
+  \textbf{Periodo}. Variable tipo fecha que muestra el año y trimestre.
+\item
+  \textbf{Total}. Variable numérica que muestra las personas ocupadas
+  (en miles).
+\end{itemize}
+
+Como primer paso, se utilizó la función \texttt{glimpse()} para revisar
+la estructura del dataset. Se comprobó que todas las columnas se
+importaron como tipo carácter, por lo que será necesario ajustar los
+tipos de datos en los siguientes pasos.
+
+\subsubsection{Limpieza}\label{limpieza-1}
+
+Para limpiar y preparar la base de datos de ocupación, ha sido necesario
+realizar los siguientes pasos:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Eliminar la columna ``Sexo''.
+\item
+  Eliminar números y carácteres especiales de los nombres de las
+  comunidades. Además de filtrar y eliminar el valor ``Total nacional''
+  de la variable CCAA, por ser redundante respecto al resto de
+  comunidades y ciudades autónomas. Posteriormente, esta variable se
+  convierte a tipo factor.
+\item
+  Filtrar los registros correspondientes al sector ``Servicios'' dentro
+  de la columna Sector.económico. Dado que la tabla se centrará
+  exclusivamente en este sector, la variable se elimina por resultar
+  redundante.
+\item
+  Convertir la variable ``Periodo'' del formato YYYYTQ a un formato de
+  fecha trimestral mediante la función \texttt{as.yearqtr()}.
+\item
+  Normalizar la variable ``Total'', eliminando la palabra ``miles'' y
+  los puntos de millares, sustituyendo la coma decimal por punto,
+  convirtiendo los valores a numéricos y multiplicándolos por 1.000 para
+  expresarlos en personas. De este modo, se mantiene la coherencia de
+  escala con la base de datos de turismo.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Ocupacion\_clean }\OtherTok{\textless{}{-}}\NormalTok{  df\_Ocupacion }\SpecialCharTok{\%\textgreater{}\%} 
+  \CommentTok{\#1}
+  \FunctionTok{filter}\NormalTok{(Sexo }\SpecialCharTok{==} \StringTok{"Ambos sexos"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Sexo) }\SpecialCharTok{\%\textgreater{}\%}
+  \CommentTok{\#2}
+  \FunctionTok{rename}\NormalTok{(}\AttributeTok{CCAA=}\NormalTok{Comunidades.y.Ciudades.Autónomas) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{CCAA =} \FunctionTok{str\_replace}\NormalTok{(CCAA, }\StringTok{"\^{}[0{-}9]+}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s+"}\NormalTok{, }\StringTok{""}\NormalTok{), }
+  \AttributeTok{CCAA =} \FunctionTok{str\_replace}\NormalTok{(CCAA, }
+                     \StringTok{"\^{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*([\^{},]+?)}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*,}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*([\^{},]+?)}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{s*$"}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{2 }\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{1"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(CCAA }\SpecialCharTok{!=} \StringTok{"Total Nacional"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{CCAA=}\FunctionTok{as.factor}\NormalTok{(CCAA)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \CommentTok{\#3}
+  \FunctionTok{filter}\NormalTok{(Sector.económico}\SpecialCharTok{==}\StringTok{\textquotesingle{}Servicios\textquotesingle{}}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{select}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{Sector.económico) }\SpecialCharTok{\%\textgreater{}\%} 
+  \CommentTok{\#4 }
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Periodo =} \FunctionTok{str\_replace}\NormalTok{(Periodo, }\StringTok{"T"}\NormalTok{, }\StringTok{"{-}"}\NormalTok{), }
+    \AttributeTok{Periodo =} \FunctionTok{as.yearqtr}\NormalTok{(Periodo)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \CommentTok{\#5}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Total=}\FunctionTok{str\_replace\_all}\NormalTok{(Total, }\StringTok{\textquotesingle{}}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{.\textquotesingle{}}\NormalTok{,}\StringTok{""}\NormalTok{),}
+    \AttributeTok{Total =} \FunctionTok{str\_replace}\NormalTok{(Total, }\StringTok{","}\NormalTok{, }\StringTok{"."}\NormalTok{),}
+    \AttributeTok{Total =} \FunctionTok{as.numeric}\NormalTok{(Total)}\SpecialCharTok{*}\DecValTok{1000} 
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{arrange}\NormalTok{(CCAA, Periodo)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Análisis}\label{anuxe1lisis-1}
+
+A continuación, se representa la \textbf{evolución trimestral del empleo
+nacional en el sector servicios}. Para ello, se agrupan los datos por
+periodo y se calcula el total de personas ocupadas, generando una serie
+temporal mediante un gráfico de líneas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Total nacional por trimestre}
+\NormalTok{ocup\_nacional }\OtherTok{\textless{}{-}}\NormalTok{ df\_Ocupacion\_clean }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(Periodo) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total =} \FunctionTok{sum}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(ocup\_nacional, }\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{linewidth =} \FloatTok{0.8}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =} \FunctionTok{label\_comma}\NormalTok{(}\AttributeTok{big.mark =} \StringTok{"."}\NormalTok{, }\AttributeTok{decimal.mark =} \StringTok{","}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} 
+         \StringTok{"Ocupación total nacional en sector servicios"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Personas ocupadas"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: The `trans` argument of `continuous_scale()` is deprecated as of ggplot2 3.5.0.
+## i Please use the `transform` argument instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+\end{verbatim}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+Se observa una caída entre 2010 y 2014, posiblemente asociada a los
+efectos de la crisis de 2008, seguida de una recuperación sostenida
+hasta 2019.
+
+En 2020 se produce un descenso notable debido al impacto de la pandemia,
+tras lo cual la ocupación retoma una tendencia creciente, alcanzando
+niveles superiores a los anteriores.
+
+Además, se aprecia una estacionalidad clara, con aumentos recurrentes en
+determinados trimestres, probablemente vinculados a la temporada
+turística.
+
+Además, también se analiza la \textbf{evolución trimestral del empleo en
+el sector servicios por Comunidad Autónoma}, agrupando los datos por
+región y periodo. El gráfico permite comparar la dinámica laboral entre
+territorios a lo largo del tiempo.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ocup\_ccaa }\OtherTok{\textless{}{-}}\NormalTok{ df\_Ocupacion\_clean }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Periodo) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total =} \FunctionTok{sum}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{(ocup\_ccaa, }\FunctionTok{aes}\NormalTok{(Periodo, Total)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{linewidth =} \FloatTok{0.5}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{facet\_wrap}\NormalTok{(}\SpecialCharTok{\textasciitilde{}}\NormalTok{ CCAA, }\AttributeTok{scales =} \StringTok{"free\_y"}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{3}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =} \FunctionTok{label\_comma}\NormalTok{(}\AttributeTok{big.mark =} \StringTok{"."}\NormalTok{, }\AttributeTok{decimal.mark =} \StringTok{","}\NormalTok{))}\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} 
+         \StringTok{"Ocupación en el sector servicios por Comunidad Autónoma (trimestral)"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Periodo"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Personas ocupadas"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{panel.spacing =} \FunctionTok{unit}\NormalTok{(}\DecValTok{1}\NormalTok{, }\StringTok{"lines"}\NormalTok{),}
+        \AttributeTok{strip.text =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{size =} \DecValTok{9}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf}
+
+Se observa una tendencia al alza más pronunciada en comunidades como
+Andalucía, Canarias, Madrid y Cataluña, principales motores del sector
+servicios. Destaca una fuerte estacionalidad en Illes Balears, asociada
+a la actividad turística, mientras que en la mayoría de regiones la
+evolución es más estable y con un crecimiento moderado tras la pandemia.
+
+\section{ANÁLISIS BIVARIANTE}\label{anuxe1lisis-bivariante}
+
+\#\#TODO
+
+\textbf{Base de datos actualizada con los valores imputados}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{AnalisisBox }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(}\StringTok{"../AnalisisBox.rds"}\NormalTok{)}
+
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =} \DecValTok{0}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{12}\NormalTok{))}
+\NormalTok{ccaa }\OtherTok{\textless{}{-}} \FunctionTok{levels}\NormalTok{(df\_Turismo}\SpecialCharTok{$}\NormalTok{CCAA)}
+\NormalTok{j }\OtherTok{\textless{}{-}} \DecValTok{1}
+
+\ControlFlowTok{for}\NormalTok{ (x }\ControlFlowTok{in}\NormalTok{ AnalisisBox)\{}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{inherits}\NormalTok{(x, }\StringTok{"forecast"}\NormalTok{))\{}
+\NormalTok{    df[j, ] }\OtherTok{\textless{}{-}}\NormalTok{ x}\SpecialCharTok{$}\NormalTok{mean }
+    \FunctionTok{rownames}\NormalTok{(df)[j] }\OtherTok{\textless{}{-}}\NormalTok{ ccaa[[j]]}
+\NormalTok{    j }\OtherTok{\textless{}{-}}\NormalTok{ j }\SpecialCharTok{+} \DecValTok{1}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Copia del data frame original}
+\NormalTok{df\_Turismo\_corregido }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo}
+
+\CommentTok{\# Ordenar por CCAA y Periodo para tener los meses en orden dentro de cada comunidad}
+\NormalTok{df\_Turismo\_corregido }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo\_corregido }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(CCAA, Periodo)}
+
+\CommentTok{\# Definir rango COVID (12 meses: 2020{-}03 a 2021{-}02)}
+\NormalTok{inicio\_covid }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2020{-}03{-}01"}\NormalTok{)}
+\NormalTok{fin\_covid    }\OtherTok{\textless{}{-}} \FunctionTok{as.Date}\NormalTok{(}\StringTok{"2021{-}02{-}01"}\NormalTok{)}
+
+\CommentTok{\# Aseguramos que df es data.frame y tiene dimensiones}
+
+
+\CommentTok{\# Número de meses que tenemos predichos (columnas de df)}
+\NormalTok{n\_meses }\OtherTok{\textless{}{-}} \FunctionTok{ncol}\NormalTok{(df)}
+
+\CommentTok{\# Comunidades en el mismo orden para df}
+\NormalTok{ccaa\_niveles }\OtherTok{\textless{}{-}} \FunctionTok{levels}\NormalTok{(df\_Turismo\_corregido}\SpecialCharTok{$}\NormalTok{CCAA)}
+
+\CommentTok{\# Opcional pero útil: asignar nombres de fila a df según las CCAA}
+\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{nrow}\NormalTok{(df) }\SpecialCharTok{==} \FunctionTok{length}\NormalTok{(ccaa\_niveles)) \{}
+  \FunctionTok{rownames}\NormalTok{(df) }\OtherTok{\textless{}{-}}\NormalTok{ ccaa\_niveles}
+\NormalTok{\}}
+
+\CommentTok{\# Bucle: para cada CCAA, sustituir los 12 meses de COVID por los del df}
+\ControlFlowTok{for}\NormalTok{ (ccaa\_actual }\ControlFlowTok{in}\NormalTok{ ccaa\_niveles) \{}
+  
+  \CommentTok{\# índices de las filas de esa CCAA en el periodo COVID}
+\NormalTok{  idx }\OtherTok{\textless{}{-}} \FunctionTok{which}\NormalTok{(}
+\NormalTok{    df\_Turismo\_corregido}\SpecialCharTok{$}\NormalTok{CCAA   }\SpecialCharTok{==}\NormalTok{ ccaa\_actual }\SpecialCharTok{\&}
+\NormalTok{    df\_Turismo\_corregido}\SpecialCharTok{$}\NormalTok{Periodo }\SpecialCharTok{\textgreater{}=}\NormalTok{ inicio\_covid }\SpecialCharTok{\&}
+\NormalTok{    df\_Turismo\_corregido}\SpecialCharTok{$}\NormalTok{Periodo }\SpecialCharTok{\textless{}=}\NormalTok{ fin\_covid}
+\NormalTok{  )}
+  
+  \CommentTok{\# si hay tantas filas como meses predichos, sustituimos}
+  \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(idx) }\SpecialCharTok{==}\NormalTok{ n\_meses }\SpecialCharTok{\&\&}\NormalTok{ ccaa\_actual }\SpecialCharTok{\%in\%} \FunctionTok{rownames}\NormalTok{(df)) \{}
+\NormalTok{    df\_Turismo\_corregido}\SpecialCharTok{$}\NormalTok{Total[idx] }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(df[ccaa\_actual, }\DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_meses])}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+En esta sección se abordará el análisis bivariante, con el objetivo de
+relacionar las bases de datos de turismo y ocupación para estudiar
+posibles vínculos entre ambas variables.
+
+Antes de combinar los conjuntos de datos, será necesario estandarizar
+ciertas variables con el fin de garantizar una fusión correcta (merge) y
+obtener un marco de datos coherente para el análisis conjunto.
+
+Así pues, se convierte la variable Periodo al formato año-trimestre,
+luego se agrupan los datos por comunidad y periodo, y se calcula el
+total de turistas por trimestre y CCAA. Finalmente, se ordenan los
+registros por comunidad y periodo para facilitar el merge posterior.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{turismo\_to\_merge }\OtherTok{\textless{}{-}}\NormalTok{ df\_Turismo\_corregido }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{Periodo =} \FunctionTok{as.yearqtr}\NormalTok{(Periodo)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(CCAA, Periodo) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{Total\_turismo =} \FunctionTok{sum}\NormalTok{(Total, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{arrange}\NormalTok{(CCAA, Periodo)}
+\end{Highlighting}
+\end{Shaded}
+
+Mediante la función \texttt{merge()}, se unen ambos conjuntos de datos
+utilizando como claves comunes las variables CCAA y Periodo.
+
+Antes de la unión, en la base de ocupación se renombra la variable Total
+como Numero\_ocupados para distinguirla del total de turistas y evitar
+ambigüedades en el nuevo dataset combinado (df\_Turismo\_Ocupacion).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{df\_Turismo\_Ocupacion }\OtherTok{\textless{}{-}} \FunctionTok{merge}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ turismo\_to\_merge,}
+  \AttributeTok{y =}\NormalTok{ (df\_Ocupacion\_clean }\SpecialCharTok{\%\textgreater{}\%} 
+    \FunctionTok{rename}\NormalTok{(}\AttributeTok{Numero\_ocupados =}\NormalTok{ Total)),}
+  \AttributeTok{by.x =} \FunctionTok{c}\NormalTok{(}\StringTok{"CCAA"}\NormalTok{, }\StringTok{"Periodo"}\NormalTok{),}
+  \AttributeTok{by.y =} \FunctionTok{c}\NormalTok{(}\StringTok{"CCAA"}\NormalTok{, }\StringTok{"Periodo"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Finalmente, una vez preparadas y combinadas las bases de datos, se
+guardan los objetos resultantes en formato \texttt{.RData}.
+
+Esto permite conservar los datos limpios y listos para su análisis,
+facilitando su carga posterior sin necesidad de repetir el proceso de
+limpieza y fusión.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\textbf{Correlaciones de Pearson}
+
+Como primer paso, se calcula la correlación de Pearson entre el número
+de turistas y el empleo en el sector servicios para cada Comunidad
+Autónoma.
+
+El objetivo es medir la intensidad y dirección de la relación lineal
+entre ambas variables, obteniendo tanto el coeficiente de correlación
+como su p-valor para evaluar la significatividad estadística.
+
+Además, se incorpora un indicador de nivel de significación (p
+\textless{} 0.05), que permite identificar en qué comunidades la
+relación es estadísticamente relevante.
+
+Los resultados se ordenan de mayor a menor correlación, destacando
+aquellas regiones donde el vínculo entre turismo y empleo es más fuerte
+y significativo.
+
+\begin{verbatim}
+## # A tibble: 19 x 4
+##    CCAA                          cor  p_value sign 
+##    <fct>                       <dbl>    <dbl> <chr>
+##  1 Illes Balears              0.706  6.24e-12 Sí   
+##  2 Canarias                   0.624  6.30e- 9 Sí   
+##  3 Comunidad de Madrid        0.526  2.45e- 6 Sí   
+##  4 Aragón                     0.484  1.86e- 5 Sí   
+##  5 País Vasco                 0.482  2.06e- 5 Sí   
+##  6 Castilla y León            0.473  3.17e- 5 Sí   
+##  7 Castilla - La Mancha       0.458  5.99e- 5 Sí   
+##  8 Extremadura                0.416  3.05e- 4 Sí   
+##  9 Galicia                    0.407  4.29e- 4 Sí   
+## 10 Cantabria                  0.402  5.07e- 4 Sí   
+## 11 Comunidad Foral de Navarra 0.380  1.09e- 3 Sí   
+## 12 Andalucía                  0.374  1.30e- 3 Sí   
+## 13 Región de Murcia           0.350  2.80e- 3 Sí   
+## 14 Comunitat Valenciana       0.278  1.88e- 2 Sí   
+## 15 Cataluña                   0.247  3.76e- 2 Sí   
+## 16 La Rioja                   0.213  7.44e- 2 No   
+## 17 Principado de Asturias     0.213  7.45e- 2 No   
+## 18 Melilla                    0.105  3.82e- 1 No   
+## 19 Ceuta                      0.0834 4.89e- 1 No
+\end{verbatim}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+Se observa que Illes Balears presenta la mayor correlación positiva (r =
+0.68) entre turismo y empleo en el sector servicios, reflejando su
+fuerte dependencia del turismo estival. En el extremo opuesto, Melilla
+muestra una correlación negativa (r = -0.24), probablemente por una
+menor relación directa entre la llegada de turistas y el empleo local.
+
+En general, las correlaciones son positivas pero de magnitud moderada,
+indicando que ambas variables tienden a evolucionar conjuntamente,
+aunque con distinta intensidad según la región.
+
+En la mayoría de comunidades, la relación es estadísticamente
+significativa (p \textless{} 0.05), mientras que en Ceuta, La Rioja,
+Cataluña y Asturias no se observa significatividad, posiblemente por el
+menor peso del turismo en su economía o por una mayor volatilidad en los
+datos.
+
+Por último, cabe señalar que la correlación no implica causalidad: los
+resultados reflejan asociación, pero no necesariamente una relación
+directa de causa y efecto.
+
+\textbf{Análisis de regresión lineal simple}
+
+Además, modelamos para cada comunidad una regresión simple con el
+objetivo de conocer la \textbf{bondad de ajuste} (\texttt{R\^{}2}), lo
+cual permitea valorar qué proporción de la variabilidad en el empleo es
+explicada por el turismo.
+
+\begin{verbatim}
+## # A tibble: 19 x 2
+## # Rowwise: 
+##    CCAA                            R2
+##    <fct>                        <dbl>
+##  1 Andalucía                  0.140  
+##  2 Aragón                     0.235  
+##  3 Canarias                   0.389  
+##  4 Cantabria                  0.162  
+##  5 Castilla - La Mancha       0.209  
+##  6 Castilla y León            0.223  
+##  7 Cataluña                   0.0612 
+##  8 Ceuta                      0.00695
+##  9 Comunidad de Madrid        0.277  
+## 10 Comunidad Foral de Navarra 0.144  
+## 11 Comunitat Valenciana       0.0774 
+## 12 Extremadura                0.173  
+## 13 Galicia                    0.166  
+## 14 Illes Balears              0.498  
+## 15 La Rioja                   0.0454 
+## 16 Melilla                    0.0111 
+## 17 País Vasco                 0.233  
+## 18 Principado de Asturias     0.0454 
+## 19 Región de Murcia           0.122
+\end{verbatim}
+
+\includegraphics{Informe_Grupo_F_files/figure-latex/unnamed-chunk-38-1.pdf}
+
+En general, se observa que los valores son moderados o bajos, lo que
+indica que, aunque existe cierta relación entre ambas variables, el
+turismo no explica completamente la evolución del empleo, y
+probablemente influyen otros factores económicos o estructurales.
+
+Las comunidades con mayor ajuste del modelo son Aragón (\(R^2 = 0.25\)),
+Castilla y León (\(R^2 = 0.24\)), Cantabria (\(R^2 = 0.22\)) y Canarias
+(\(R^2 = 0.22\)), donde alrededor de una cuarta parte de la variabilidad
+en el empleo se asocia con los cambios en el turismo.
+
+Por el contrario, en Ceuta (\(R^2 \approx 0\)) y Cataluña
+(\(R approx 0.05\)) el modelo lineal apenas explica la variación en el
+empleo, lo que sugiere una relación débil o inexistente entre ambas
+variables en estas regiones.
+
+A partir del modelo de regresión lineal calculado anteriormente, se
+estima la \textbf{elasticidad} del empleo respecto al turismo,
+utilizando la pendiente de la recta de regresión como medida del impacto
+del turismo sobre el empleo en cada comunidad autónoma.
+
+\begin{verbatim}
+## # A tibble: 19 x 3
+##    CCAA                       elasticidad int       
+##    <fct>                            <dbl> <chr>     
+##  1 Canarias                        0.396  Inelástico
+##  2 Castilla - La Mancha            0.211  Inelástico
+##  3 Comunidad de Madrid             0.207  Inelástico
+##  4 Extremadura                     0.156  Inelástico
+##  5 Región de Murcia                0.130  Inelástico
+##  6 Illes Balears                   0.117  Inelástico
+##  7 Aragón                          0.109  Inelástico
+##  8 Andalucía                       0.0949 Inelástico
+##  9 Comunitat Valenciana            0.0825 Inelástico
+## 10 País Vasco                      0.0816 Inelástico
+## 11 Comunidad Foral de Navarra      0.0777 Inelástico
+## 12 Castilla y León                 0.0752 Inelástico
+## 13 Melilla                         0.0563 Inelástico
+## 14 Cataluña                        0.0528 Inelástico
+## 15 La Rioja                        0.0452 Inelástico
+## 16 Cantabria                       0.0418 Inelástico
+## 17 Galicia                         0.0407 Inelástico
+## 18 Ceuta                           0.0295 Inelástico
+## 19 Principado de Asturias          0.0189 Inelástico
+\end{verbatim}
+
+Los valores de elasticidad, comprendidos entre -0.09 y 0.19, muestran
+que en todas las comunidades autónomas la relación entre turismo y
+empleo es inelástica (ya que \textless1), es decir, el empleo en el
+sector servicios apenas varía ante los cambios en la actividad
+turística. Esto sugiere que un aumento del turismo no se traduce
+proporcionalmente en un mayor nivel de empleo.
+
+Esta baja respuesta puede deberse a que parte del empleo es estructural
+o fijo, a la existencia de desfases temporales entre el incremento del
+turismo y la contratación de personal, o a que las variables se miden en
+frecuencias distintas (mensual para el turismo y trimestral para el
+empleo), lo que suaviza la relación observada.
+
+En regiones como Canarias (\(\approx 0.19\)), donde la elasticidad es
+algo mayor, el empleo muestra una mayor sensibilidad a las variaciones
+del turismo, coherente con su elevada dependencia económica de esta
+actividad.
+
+Aunque las correlaciones y la bondad de ajuste indicaban una relación
+fuerte y significativa entre turismo y empleo, las elasticidades
+calculadas son bajas. Esto no representa una contradicción, sino una
+diferencia en la interpretación: mientras la correlación mide la fuerza
+de la relación, la elasticidad cuantifica su intensidad relativa.
+
+En otras palabras, aunque el turismo y el empleo evolucionan de forma
+coordinada, el impacto porcentual del turismo sobre el empleo es
+reducido, lo que sugiere que otros factores ---como la estacionalidad o
+la estabilidad estructural del mercado laboral--- también influyen en la
+evolución del empleo.
+
+\section{CONCLUSIONES}\label{conclusiones}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\vspace{6pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% optional
+
+% Only for the journal Methods and Protocols:
+% If you wish to submit a video article, please do so with any other supplementary material.
+% \supplementary{The following supporting information can be downloaded at: \linksupplementary{s1}, Figure S1: title; Table S1: title; Video S1: title. A supporting video article is available at doi: link.}
+
+% Only for journal Hardware:
+% If you wish to submit a video article, please do so with any other supplementary material.
+% \supplementary{The following supporting information can be downloaded at: \linksupplementary{s1}, Figure S1: title; Table S1: title; Video S1: title.\vspace{6pt}\\
+%\begin{tabularx}{\textwidth}{lll}
+%\toprule
+%\textbf{Name} & \textbf{Type} & \textbf{Description} \\
+%\midrule
+%S1 & Python script (.py) & Script of python source code used in XX \\
+%S2 & Text (.txt) & Script of modelling code used to make Figure X \\
+%S3 & Text (.txt) & Raw data from experiment X \\
+%S4 & Video (.mp4) & Video demonstrating the hardware in use \\
+%... & ... & ... \\
+%\bottomrule
+%\end{tabularx}
+%}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+% Only for journal Nursing Reports
+%\publicinvolvement{Please describe how the public (patients, consumers, carers) were involved in the research. Consider reporting against the GRIPP2 (Guidance for Reporting Involvement of Patients and the Public) checklist. If the public were not involved in any aspect of the research add: ``No public involvement in any aspect of this research''.}
+
+% Only for journal Nursing Reports
+%\guidelinesstandards{Please add a statement indicating which reporting guideline was used when drafting the report. For example, ``This manuscript was drafted against the XXX (the full name of reporting guidelines and citation) for XXX (type of research) research''. A complete list of reporting guidelines can be accessed via the equator network: \url{https://www.equator-network.org/}.}
+
+% Only for journal Nursing Reports
+%\guidelinesstandards{Please add a statement indicating which reporting guideline was used when drafting the report. For example, ``This manuscript was drafted against the XXX (the full name of reporting guidelines and citation) for XXX (type of research) research''. A complete list of reporting guidelines can be accessed via the equator network: \url{https://www.equator-network.org/}.}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional
+
+%% Only for journal Encyclopedia
+%\entrylink{The Link to this entry published on the encyclopedia platform.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Optional
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{adjustwidth}{-\extralength}{0cm}
+
+%\printendnotes[custom] % Un-comment to print a list of endnotes
+
+
+
+% If authors have biography, please use the format below
+%\section*{Short Biography of Authors}
+%\bio
+%{\raisebox{-0.35cm}{\includegraphics[width=3.5cm,height=5.3cm,clip,keepaspectratio]{Definitions/author1.pdf}}}
+%{\textbf{Firstname Lastname} Biography of first author}
+%
+%\bio
+%{\raisebox{-0.35cm}{\includegraphics[width=3.5cm,height=5.3cm,clip,keepaspectratio]{Definitions/author2.jpg}}}
+%{\textbf{Firstname Lastname} Biography of second author}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for journal Sci
+%\reviewreports{\\
+%Reviewer 1 comments and authors’ response\\
+%Reviewer 2 comments and authors’ response\\
+%Reviewer 3 comments and authors’ response
+%}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\PublishersNote{}
+\end{adjustwidth}
+
+
+\end{document}

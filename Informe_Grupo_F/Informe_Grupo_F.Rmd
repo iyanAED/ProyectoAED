@@ -261,7 +261,7 @@ for (cc in ccaa_lista) {
     geom_point(aes(color = es_outlier_sigma3)) +
     scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
     labs(
-      title = paste("Detección estacional de outliers (3σ) -", cc),
+      title = paste("Detección estacional de outliers (3 sigma) -", cc),
       x = "Periodo", 
       y = "Total", 
       color = "Outlier"
@@ -952,9 +952,9 @@ ggplot(mapa_R2) +
 
 En general, se observa que los valores son moderados o bajos, lo que indica que, aunque existe cierta relación entre ambas variables, el turismo no explica completamente la evolución del empleo, y probablemente influyen otros factores económicos o estructurales.
 
-Las comunidades con mayor ajuste del modelo son Aragón (R² = 0.25), Castilla y León (R² = 0.24), Cantabria (R² = 0.22) y Canarias (R² = 0.22), donde alrededor de una cuarta parte de la variabilidad en el empleo se asocia con los cambios en el turismo.
+Las comunidades con mayor ajuste del modelo son Aragón ($R^2 = 0.25$), Castilla y León ($R^2 = 0.24$), Cantabria ($R^2 = 0.22$) y Canarias ($R^2 = 0.22$), donde alrededor de una cuarta parte de la variabilidad en el empleo se asocia con los cambios en el turismo.
 
-Por el contrario, en Ceuta (R² ≈ 0) y Cataluña (R² ≈ 0.05) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
+Por el contrario, en Ceuta ($R^2 \approx 0$) y Cataluña ($R approx 0.05$) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
 
 A partir del modelo de regresión lineal calculado anteriormente, se estima la **elasticidad** del empleo respecto al turismo, utilizando la pendiente de la recta de regresión como medida del impacto del turismo sobre el empleo en cada comunidad autónoma.
 
@@ -981,7 +981,7 @@ Los valores de elasticidad, comprendidos entre -0.09 y 0.19, muestran que en tod
 
 Esta baja respuesta puede deberse a que parte del empleo es estructural o fijo, a la existencia de desfases temporales entre el incremento del turismo y la contratación de personal, o a que las variables se miden en frecuencias distintas (mensual para el turismo y trimestral para el empleo), lo que suaviza la relación observada.
 
-En regiones como Canarias (≈0.19), donde la elasticidad es algo mayor, el empleo muestra una mayor sensibilidad a las variaciones del turismo, coherente con su elevada dependencia económica de esta actividad.
+En regiones como Canarias ($\approx 0.19$), donde la elasticidad es algo mayor, el empleo muestra una mayor sensibilidad a las variaciones del turismo, coherente con su elevada dependencia económica de esta actividad.
 
 Aunque las correlaciones y la bondad de ajuste indicaban una relación fuerte y significativa entre turismo y empleo, las elasticidades calculadas son bajas. Esto no representa una contradicción, sino una diferencia en la interpretación: mientras la correlación mide la fuerza de la relación, la elasticidad cuantifica su intensidad relativa.
 
