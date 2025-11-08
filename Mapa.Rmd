@@ -166,33 +166,24 @@ df_Turismo$Total <- cut(df_Turismo$Total,
 ```
 
 
-```{r Dsicretización}
-pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
-
-  scale_fill_manual(values = pal,
-                    drop = FALSE,
-                    label = labs_plot,
-                    guide = guide_legend(direction = "horizontal",
-                                         nrow = 1,
-                                         label.position = "bottom"))
-```
-
-
 ```{r Guardado de los mapas}
 nombres <- paste("MapasGraficos/Mapa", seq(1999, 2025,1), ".pdf", sep="")
 for (i in 1:length(ListaMapasAnio)){
   ggsave(nombres[i], plot = ListaMapasAnio[[i]])
 }
 ```
+
+
 ```{r Gráficos mapas con nuevo color}
-Lista3 <- lapply(df_total %>% group_by(Anio) %>% group_split(), as.data.frame)
+Lista3 <- lapply(df_Turismo %>% group_by(Anio) %>% group_split(), as.data.frame)
 Lista4 <- lapply(Lista3, function(x) left_join(nuts2, x, by=c("NAME_LATN" = "CCAA")))
 
 pal <- hcl.colors(6, "Inferno", rev = TRUE, alpha = 0.7)
 
 Creacion_Mapa2 <- function(df){
+  browser()
   titulo <- paste("Datos de turismo de", df$Anio, sep=" ")
-  return(ggplot(df) + geom_sf(aes(fill = DatoAnual)) + 
+  return(ggplot(df) + geom_sf(aes(fill = Total)) + 
          labs(title=titulo) +
          scale_fill_manual(values = pal,
                     drop = FALSE,
@@ -203,6 +194,7 @@ Creacion_Mapa2 <- function(df){
 }
 
 ListaMapasAnio <- lapply(Lista4, Creacion_Mapa2)
+ListaMapasAnio
 ```
 
 
