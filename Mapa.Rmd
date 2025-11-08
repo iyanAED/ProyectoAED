@@ -172,6 +172,17 @@ for (i in 1:length(ListaMapasAnio)){
   ggsave(nombres[i], plot = ListaMapasAnio[[i]])
 }
 ```
+Antes de unir los dataframe de turismos con los datos geográficos para poder hacer el mapa hay que tener en cuenta que hay comunidades que se nombran diferente según el dataframe, se puede ver con Castilla - La Mancha, la Comunidad Valenciana, Ceuta y Melilla. Vamos a solucionar este problema antes unir los dataframe.
+
+```{r Cambiando los nombres}
+
+nuts2 <- nuts2 %>%
+  mutate(NAME_LATN = recode(NAME_LATN,
+                          "Comunidad Valenciana" = "Comunitat Valenciana",
+                          "Castilla-La Mancha" = "Castilla - La Mancha",
+                          "Ciudad Autónoma de Ceuta" = "Melilla",
+                          "Ciudad Autónoma de Melilla" = "Melilla"))
+```
 
 
 ```{r Gráficos mapas con nuevo color}
