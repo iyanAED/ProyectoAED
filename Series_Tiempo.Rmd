@@ -221,7 +221,6 @@ Esa fecha es el 14 del mes de marzo de 2020, como se produce mitas, así que lo 
 
 ```{r Seleccion periodo prepandemia}
 PrePandemia <- lapply(Series, function(x) window(x, start=start(x),end=c(2020, 2)))
-PostPandemia <- lapply(Series, function(x) window(x, start=start(x),end=c(2020, 2)))
 ```
 
 Ahora hacemos el análisis con las funciones que hemos definido antes. 
