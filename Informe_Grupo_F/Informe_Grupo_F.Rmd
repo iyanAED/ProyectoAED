@@ -2,13 +2,14 @@
 title: Análisis de la relación entre la actividad turística y el empleo en el sector servicios en España
 author:
   - name: "Iyán Álvarez, Azahara Martínez, Juan Alcaraz Otón"
-  afiliation: 'Universitat de València'
+  - afiliation: 'Universitat de València'
 date: "`r Sys.Date()`"
 output: 
   rticles::mdpi_article:
     extra_dependencies: longtable
   pdf_document:
     latex_engine: xelatex
+  html_document: default
 abstract: |
   El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
   Los resultados muestran una clara tendencia creciente y estacional en la actividad turística, así como una relación positiva y estadísticamente significativa entre el turismo y el empleo en la mayoría de las comunidades autónomas. Sin embargo, las elasticidades obtenidas son bajas, lo que indica que, aunque ambas variables evolucionan conjuntamente, el empleo responde de forma inelástica a las variaciones del turismo. 
