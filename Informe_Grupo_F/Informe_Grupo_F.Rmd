@@ -5,16 +5,15 @@ author:
   - afiliation: 'Universitat de València'
 date: "`r Sys.Date()`"
 output: 
-  rticles::mdpi_article:
-    extra_dependencies: longtable
   pdf_document:
     latex_engine: xelatex
+  rticles::mdpi_article:
+    extra_dependencies: longtable
   html_document: default
 abstract: |
   El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
   Los resultados muestran una clara tendencia creciente y estacional en la actividad turística, así como una relación positiva y estadísticamente significativa entre el turismo y el empleo en la mayoría de las comunidades autónomas. Sin embargo, las elasticidades obtenidas son bajas, lo que indica que, aunque ambas variables evolucionan conjuntamente, el empleo responde de forma inelástica a las variaciones del turismo. 
   En conjunto, los resultados sugieren que el turismo constituye un motor relevante del empleo en los servicios, aunque su efecto es moderado y depende de la estructura económica de cada territorio.
-
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -739,6 +738,69 @@ ggplot(ocup_ccaa, aes(Periodo, Total)) +
 ```
 
 Se observa una tendencia al alza más pronunciada en comunidades como Andalucía, Canarias, Madrid y Cataluña, principales motores del sector servicios. Destaca una fuerte estacionalidad en Illes Balears, asociada a la actividad turística, mientras que en la mayoría de regiones la evolución es más estable y con un crecimiento moderado tras la pandemia.
+
+### Detección de outliers
+
+```{r, include=FALSE}
+outliers_sigma3_est_oc <- df_Ocupacion_clean %>%
+  mutate(Trimestre = quarter(as.Date(Periodo), with_year = FALSE)) %>%
+  group_by(CCAA, Trimestre) %>%
+  mutate(
+    es_outlier_sigma3 = Sigma3_est(Total)
+  ) %>%
+  ungroup()
+```
+
+```{r, include=FALSE}
+outliers_hampel_est_oc <- df_Ocupacion_clean %>%
+  mutate(Trimestre = quarter(as.Date(Periodo), with_year = FALSE)) %>%
+  group_by(CCAA, Trimestre) %>% 
+  mutate(
+    es_outlier_hampel = Hampel_est(Total)
+  ) %>%
+  ungroup()
+```
+
+```{r, include=FALSE}
+outliers_boxplot_est_oc <- df_Ocupacion_clean %>%
+  mutate(Trimestre = quarter(as.Date(Periodo), with_year = FALSE)) %>%
+  group_by(CCAA, Trimestre) %>%
+  mutate(
+    es_outlier_boxplot = Boxplot_est(Total)
+  ) %>%
+  ungroup()
+```
+
+Aplicando los tres métodos de detección de valores atípicos, al igual que en la base de datos del turismo, se obtiene el siguiente número de outliers identificados por cada método:
+
+```{r, echo=FALSE}
+df_outliers_oc <- df_Ocupacion_clean %>%
+  mutate(Trimestre = quarter(as.Date(Periodo), with_year = FALSE)) %>% 
+  group_by(CCAA, Trimestre) %>%
+  mutate(
+    out_hampel  = Hampel_est(Total),
+    out_boxplot = Boxplot_est(Total),
+    out_sigma3  = Sigma3_est(Total)
+  ) %>%
+  ungroup()
+
+tabla_outliers_ccaa_oc <- df_outliers_oc %>%
+  group_by(CCAA) %>%
+  summarise(
+    n_hampel  = sum(out_hampel,  na.rm = TRUE),
+    n_boxplot = sum(out_boxplot, na.rm = TRUE),
+    n_sigma3  = sum(out_sigma3,  na.rm = TRUE)
+  ) %>%
+  arrange(desc(n_hampel))
+
+tabla_outliers_ccaa_oc
+```
+
+El número de valores atípicos detectados en la serie de ocupación es reducido y no presenta un patrón sistemático entre comunidades autónomas. En la mayoría de los casos, estas observaciones reflejan variaciones reales del empleo, asociadas al crecimiento estructural del mercado laboral o a episodios económicos concretos, como la crisis de 2008.
+
+A diferencia de lo ocurrido en la base de datos turística —donde los outliers correspondientes al periodo de la pandemia de la COVID-19 se eliminaron por representar una disrupción excepcional—, en este caso se considera que las fluctuaciones detectadas forman parte del comportamiento normal de la serie.
+
+Por tanto, no se eliminarán las observaciones atípicas y se mantendrán en el análisis, tomando como referencia el método de detección 3-sigma, que ofrece una estimación más estable y coherente con la naturaleza de estos datos.
 
 # ANÁLISIS BIVARIANTE
 
