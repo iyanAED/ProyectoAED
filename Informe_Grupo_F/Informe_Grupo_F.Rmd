@@ -249,7 +249,11 @@ outliers_sigma3_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r}
+```{r, echo=FALSE}
+if(!dir.exists("graficos_outliers_3sigma")){
+  dir.create("graficos_outliers_3sigma")
+}
+
 ccaa_lista <- unique(outliers_sigma3_est$CCAA)
 
 for (cc in ccaa_lista) {
@@ -260,15 +264,33 @@ for (cc in ccaa_lista) {
     geom_point(aes(color = es_outlier_sigma3)) +
     scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
     labs(
-      title = paste("Detección estacional de outliers (3 sigma) -", cc),
+      title = paste("Detección estacional de outliers (3-sigma)-", cc),
       x = "Periodo", 
       y = "Total", 
       color = "Outlier"
     ) +
     theme_minimal()
   
-  print(p)
+  ggsave(
+    filename = paste0("graficos_outliers_3sigma/outliers_", gsub(" ", "_", cc), ".png"),
+    plot = p, width = 8, height = 5
+  )
 }
+
+#Ejemplo
+outliers_sigma3_est %>%
+  filter(CCAA == "Andalucía") %>%
+  ggplot(aes(Periodo, Total)) +
+  geom_line(color = "grey70") +
+  geom_point(aes(color = es_outlier_sigma3)) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  labs(
+    title = "Detección estacional de outliers (3-sigma) - Andalucía",
+    x = "Periodo", 
+    y = "Total", 
+    color = "Outlier"
+  ) +
+  theme_minimal()
 ```
 
 ```{r}
@@ -306,7 +328,11 @@ outliers_hampel_est <- df_Turismo %>%
 ```
 
 
-```{r}
+```{r, echo=FALSE}
+if(!dir.exists("graficos_outliers_hampel")){
+  dir.create("graficos_outliers_hampel")
+}
+
 ccaa_lista <- unique(outliers_hampel_est$CCAA)
 
 for (cc in ccaa_lista) {
@@ -318,12 +344,33 @@ for (cc in ccaa_lista) {
     scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
     labs(
       title = paste("Detección estacional de outliers (Hampel) -", cc),
-      x = "Periodo", y = "Total", color = "Outlier"
+      x = "Periodo", 
+      y = "Total", 
+      color = "Outlier"
     ) +
     theme_minimal()
   
-  print(p)
+  ggsave(
+    filename = paste0("graficos_outliers_hampel/outliers_Hampel_", gsub(" ", "_", cc), ".png"),
+    plot = p, width = 8, height = 5
+  )
 }
+
+#Ejemplo
+outliers_hampel_est %>%
+  filter(CCAA == "Andalucía") %>%
+  ggplot(aes(Periodo, Total)) +
+  geom_line(color = "grey70") +
+  geom_point(aes(color = es_outlier_hampel)) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  labs(
+    title = "Detección estacional de outliers (Hampel) - Andalucía",
+    x = "Periodo", 
+    y = "Total", 
+    color = "Outlier"
+  ) +
+  theme_minimal()
+
 ```
 
 
@@ -340,7 +387,7 @@ Boxplot_est <- function(x, k = 1.5) {
 
 ```{r}
 outliers_boxplot_est <- df_Turismo %>%
-  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%  # crea la columna Mes
+  mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>%
   group_by(CCAA, Mes) %>%
   mutate(
     es_outlier_boxplot = Boxplot_est(Total)
@@ -349,8 +396,11 @@ outliers_boxplot_est <- df_Turismo %>%
 ```
 
 ```{r}
-ccaa_lista <- unique(outliers_boxplot_est$CCAA)
+if(!dir.exists("graficos_outliers_boxplot")){
+  dir.create("graficos_outliers_boxplot")
+}
 
+ccaa_lista <- unique(outliers_boxplot_est$CCAA)
 
 for (cc in ccaa_lista) {
   p <- outliers_boxplot_est %>%
@@ -360,13 +410,33 @@ for (cc in ccaa_lista) {
     geom_point(aes(color = es_outlier_boxplot)) +
     scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
     labs(
-      title = paste("Detección outliers (Boxplot) -", cc),
-      x = "Periodo", y = "Total", color = "Outlier"
+      title = paste("Detección de outliers (Boxplot) -", cc),
+      x = "Periodo", 
+      y = "Total", 
+      color = "Outlier"
     ) +
     theme_minimal()
   
-  print(p)
+  ggsave(
+    filename = paste0("graficos_outliers_boxplot/outliers_Boxplot_", gsub(" ", "_", cc), ".png"),
+    plot = p, width = 8, height = 5
+  )
 }
+
+#Ejemplo
+outliers_boxplot_est %>%
+  filter(CCAA == "Andalucía") %>%
+  ggplot(aes(Periodo, Total)) +
+  geom_line(color = "grey70") +
+  geom_point(aes(color = es_outlier_boxplot)) +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  labs(
+    title = "Detección de outliers (Boxplot) - Andalucía",
+    x = "Periodo", 
+    y = "Total", 
+    color = "Outlier"
+  ) +
+  theme_minimal()
 ```
 
 ```{r}
