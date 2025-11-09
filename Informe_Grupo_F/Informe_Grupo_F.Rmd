@@ -5,11 +5,11 @@ author:
   - afiliation: 'Universitat de València'
 date: "`r Sys.Date()`"
 output: 
-  rticles::mdpi_article:
-    extra_dependencies: longtable
+  html_document: default
   pdf_document:
     latex_engine: xelatex
-  html_document: default
+  rticles::mdpi_article:
+    extra_dependencies: longtable
 abstract: |
   El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
   Los resultados muestran una clara tendencia creciente y estacional en la actividad turística, así como una relación positiva y estadísticamente significativa entre el turismo y el empleo en la mayoría de las comunidades autónomas. Sin embargo, las elasticidades obtenidas son bajas, lo que indica que, aunque ambas variables evolucionan conjuntamente, el empleo responde de forma inelástica a las variaciones del turismo. 
@@ -688,7 +688,7 @@ PostPandemia <- lapply(Series, Recorte)
 Los resultados para cada comunidad se guardaron en un archivo llamado `AnalisisBox.rsd`. Se trata de una lista, si queremos acceder a ellos se pueden importar con el comando `readRSD("AnálisisBox.rsd")` y asignándolo a una variable.
 
 ```{r Importación de los resultados, include=FALSE}
-AnalisisBox <- readRDS("../AnalisisBox.rds")
+AnalisisBox <- readRDS("AnalisisBox.rds")
 ```
 
 Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**.
