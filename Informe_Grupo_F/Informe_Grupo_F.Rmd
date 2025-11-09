@@ -5,10 +5,10 @@ author:
   - afiliation: 'Universitat de València'
 date: "`r Sys.Date()`"
 output: 
-  rticles::mdpi_article:
-    extra_dependencies: longtable
   pdf_document:
     latex_engine: xelatex
+  rticles::mdpi_article:
+    extra_dependencies: longtable
   html_document: default
 abstract: |
   El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
@@ -109,6 +109,7 @@ Una vez importados los datos, se analizan las características generales del con
 ```{r Cálculo dimension, include=FALSE}
 dim(df_Turismo)
 ```
+
 En un inicio, este dataset se forma de 134.820 filas y 8 columnas, cuyo nombre resulta completamente representativo.
 
 Las variables incluidas son:
@@ -140,7 +141,7 @@ Gracias a esto, se observa que todas las columnas se importaron inicialmente com
 
 Para asegurar la correcta manipulación numérica, se eliminaron los puntos utilizados como separadores de miles en la columna Total.
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo <- df_Turismo %>% 
   mutate(Total = str_replace_all(Total, "\\.", ""))
 ```
@@ -153,14 +154,14 @@ sapply(df_Turismo, function(x) length(unique(x)))
 
 Se identificaron varias **incidencias**: la columna Totales.Territoriales presentaba un único valor (“Total nacional”), y Comunidades.y.Ciudades.Autónomas incluía 20 categorías en lugar de 19, debido a registros vacíos o duplicados.
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
 ```
 Además, se observó que la variable CCAA presentaba registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente. Estos valores se eliminarán en la fase de limpieza del dataset.
 
-El siguiente paso fue eliminar las filas y columnas redundantes, así como los valores en blanco, manteniendo únicamente la información agregada por comunidades autónomas. 
+El siguiente paso fue eliminar las filas y columnas redundantes (Totales.Territoriales y las filas que incluyen los espacios en blanco), así como los valores en blanco, manteniendo únicamente la información agregada por comunidades autónomas. 
 
-```{r}
+```{r, include=FALSE}
 df_Turismo <- df_Turismo %>%
   select(-Totales.Territoriales) %>%
   filter(str_trim(Comunidades.y.Ciudades.Autónomas) != "") %>% 
@@ -193,11 +194,11 @@ df_Turismo <- df_Turismo %>%
   mutate(Total=as.numeric(Total))
 ```
 
-Antes de convertir la variable Comunidades.y.Ciudades.Autónomas a tipo factor, se limpiaron y estandarizaron sus valores eliminando números, espacios y caracteres innecesarios.
+Antes de convertir la variable Comunidades.y.Ciudades.Autónomas a tipo factor, se limpiaron y estandarizaron sus valores eliminando números, espacios y caracteres innecesarios, haciendo uso de expresiones regulares.
 
 Finalmente, se renombró como CCAA y se definió como variable categórica tipo factor.
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo <- df_Turismo %>% 
   rename(CCAA = Comunidades.y.Ciudades.Autónomas) %>% 
   mutate(
@@ -231,9 +232,9 @@ colSums(is.na(df_Turismo))
 
 ### Análisis
 
-Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos.
+Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos, utilizando la función `summary()`.
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 summary(df_Turismo)
 ```
 El resumen estadístico muestra que todas las comunidades autónomas tienen el mismo número de observaciones, con registros trimestrales entre 1999 y 2025. La variable Total presenta un mínimo de 0 (probablemente asociado a la pandemia), una media de 6,27 millones y un máximo de 54 millones, reflejando una notable variabilidad entre regiones y periodos.
@@ -278,7 +279,7 @@ nacional_mensual %>%
   )
 ```
 
-Además, se han analizado los resultados agregados a nivel nacional y muestran una media de aproximadamente 119 millones de turistas por periodo y una mediana cercana a 112 millones, lo que indica una distribución relativamente equilibrada aunque con cierta asimetría hacia los valores altos.
+Estos, muestran una media de aproximadamente 119 millones de turistas por periodo y una mediana cercana a 112 millones, lo que indica una distribución relativamente equilibrada aunque con cierta asimetría hacia los valores altos.
 
 La desviación típica, de unos 52 millones, junto con una varianza elevada, refleja una alta variabilidad en el volumen de turismo entre periodos.
 
@@ -303,7 +304,7 @@ A continuación, se representa la serie temporal de cada comunidad y ciudad aut�
 
 Para evitar una visualización sobrecargada, los gráficos individuales de cada comunidad autónoma se han guardado automáticamente en la carpeta `graficos_comunidades`. En el informe se muestra únicamente un ejemplo ilustrativo.
 
-```{r Gráfico 2, echo=FALSE ,out.height="30%", out.width="70%"}
+```{r Gráfico 2, echo=FALSE ,out.height="20%", out.width="70%"}
 if(!dir.exists("graficos_comunidades")){
 dir.create("graficos_comunidades")
 }
@@ -339,7 +340,7 @@ ggplot(aes(Periodo, Total)) +
 geom_line(linewidth = 0.8) +
 scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
 labs(
-title = "Serie temporal de turismo - Andalucía (Ejemplo)",
+title = "Serie temporal de turismo - Andalucía",
 x = "Periodo",
 y = "Total"
 ) +
@@ -690,7 +691,7 @@ AnalisisBox <- readRDS("../AnalisisBox.rds")
 
 Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
 
-```{r Gráfico 6, out.height="30%", out.width="70%"}
+```{r Gráfico 6, out.height="30%", out.width="70%", echo=FALSE}
 AnalisisBox[[2]]
 ```
 
@@ -811,7 +812,7 @@ Para limpiar y preparar la base de datos de ocupación, ha sido necesario realiz
 
 5. Normalizar la variable “Total”, eliminando la palabra “miles” y los puntos de millares, sustituyendo la coma decimal por punto, convirtiendo los valores a numéricos y multiplicándolos por 1.000 para expresarlos en personas. De este modo, se mantiene la coherencia de escala con la base de datos de turismo.
 
-```{r}
+```{r, echo=FALSE}
 df_Ocupacion_clean <-  df_Ocupacion %>% 
   #1
   filter(Sexo == "Ambos sexos") %>% 
@@ -842,7 +843,7 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
 
-```{r Gráfico 9, echo=FALSE, out.height="30%", out.width="70%"}
+```{r Gráfico 9, echo=FALSE, out.height="20%", out.width="70%"}
 # Total nacional por trimestre
 ocup_nacional <- df_Ocupacion_clean %>%
   group_by(Periodo) %>%
@@ -867,7 +868,7 @@ A continuación, se analiza la evolución trimestral del empleo en el sector ser
 
 Los gráficos individuales de cada comunidad autónoma se han generado y almacenado automáticamente en una carpeta independiente (*graficos_ocupacion_ccaa*).  A modo de ejemplo, a continuación se muestra la evolución correspondiente a Andalucía.
 
-```{r Gráfico 10, echo=FALSE ,out.height="30%", out.width="90%"}
+```{r Gráfico 10, echo=FALSE ,out.height="20%", out.width="90%"}
 if(!dir.exists("graficos_ocupacion_ccaa")){
 dir.create("graficos_ocupacion_ccaa")
 }
@@ -993,7 +994,7 @@ Mediante la función `merge()`, se unen ambos conjuntos de datos utilizando como
 
 Antes de la unión, en la base de ocupación se renombra la variable Total como Numero_ocupados para distinguirla del total de turistas y evitar ambigüedades en el nuevo dataset combinado (df_Turismo_Ocupacion).
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo_Ocupacion <- merge(
   x = turismo_to_merge,
   y = (df_Ocupacion_clean %>% 
