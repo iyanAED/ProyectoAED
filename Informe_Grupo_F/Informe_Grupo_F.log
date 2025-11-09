@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.7)  8 NOV 2025 22:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.7)  9 NOV 2025 08:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1294,44 +1294,21 @@ Overfull \hbox (3.22pt too wide) in paragraph at lines 581--586
 \T1/cmtt/m/n/10 graficos_outliers_3sigma\T1/ppl/m/n/10 (-20) , \T1/cmtt/m/n/10 graficos_outliers_hampel \T1/ppl/m/n/10 (-20) y \T1/cmtt/m/n/10 graficos_outliers_boxplot\T1/ppl/m/n/10 (-20) . 
  []
 
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf, id=112, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf  used on input line 597.
-(pdftex.def)             Requested size: 394.35498pt x 344.26971pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 597--598
-[][] 
- []
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 16.18796pt, for example:
-(fancyhdr)                \setlength{\headheight}{16.18796pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
-
-[5 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-13-1.pdf>]
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf, id=122, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf  used on input line 607.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 607--608
-[][] 
- []
-
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf, id=123, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf  used on input line 622.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 622--623
-[][] 
- []
-
+<Informe_Grupo_F_files/figure-latex/Gráfico 1-1.pdf, id=112, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 1-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 1-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 1-1.pdf  used on input line 587.
+(pdftex.def)             Requested size: 354.91733pt x 206.55388pt.
+<Informe_Grupo_F_files/figure-latex/Gráfico 2-1.pdf, id=113, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 2-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 2-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 2-1.pdf  used on input line 589.
+(pdftex.def)             Requested size: 354.91733pt x 206.55388pt.
+<Informe_Grupo_F_files/figure-latex/Gráfico 3-1.pdf, id=114, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 3-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 3-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 3-1.pdf  used on input line 591.
+(pdftex.def)             Requested size: 354.91733pt x 206.55388pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1339,7 +1316,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[6 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-16-1.pdf> <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-18-1.pdf>]
+[5 <./Informe_Grupo_F_files/figure-latex/Gráfico 1-1.pdf> <./Informe_Grupo_F_files/figure-latex/Gráfico 2-1.pdf>]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1347,31 +1324,16 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[7]
-Overfull \hbox (21.41603pt too wide) in paragraph at lines 728--732
+[6 <./Informe_Grupo_F_files/figure-latex/Gráfico 3-1.pdf>]
+Overfull \hbox (21.41603pt too wide) in paragraph at lines 689--693
 []\T1/ppl/m/n/10 (-20) Los re-sul-ta-dos para cada co-mu-nidad se guardaron en un archivo lla-mado \T1/cmtt/m/n/10 AnalisisBox.rsd\T1/ppl/m/n/10 (-20) .
  []
 
-<Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf, id=143, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf  used on input line 743.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 743--749
-[][]
- []
-
-<Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf, id=144, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf  used on input line 757.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 757--758
-[][] 
- []
-
+<Informe_Grupo_F_files/figure-latex/Gráfico 4-1.pdf, id=138, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 4-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 4-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 4-1.pdf  used on input line 704.
+(pdftex.def)             Requested size: 354.91733pt x 137.70093pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1379,27 +1341,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[8 <./Informe_Grupo_F_files/figure-latex/Gráfica de ajuste-1.pdf>]
-<Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf, id=155, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf  used on input line 759.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-
-Overfull \hbox (96.73819pt too wide) in paragraph at lines 759--760
-[][] 
- []
-
-<Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf, id=156, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf  used on input line 761.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 761--762
-[][] 
- []
-
+[7 <./Informe_Grupo_F_files/figure-latex/Gráfico 4-1.pdf>]
+<Informe_Grupo_F_files/figure-latex/Gráfico 5-1.pdf, id=150, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 5-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 5-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 5-1.pdf  used on input line 718.
+(pdftex.def)             Requested size: 354.91733pt x 137.70093pt.
+<Informe_Grupo_F_files/figure-latex/Gráfico 7-1.pdf, id=151, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 7-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 7-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 7-1.pdf  used on input line 720.
+(pdftex.def)             Requested size: 354.91733pt x 137.70093pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1407,116 +1359,108 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[9 <./Informe_Grupo_F_files/figure-latex/Gráfica de predicción buena-1.pdf> <./Informe_Grupo_F_files/figure-latex/Gráfica de predicción intermedia-1.pdf>]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 16.18796pt, for example:
-(fancyhdr)                \setlength{\headheight}{16.18796pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
-
-[10 <./Informe_Grupo_F_files/figure-latex/Gráfica de predicción mala-1.pdf>]
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+[8 <./Informe_Grupo_F_files/figure-latex/Gráfico 5-1.pdf> <./Informe_Grupo_F_files/figure-latex/Gráfico 7-1.pdf>]
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##    CCAA                           media mediana     sd   min    max    IQR     N[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##    <fct>                          <dbl>   <dbl>  <dbl> <dbl>  <dbl>  <dbl> <int>[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  1 Catalu�a                   20162927.  1.82e7 1.11e7     0 4.62e7 1.74e7   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  2 Illes Balears              19915553.  1.41e7 1.73e7     0 5.40e7 3.30e7   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  3 Canarias                   19889672.  2.02e7 6.40e6     0 3.25e7 9.84e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  4 Andaluc�a                  19415478.  1.88e7 8.28e6     0 3.95e7 1.29e7   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  5 Comunitat Valenciana       10438034.  1.00e7 4.12e6     0 2.10e7 5.60e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  6 Comunidad de Madrid         9063390.  9.19e6 2.98e6     0 1.51e7 4.74e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  7 Castilla y Le�n             3752446.  3.81e6 1.26e6     0 6.91e6 1.75e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  8 Galicia                     3739708.  3.21e6 1.98e6     0 9.75e6 2.63e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ##  9 Pa�s Vasco                  2295078.  2.11e6 1.00e6     0 5.41e6 1.33e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 10 Arag�n                      2254042.  2.18e6 7.28e5     0 4.60e6 8.69e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 11 Castilla - La Mancha        1767775.  1.82e6 4.56e5     0 2.81e6 6.30e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 12 Principado de Asturias      1506391.  1.33e6 8.70e5     0 4.02e6 1.11e6   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 13 Regi�n de Murcia            1270981.  1.27e6 4.45e5     0 2.54e6 6.22e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 14 Cantabria                   1212464.  1.04e6 7.35e5     0 3.19e6 9.70e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 15 Extremadura                 1078914.  1.09e6 3.26e5     0 1.89e6 4.72e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 16 Comunidad Foral de Navarra   766060.  7.27e5 3.13e5     0 1.63e6 4.71e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 17 La Rioja                     458772.  4.65e5 1.54e5     0 9.40e5 2.12e5   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 18 Ceuta                         37138.  3.78e4 9.27e3     0 6.47e4 9.14e3   321[] 
  []
 
 
-Overfull \hbox (41.28839pt too wide) in paragraph at lines 840--840
+Overfull \hbox (41.28839pt too wide) in paragraph at lines 799--799
 []\T1/cmtt/m/n/10 ## 19 Melilla                       27683.  2.80e4 8.34e3     0 4.88e4 1.12e4   321[] 
  []
 
@@ -1527,27 +1471,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[11]
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf, id=185, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf  used on input line 913.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 913--914
-[][] 
- []
-
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf, id=186, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf  used on input line 941.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 941--942
-[][] 
- []
-
+[9]
+<Informe_Grupo_F_files/figure-latex/Gráfico 8-1.pdf, id=171, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 8-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 8-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 8-1.pdf  used on input line 872.
+(pdftex.def)             Requested size: 354.91733pt x 137.70093pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1555,7 +1484,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[12 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-24-1.pdf>]
+[10 <./Informe_Grupo_F_files/figure-latex/Gráfico 8-1.pdf>]
+<Informe_Grupo_F_files/figure-latex/Gráfico 9-1.pdf, id=181, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 9-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 9-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 9-1.pdf  used on input line 900.
+(pdftex.def)             Requested size: 354.91733pt x 206.55388pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1563,7 +1497,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[13 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-25-1.pdf>]
+[11 <./Informe_Grupo_F_files/figure-latex/Gráfico 9-1.pdf>]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmtt' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1575,24 +1509,43 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[14]
-Overfull \hbox (83.27814pt too wide) in paragraph at lines 1089--1089
+[12]
+Overfull \hbox (83.27814pt too wide) in paragraph at lines 1048--1048
 []\T1/cmtt/m/n/10 ## Warning: The `trans` argument of `continuous_scale()` is deprecated as of ggplot2 3.5.0.[] 
  []
 
 
-Overfull \hbox (4.54736pt too wide) in paragraph at lines 1089--1089
+Overfull \hbox (4.54736pt too wide) in paragraph at lines 1048--1048
 []\T1/cmtt/m/n/10 ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was[] 
  []
 
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf, id=217, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf  used on input line 1091.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
+<Informe_Grupo_F_files/figure-latex/Gráfico 10-1.pdf, id=202, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 10-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 10-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 10-1.pdf  used on input line 1050.
+(pdftex.def)             Requested size: 354.91733pt x 137.70093pt.
 
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 1091--1092
-[][] 
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 16.18796pt, for example:
+(fancyhdr)                \setlength{\headheight}{16.18796pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
+
+[13 <./Informe_Grupo_F_files/figure-latex/Gráfico 10-1.pdf>]
+<Informe_Grupo_F_files/figure-latex/Gráfico 11-1.pdf, id=213, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 11-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 11-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 11-1.pdf  used on input line 1088.
+(pdftex.def)             Requested size: 354.91733pt x 206.55388pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 16.18796pt, for example:
+(fancyhdr)                \setlength{\headheight}{16.18796pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
+
+[14 <./Informe_Grupo_F_files/figure-latex/Gráfico 11-1.pdf>]
+Underfull \vbox (badness 3108) detected at line 1192
  []
 
 
@@ -1602,17 +1555,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[15 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-29-1.pdf>]
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf, id=227, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf  used on input line 1129.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 1129--1130
-[][] 
- []
-
+[15]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1620,7 +1563,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[16 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-30-1.pdf>]
+[16]
+<Informe_Grupo_F_files/figure-latex/Gráfico 12-1.pdf, id=231, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 12-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 12-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 12-1.pdf  used on input line 1287.
+(pdftex.def)             Requested size: 354.91733pt x 275.4118pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1628,7 +1576,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[17]
+[17 <./Informe_Grupo_F_files/figure-latex/Gráfico 12-1.pdf>]
+<Informe_Grupo_F_files/figure-latex/Gráfico 13-1.pdf, id=241, 469.755pt x 325.215pt>
+File: Informe_Grupo_F_files/figure-latex/Gráfico 13-1.pdf Graphic file (type pdf)
+<use Informe_Grupo_F_files/figure-latex/Gráfico 13-1.pdf>
+Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/Gráfico 13-1.pdf  used on input line 1342.
+(pdftex.def)             Requested size: 354.91733pt x 206.55388pt.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1636,17 +1589,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[18]
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-40-1.pdf, id=245, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-40-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-40-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-40-1.pdf  used on input line 1348.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 1348--1349
-[][] 
- []
-
+[18 <./Informe_Grupo_F_files/figure-latex/Gráfico 13-1.pdf>]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 16.18796pt, for example:
@@ -1654,41 +1597,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
 
-[19 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-40-1.pdf>]
-<Informe_Grupo_F_files/figure-latex/unnamed-chunk-42-1.pdf, id=256, 469.755pt x 325.215pt>
-File: Informe_Grupo_F_files/figure-latex/unnamed-chunk-42-1.pdf Graphic file (type pdf)
-<use Informe_Grupo_F_files/figure-latex/unnamed-chunk-42-1.pdf>
-Package pdftex.def Info: Informe_Grupo_F_files/figure-latex/unnamed-chunk-42-1.pdf  used on input line 1403.
-(pdftex.def)             Requested size: 394.35498pt x 206.55388pt.
-
-Overfull \hbox (21.33931pt too wide) in paragraph at lines 1403--1404
-[][] 
- []
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 16.18796pt, for example:
-(fancyhdr)                \setlength{\headheight}{16.18796pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
-
-[20 <./Informe_Grupo_F_files/figure-latex/unnamed-chunk-42-1.pdf>]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 16.18796pt, for example:
-(fancyhdr)                \setlength{\headheight}{16.18796pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
-
-[21]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 16.18796pt, for example:
-(fancyhdr)                \setlength{\headheight}{16.18796pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-4.18796pt}.
-
-[22] 
+[19] 
 enddocument/afterlastpage (AED): lastpage setting LastPage.
 (./Informe_Grupo_F.aux)
  ***********
@@ -1699,18 +1608,18 @@ Package rerunfilecheck Info: File `Informe_Grupo_F.out' has not changed.
 (rerunfilecheck)             Checksum: FA9DF747DD6046DCC2FE7F24A7269674;2296.
  ) 
 Here is how much of TeX's memory you used:
- 34242 strings out of 469518
- 649776 string characters out of 5468051
+ 34230 strings out of 469518
+ 648286 string characters out of 5468051
  1144994 words of memory out of 5000000
- 61910 multiletter control sequences out of 15000+600000
- 685309 words of font info for 335 fonts, out of 8000000 for 9000
+ 61903 multiletter control sequences out of 15000+600000
+ 685240 words of font info for 334 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 123i,13n,121p,4635b,741s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 123i,12n,121p,4635b,739s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/tctt1000.600pk> <c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecit1000.600pk> <c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk> <c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-var/fonts/pk/ljfour/jknappen/ec/ecss0800.375pk><c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb><c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><c:/Users/Usuario/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Informe_Grupo_F.pdf (22 pages, 366139 bytes).
+Output written on Informe_Grupo_F.pdf (19 pages, 358615 bytes).
 PDF statistics:
- 473 PDF objects out of 1000 (max. 8388607)
- 258 compressed objects within 3 object streams
- 48 named destinations out of 1000 (max. 500000)
- 87771 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 452 PDF objects out of 1000 (max. 8388607)
+ 245 compressed objects within 3 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 87766 words of extra memory for PDF output out of 89155 (max. 10000000)
 

@@ -242,7 +242,7 @@ En todos los casos se aplicó una versión estacional del método, calculando lo
 Los gráficos se generaron automáticamente para cada comunidad autónoma, aunque solo se muestra un ejemplo en el informe. Todos ellos se han guardado en carpetas independientes:  
 `graficos_outliers_3sigma`, `graficos_outliers_hampel` y `graficos_outliers_boxplot`.
 
-```{r Regla 3 Sigma}
+```{r Regla 3 Sigma, include=FALSE}
 Sigma3_est <- function(x, k = 3) {
   media <- mean(x, na.rm = TRUE)
   desv <- sd(x, na.rm = TRUE)
@@ -260,7 +260,7 @@ outliers_sigma3_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r, echo=FALSE, out.height="50%", out.width="100%"}
+```{r Gráfico 1, echo=FALSE, out.height="30%", out.width="90%"}
 if(!dir.exists("graficos_outliers_3sigma")){
   dir.create("graficos_outliers_3sigma")
 }
@@ -304,7 +304,7 @@ outliers_sigma3_est %>%
   theme_minimal()
 ```
 
-```{r, include=FALSE, out.height="50%", out.width="100%"}
+```{r, include=FALSE}
 df_Turismo %>%
   mutate(Mes = month(as.Date(Periodo), label = TRUE, abbr = TRUE)) %>% 
   group_by(CCAA, Mes) %>%
@@ -322,7 +322,7 @@ df_Turismo %>%
 ```
 
 
-```{r Regla Hampel}
+```{r Regla Hampel, include=FALSE}
 Hampel_est <- function(x, k = 3) {
   abs(x - median(x)) > k * mad(x)
 }
@@ -339,7 +339,7 @@ outliers_hampel_est <- df_Turismo %>%
 ```
 
 
-```{r, echo=FALSE, out.height="30%", out.width="100%"}
+```{r Gráfico 2, echo=FALSE, out.height="30%", out.width="90%"}
 if(!dir.exists("graficos_outliers_hampel")){
   dir.create("graficos_outliers_hampel")
 }
@@ -385,7 +385,7 @@ outliers_hampel_est %>%
 ```
 
 
-```{r Regla boxplot}
+```{r Regla boxplot, include=FALSE}
 Boxplot_est <- function(x, k = 1.5) {
   Q1 <- quantile(x, 0.25, na.rm = TRUE)
   Q3 <- quantile(x, 0.75, na.rm = TRUE)
@@ -406,7 +406,7 @@ outliers_boxplot_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r, echo=FALSE, out.height="30%", out.width="100%"}
+```{r Gráfico 3, echo=FALSE, out.height="30%", out.width="90%"}
 if(!dir.exists("graficos_outliers_boxplot")){
   dir.create("graficos_outliers_boxplot")
 }
@@ -490,15 +490,13 @@ Este enfoque permite homogeneizar el tratamiento de outliers en todas las comuni
 
 ### Análisis de series de tiempo
 
-Los datos de turismo referentes al periodo de la pandemia son claramente _outlier_, la pregunta principal a la que se debe hacer frente es si eliminarlo o si tenerlos en cuenta para posteriores análisis. Esta pregunta no es sencilla pues para ciertas CCAA, como se ha mencionado, hay métodos de detección de _outliers_ que no los clasifican como tales.
+Los datos de turismo referentes al periodo de la pandemia son claramente _outlier_, la pregunta principal es qué hacer con ellos. Esta pregunta no es sencilla, como se ha mencionado, hay métodos de detección que no los clasifican como tales.
 
 La idea para justificar qué debemos hacer con estos datos anómalos es la siguiente, en general, si representamos la serie temporal de una comunidad autónoma se puede ver que la gran bajada del número de pernoctaciones a partir del mes de marzo de 2020, lo cual está directamente relacionado con el inicio del estado de alarma y la cuarentena nacional. 
 
-Tras esto se mantienen unas cifras muy bajas hasta aproximadamente dos años después (dependiendo de la comunidad), coincidiendo con la declaración del final de la pandemia por parte de la OMS, los datos de estancias vuelven prácticamente a los niveles prepandemia, lo cual sugiere que aunque la pandemia afectó de forma muy negativa al sector de la hostelería y el turismo, también este sector recuperó de forma bastante rápida cuando la situación sanitaria lo permitió.
+Tras esto se mantienen unas cifras muy bajas hasta aproximadamente dos años después (dependiendo de la comunidad), coincidiendo con la declaración del final de la pandemia por parte de la OMS, los datos de estancias vuelven prácticamente a los niveles prepandemia, lo cual sugiere que este sector se recuperó de forma bastante rápida cuando la situación sanitaria lo permitió.
 
-Esto hace pensar que la pandemia simplemente puso una "pausa" al turismo y que tras esta pausa la actividad en este sector continuó desarrollándose de la misma forma que lo venía haciendo en los últimos años, aunque si es cierto que el crecimiento se desaceleró ligeramente. Lo cual sugiere que los datos de la pandemia no aportan ningún tipo de información relevante que pueda ayudar a predecir o explicar el futuro del sector del turismo.
-
-Pues no solo no aportan información relevante, si no que además añadirían ruido a los datos afectando de forma negativa a los posibles análisis que puedan hacerse.
+Esto hace pensar que la pandemia simplemente puso una "pausa" al turismo y tras ello la actividad en este sector continuó desarrollándose de la misma forma que lo venía haciendo en los últimos años, aunque si es cierto que el crecimiento se desaceleró ligeramente. Lo cual sugiere que los datos de la pandemia no aportan ningún tipo de información relevante.
 
 Para darle respaldo a esta hipótesis nos proponemos hacer un análisis de la serie de datos de cada CCAA, cosa que es muy natural por la forma en la que están organizados los datos.
 
@@ -599,23 +597,19 @@ Los resultados para cada comunidad se guardaron en un archivo llamado `AnalisisB
 AnalisisBox <- readRDS("../AnalisisBox.rds")
 ```
 
-Se pueden ver las dierentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
+Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
 
-```{r Gráfica de ajuste, out.height="30%", out.width="100%"}
+```{r Gráfico 4, out.height="20%", out.width="90%"}
 AnalisisBox[[2]]
 ```
 Entonces, tras ver que el modelo aproxima de forma razonable los datos prepandemia, hay razones para confiar en las predicciones, las cuales se pueden interpretar como los datos de pernoctaciones que hubieran sucedido en esos meses siguientes a febrero de $2020$ si la pandemia no hubiera azotado.
 
 Lo más interesante ocurre si comparamos esas predicciones con los datos posteriores a la pandemia. Si bien es cierto que hay algunas comunidades para las cuales las predicciones no se ajustan en nada (son los casos de las ciudades autónomas) en el resto de casos se puede ver como la predicción y el valor postpandemia son iguales solo que con cifras algo menores menores.
-```{r Gráfica de predicción buena, echo=FALSE, out.height="30%", out.width="100%"}
+```{r Gráfico 5, echo=FALSE, out.height="20%", out.width="90%"}
 AnalisisBox[[18]]
 ```
 
-```{r Gráfica de predicción intermedia, echo=FALSE}
-AnalisisBox[[83]]
-```
-
-```{r Gráfica de predicción mala, echo=FALSE, out.height="30%", out.width="100%"}
+```{r Gráfico 7, echo=FALSE, out.height="20%", out.width="90%"}
 AnalisisBox[[13]]
 ```
 
@@ -679,7 +673,7 @@ El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mient
 
 Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
 
-```{r, out.height="30%", out.width="100%"}
+```{r Gráfico 8, out.height="20%", out.width="90%"}
 ggplot(nacional_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.8) +
   scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
@@ -692,7 +686,7 @@ La gráfica muestra una tendencia general al alza con una clara estacionalidad a
 
 A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
 
-```{r, out.height="30%", out.width="100%"}
+```{r Gráfico 9, out.height="30%", out.width="90%"}
 ca_mensual <- df_Turismo %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
@@ -789,7 +783,7 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
 
-```{r, out.height="30%", out.width="100%"}
+```{r Gráfico 10, out.height="20%", out.width="90%"}
 # Total nacional por trimestre
 ocup_nacional <- df_Ocupacion_clean %>%
   group_by(Periodo) %>%
@@ -812,7 +806,7 @@ Además, se aprecia una estacionalidad clara, con aumentos recurrentes en determ
 
 Además, también se analiza la **evolución trimestral del empleo en el sector servicios por Comunidad Autónoma**, agrupando los datos por región y periodo. El gráfico permite comparar la dinámica laboral entre territorios a lo largo del tiempo.
 
-```{r, out.height="30%", out.width="100%"}
+```{r Gráfico 11, out.height="30%", out.width="90%"}
 ocup_ccaa <- df_Ocupacion_clean %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
@@ -897,11 +891,9 @@ Por tanto, no se eliminarán las observaciones atípicas y se mantendrán en el 
 
 # ANÁLISIS BIVARIANTE
 
-##TODO
-
 **Base de datos actualizada con los valores imputados**
 
-```{r Dataframe con las predicciones}
+```{r Dataframe con las predicciones, echo=FALSE}
 AnalisisBox <- readRDS("../AnalisisBox.rds")
 
 df <- data.frame(matrix(nrow = 0, ncol = 12))
@@ -918,7 +910,7 @@ for (x in AnalisisBox){
 
 ```
 
-```{r}
+```{r Imputación de los datos con las predicciones}
 # Copia del data frame original
 df_Turismo_corregido <- df_Turismo
 
@@ -1028,7 +1020,7 @@ correlaciones_por_comunidad
 
 ```
 
-```{r, echo=FALSE, out.height="30%", out.width="100%"}
+```{r Gráfico 12, echo=FALSE, out.height="40%", out.width="90%"}
 ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -1066,7 +1058,7 @@ modelos_por_ccaa <- df_Turismo_Ocupacion %>%
 
 modelos_por_ccaa[,c(1,4)]
 ```
-```{r, echo=FALSE, out.height="30%", out.width="100%"}
+```{r Gráfico 13, echo=FALSE, out.height="30%", out.width="90%"}
 año_ref <- 2024
 
 nuts2 <- gisco_get_nuts(year = año_ref,
@@ -1109,7 +1101,7 @@ En general, se observa que los valores son moderados o bajos, lo que indica que,
 
 Las comunidades con mayor ajuste del modelo son Aragón ($R^2 = 0.25$), Castilla y León ($R^2 = 0.24$), Cantabria ($R^2 = 0.22$) y Canarias ($R^2 = 0.22$), donde alrededor de una cuarta parte de la variabilidad en el empleo se asocia con los cambios en el turismo.
 
-Por el contrario, en Ceuta ($R^2 \approx 0$) y Cataluña ($R approx 0.05$) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
+Por el contrario, en Ceuta ($R^2 \approx 0$) y Cataluña ($R \approx 0.05$) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
 
 A partir del modelo de regresión lineal calculado anteriormente, se estima la **elasticidad** del empleo respecto al turismo, utilizando la pendiente de la recta de regresión como medida del impacto del turismo sobre el empleo en cada comunidad autónoma.
 
