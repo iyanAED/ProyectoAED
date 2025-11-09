@@ -212,7 +212,7 @@ df_Turismo <- df_Turismo %>%
 
 Para continuar con el análisis, se creó un nuevo conjunto de datos agregado a nivel de comunidad autónoma.
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo <- df_Turismo %>%
   group_by(CCAA, Periodo) %>% 
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
