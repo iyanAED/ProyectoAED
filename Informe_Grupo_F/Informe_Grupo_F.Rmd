@@ -5,10 +5,10 @@ author:
   - afiliation: 'Universitat de València'
 date: "`r Sys.Date()`"
 output: 
-  pdf_document:
-    latex_engine: xelatex
   rticles::mdpi_article:
     extra_dependencies: longtable
+  pdf_document:
+    latex_engine: xelatex
   html_document: default
 abstract: |
   El presente informe analiza la evolución del turismo en España y su relación con la ocupación en el sector servicios, a partir de datos oficiales del INE. Se integraron dos bases de datos —una sobre viajeros y pernoctaciones, y otra sobre empleo por sectores— para realizar un análisis exploratorio, univariante y bivariante a nivel de comunidad autónoma. 
