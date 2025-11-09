@@ -60,7 +60,7 @@ La segunda base de datos corresponde al sector servicios, concretamente a la ocu
 
 En este estudio se abordan **tres** cuestiones principales:
 
-1. ¿Cómo tratar los valores atípicos (outliers) asociados al periodo de la pandemia de la COVID-19 (2019-2021)?
+1. ¿Se observan datos atípicos relacionados con la pandemia del COVID-19?De ser así, ¿Como se tratarían?
 
 2. ¿Qué evolución ha experimentado el turismo en las distintas comunidades autónomas a lo largo del periodo analizado?
 
@@ -255,7 +255,7 @@ tabla <- df_Turismo %>%
   ) %>%
   arrange(desc(media))
 
-tabla
+head(tabla)
 ```
 
 Los resultados muestran que Cataluña presenta la media más alta en el número de turistas, lo que refleja su consolidación como uno de los principales destinos turísticos del país. Le siguen Baleares, Canarias y Andalucía, todas ellas comunidades con una fuerte especialización en el sector turístico.
@@ -558,6 +558,7 @@ df_outliers <- df_Turismo %>%
   ungroup()
 ```
 
+Aplicando los tres métodos de detección de valores atípicos se obtiene el siguiente número de outliers identificados por cada método:
 
 ```{r, echo=FALSE}
 tabla_outliers_ccaa <- df_outliers %>%
@@ -1067,7 +1068,7 @@ ggplot(mapa_cor) +
     name = 'Correlación'
   ) +
   labs(
-    title = "Correlación por CCAA",
+    title = "Coeficiente de correlación por CCAA",
     subtitle = "Coeficiente de correlación",
     x = NULL, y = NULL
   ) +
