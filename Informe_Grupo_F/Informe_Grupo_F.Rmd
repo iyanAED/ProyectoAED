@@ -301,18 +301,49 @@ La gráfica muestra una tendencia general al alza con una clara estacionalidad a
 
 A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
 
-```{r Gráfico 2, echo=FALSE ,out.height="30%", out.width="70%"}
-ca_mensual <- df_Turismo %>%
-  group_by(CCAA, Periodo) %>%
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+Para evitar una visualización sobrecargada, los gráficos individuales de cada comunidad autónoma se han guardado automáticamente en la carpeta `graficos_comunidades`. En el informe se muestra únicamente un ejemplo ilustrativo.
 
-ggplot(ca_mensual, aes(Periodo, Total)) +
-  geom_line(linewidth = 0.6) +
-  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
-  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
-  labs(title = "Serie temporal por Comunidad Autónoma",
-       x = "Periodo", y = "Total") +
-  theme_minimal()
+```{r Gráfico 2, echo=FALSE ,out.height="30%", out.width="70%"}
+if(!dir.exists("graficos_comunidades")){
+dir.create("graficos_comunidades")
+}
+
+ca_mensual <- df_Turismo %>%
+group_by(CCAA, Periodo) %>%
+summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ccaa_lista <- unique(ca_mensual$CCAA)
+
+for (cc in ccaa_lista) {
+p <- ca_mensual %>%
+filter(CCAA == cc) %>%
+ggplot(aes(Periodo, Total)) +
+geom_line(linewidth = 0.8) +
+scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+labs(
+title = paste("Serie temporal de turismo -", cc),
+x = "Periodo",
+y = "Total"
+) +
+theme_minimal()
+
+ggsave(
+filename = paste0("graficos_comunidades/serie_turismo_", gsub(" ", "_", cc), ".png"),
+plot = p, width = 8, height = 5
+)
+}
+
+ca_mensual %>%
+filter(CCAA == "Andalucía") %>%
+ggplot(aes(Periodo, Total)) +
+geom_line(linewidth = 0.8) +
+scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+labs(
+title = "Serie temporal de turismo - Andalucía (Ejemplo)",
+x = "Periodo",
+y = "Total"
+) +
+theme_minimal()
 ```
 
 En general, todas las comunidades muestran una marcada estacionalidad, con picos de actividad durante los meses de verano. A largo plazo, Madrid, el País Vasco y Canarias presentan una tendencia claramente creciente, mientras que otras, como Ceuta, mantienen una evolución más estable.
@@ -459,22 +490,6 @@ for (cc in ccaa_lista) {
     plot = p, width = 8, height = 5
   )
 }
-
-#Ejemplo
-outliers_hampel_est %>%
-  filter(CCAA == "Andalucía") %>%
-  ggplot(aes(Periodo, Total)) +
-  geom_line(color = "grey70") +
-  geom_point(aes(color = es_outlier_hampel)) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  labs(
-    title = "Detección estacional de outliers (Hampel) - Andalucía",
-    x = "Periodo", 
-    y = "Total", 
-    color = "Outlier"
-  ) +
-  theme_minimal()
-
 ```
 
 
@@ -526,21 +541,6 @@ for (cc in ccaa_lista) {
     plot = p, width = 8, height = 5
   )
 }
-
-#Ejemplo
-outliers_boxplot_est %>%
-  filter(CCAA == "Andalucía") %>%
-  ggplot(aes(Periodo, Total)) +
-  geom_line(color = "grey70") +
-  geom_point(aes(color = es_outlier_boxplot)) +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  labs(
-    title = "Detección de outliers (Boxplot) - Andalucía",
-    x = "Periodo", 
-    y = "Total", 
-    color = "Outlier"
-  ) +
-  theme_minimal()
 ```
 
 ```{r, echo=FALSE}
@@ -866,23 +866,48 @@ En 2020 se produce un descenso notable debido al impacto de la pandemia, tras lo
 
 Además, se aprecia una estacionalidad clara, con aumentos recurrentes en determinados trimestres, probablemente vinculados a la temporada turística.
 
-Además, también se analiza la **evolución trimestral del empleo en el sector servicios por Comunidad Autónoma**, agrupando los datos por región y periodo. El gráfico permite comparar la dinámica laboral entre territorios a lo largo del tiempo.
+A continuación, se analiza la evolución trimestral del empleo en el sector servicios por Comunidad Autónoma, agrupando los datos por región y periodo.  Este análisis permite observar las diferencias en la dinámica laboral entre territorios a lo largo del tiempo.  
+
+Los gráficos individuales de cada comunidad autónoma se han generado y almacenado automáticamente en una carpeta independiente (*graficos_ocupacion_ccaa*).  A modo de ejemplo, a continuación se muestra la evolución correspondiente a Andalucía.
 
 ```{r Gráfico 10, echo=FALSE ,out.height="30%", out.width="90%"}
-ocup_ccaa <- df_Ocupacion_clean %>%
-  group_by(CCAA, Periodo) %>%
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+if(!dir.exists("graficos_ocupacion_ccaa")){
+dir.create("graficos_ocupacion_ccaa")
+}
 
-ggplot(ocup_ccaa, aes(Periodo, Total)) +
-  geom_line(linewidth = 0.5) +
-  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
-  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
-  labs(title = 
-         "Ocupación en el sector servicios por Comunidad Autónoma (trimestral)",
-       x = "Periodo", y = "Personas ocupadas") +
-  theme_minimal() +
-  theme(panel.spacing = unit(1, "lines"),
-        strip.text = element_text(size = 9))
+ocup_ccaa <- df_Ocupacion_clean %>%
+group_by(CCAA, Periodo) %>%
+summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+for (cc in unique(ocup_ccaa$CCAA)) {
+p <- ocup_ccaa %>%
+filter(CCAA == cc) %>%
+ggplot(aes(Periodo, Total)) +
+geom_line(linewidth = 0.8) +
+scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+labs(
+title = paste("Ocupación en el sector servicios -", cc),
+x = "Periodo", y = "Personas ocupadas"
+) +
+theme_minimal()
+
+ggsave(
+filename = paste0("graficos_ocupacion_ccaa/ocupacion_", gsub(" ", "_", cc), ".png"),
+plot = p, width = 8, height = 5
+)
+}
+
+ocup_ccaa %>%
+filter(CCAA == "Andalucía") %>%
+ggplot(aes(Periodo, Total)) +
+geom_line(linewidth = 0.8) +
+scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ",")) +
+labs(
+title = "Evolución trimestral del empleo en el sector servicios - Andalucía",
+x = "Periodo",
+y = "Personas ocupadas"
+) +
+theme_minimal()
 
 ```
 
