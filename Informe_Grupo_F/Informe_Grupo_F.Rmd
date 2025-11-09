@@ -40,6 +40,12 @@ library(printr)
 
 # INTRODUCCIÓN
 
+```{r, echo=FALSE}
+
+###En los siguientes análisis, las tablas muestran únicamente las primeras filas con el objetivo de reducir el espacio ocupado en el informe. Para visualizar las tablas completas, bastaría con eliminar la función head() en su llamada. Asimismo, de los gráficos generados para cada comunidad autónoma, solo se presenta un ejemplo ilustrativo en el documento. El resto de visualizaciones se han guardado automáticamente en carpetas específicas según el tipo de gráfico.
+
+```
+
 ## CONTEXTO GENERAL
 
 El turismo constituye uno de los principales motores económicos de España, aportando una parte significativa al Producto Interior Bruto y al empleo nacional. La actividad turística no solo influye en la generación de riqueza, sino también en el dinamismo de otros sectores, como el transporte, la hostelería o el comercio.
