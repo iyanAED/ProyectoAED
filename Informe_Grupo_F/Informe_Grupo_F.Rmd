@@ -1154,4 +1154,8 @@ En otras palabras, aunque el turismo y el empleo evolucionan de forma coordinada
 
 # CONCLUSIONES
 
-# ANEXOS
+El análisis realizado pone de manifiesto la fuerte dependencia entre el turismo y la actividad económica en España, especialmente en el ámbito del empleo en el sector servicios. A lo largo del periodo analizado, las series temporales muestran un comportamiento claramente estacional, con picos en los meses de verano y una tendencia general de crecimiento sostenido, interrumpida únicamente por el impacto extraordinario de la pandemia de la COVID-19.
+
+Durante dicho periodo, el turismo experimentó una caída abrupta sin precedentes, que fue tratada como un episodio atípico común en todas las regiones. Esta decisión permitió preservar la coherencia de las series y centrarse en el análisis estructural del fenómeno turístico. Los métodos de detección de outliers aplicados (3-sigma, Hampel y Boxplot) confirmaron que la mayoría de las anomalías se concentran en los años 2020 y 2021, reflejando los efectos temporales de la crisis sanitaria y las restricciones a la movilidad.
+
+En conjunto, los resultados evidencian que el turismo español ha demostrado una notable capacidad de resiliencia, recuperando rápidamente sus niveles de actividad tras la pandemia. Además, se constata una relación positiva y significativa entre la evolución del turismo y la ocupación en los servicios, lo que refuerza la idea de que el sector turístico sigue siendo uno de los motores esenciales del crecimiento económico y del empleo en España.
