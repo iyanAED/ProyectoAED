@@ -133,7 +133,7 @@ Las variables Totales.Territoriales, Viajeros.y.pernoctaciones, Residencia..Nive
 
 A continuación, se utilizó la función `glimpse()` del paquete `dplyr` para obtener una vista general del dataset, comprobando que todas las columnas se importaron como tipo carácter y que será necesario ajustar sus tipos en etapas posteriores.
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 df_Turismo %>% glimpse()
 ```
 Gracias a esto, se observa que todas las columnas se importaron inicialmente como tipo character. Por ello, en la fase de preparación se realizará la conversión a tipos de datos adecuados (fechas, factores y numéricos) para facilitar el análisis estadístico y gráfico.
@@ -288,7 +288,7 @@ El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mient
 
 Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
 
-```{r Gráfico 1, echo=FALSE, out.height="20%", out.width="90%"}
+```{r Gráfico 1, echo=FALSE, out.height="20%", out.width="70%"}
 ggplot(nacional_mensual, aes(Periodo, Total)) +
   geom_line(linewidth = 0.8) +
   scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
@@ -301,7 +301,7 @@ La gráfica muestra una tendencia general al alza con una clara estacionalidad a
 
 A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
 
-```{r Gráfico 2, echo=FALSE ,out.height="30%", out.width="90%"}
+```{r Gráfico 2, echo=FALSE ,out.height="30%", out.width="70%"}
 ca_mensual <- df_Turismo %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
@@ -353,7 +353,7 @@ outliers_sigma3_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r Gráfico 3, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 3, echo=FALSE, out.height="30%", out.width="70%"}
 if(!dir.exists("graficos_outliers_3sigma")){
   dir.create("graficos_outliers_3sigma")
 }
@@ -432,7 +432,7 @@ outliers_hampel_est <- df_Turismo %>%
 ```
 
 
-```{r Gráfico 4, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 4, echo=FALSE, out.height="30%", out.width="70%"}
 if(!dir.exists("graficos_outliers_hampel")){
   dir.create("graficos_outliers_hampel")
 }
@@ -499,7 +499,7 @@ outliers_boxplot_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r Gráfico 5, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 5, echo=FALSE, out.height="30%", out.width="70%"}
 if(!dir.exists("graficos_outliers_boxplot")){
   dir.create("graficos_outliers_boxplot")
 }
@@ -693,7 +693,7 @@ AnalisisBox <- readRDS("../AnalisisBox.rds")
 
 Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
 
-```{r Gráfico 6, out.height="20%", out.width="90%"}
+```{r Gráfico 6, out.height="30%", out.width="70%"}
 AnalisisBox[[2]]
 ```
 
@@ -701,11 +701,11 @@ Entonces, tras ver que el modelo aproxima de forma razonable los datos prepandem
 
 Lo más interesante ocurre si comparamos esas predicciones con los datos posteriores a la pandemia. Si bien es cierto que hay algunas comunidades para las cuales las predicciones no se ajustan en nada (son los casos de las ciudades autónomas) en el resto de casos se puede ver como la predicción y el valor postpandemia son iguales solo que con cifras algo menores menores.
 
-```{r Gráfico 7, echo=FALSE, out.height="20%", out.width="90%"}
+```{r Gráfico 7, echo=FALSE, out.height="30%", out.width="70%"}
 AnalisisBox[[18]]
 ```
 
-```{r Gráfico 8, echo=FALSE, out.height="20%", out.width="90%"}
+```{r Gráfico 8, echo=FALSE, out.height="30%", out.width="70%"}
 AnalisisBox[[13]]
 ```
 
@@ -845,7 +845,7 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
 
-```{r Gráfico 9, echo=FALSE,out.height="20%", out.width="90%"}
+```{r Gráfico 9, echo=FALSE, out.height="30%", out.width="70%"}
 # Total nacional por trimestre
 ocup_nacional <- df_Ocupacion_clean %>%
   group_by(Periodo) %>%
@@ -997,9 +997,7 @@ Como primer paso, se calcula la correlación de Pearson entre el número de turi
 
 El objetivo es medir la intensidad y dirección de la relación lineal entre ambas variables, obteniendo tanto el coeficiente de correlación como su p-valor para evaluar la significatividad estadística.
 
-Además, se incorpora un indicador de nivel de significación (p < 0.05), que permite identificar en qué comunidades la relación es estadísticamente relevante.
-
-Los resultados se ordenan de mayor a menor correlación, destacando aquellas regiones donde el vínculo entre turismo y empleo es más fuerte y significativo.
+Además, se incorpora un indicador de nivel de significación (p < 0.05), que permite identificar en qué comunidades la relación es estadísticamente relevante. Los resultados se ordenan de mayor a menor correlación, destacando aquellas regiones donde el vínculo entre turismo y empleo es más fuerte y significativo.
 
 ```{r, echo=FALSE}
 correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
@@ -1015,11 +1013,9 @@ correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
   arrange(desc(cor)) %>% 
    mutate(sign = ifelse(p_value <= 0.05, "Sí", "No"))
 
-correlaciones_por_comunidad
-
 ```
 
-```{r Gráfico 11, echo=FALSE, out.height="40%", out.width="90%"}
+```{r Gráfico 11, echo=FALSE, out.height="20%", out.width="60%"}
 ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -1055,10 +1051,8 @@ modelos_por_ccaa <- df_Turismo_Ocupacion %>%
   ) %>%
   select(CCAA, pendiente, intercepto, R2, p_value) %>% 
   arrange(desc(R2))
-
-modelos_por_ccaa[,c(1,4)]
 ```
-```{r Gráfico 12, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 12, echo=FALSE, out.height="30%", out.width="70%"}
 año_ref <- 2024
 
 nuts2 <- gisco_get_nuts(year = año_ref,
