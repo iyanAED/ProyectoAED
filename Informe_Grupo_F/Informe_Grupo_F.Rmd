@@ -868,7 +868,7 @@ A continuación, se analiza la evolución trimestral del empleo en el sector ser
 
 Los gráficos individuales de cada comunidad autónoma se han generado y almacenado automáticamente en una carpeta independiente (*graficos_ocupacion_ccaa*).  A modo de ejemplo, a continuación se muestra la evolución correspondiente a Andalucía.
 
-```{r Gráfico 10, echo=FALSE ,out.height="20%", out.width="90%"}
+```{r Gráfico 10, echo=FALSE ,out.height="20%", out.width="70%"}
 if(!dir.exists("graficos_ocupacion_ccaa")){
 dir.create("graficos_ocupacion_ccaa")
 }
