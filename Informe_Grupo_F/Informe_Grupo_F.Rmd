@@ -21,21 +21,17 @@ rm(list=ls())
 ```
 
 ```{r Librerias, include=FALSE}
-library(lubridate)
-library(tidyr)
-library(tidyverse)
-library(scales)
-library(stringr)
-library(zoo)
-library(purrr)
-library(forecast)
-library(leaflet)
-library(sf)
-library(dplyr)
-library(ggplot2)
-library(giscoR)
-library(pacman)
-library(printr)
+paquetes <- c(
+  "lubridate", "tidyr", "tidyverse", "scales", "stringr", "zoo", "purrr",
+  "forecast", "leaflet", "sf", "dplyr", "ggplot2", "giscoR", "pacman", "printr"
+)
+
+for (pkg in paquetes) {
+  if (!require(pkg, character.only = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+    library(pkg, character.only = TRUE)
+  }
+}
 ```
 
 # INTRODUCCIÓN
