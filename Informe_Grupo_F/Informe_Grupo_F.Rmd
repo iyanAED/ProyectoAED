@@ -35,6 +35,7 @@ library(dplyr)
 library(ggplot2)
 library(giscoR)
 library(pacman)
+library(printr)
 ```
 
 # INTRODUCCIÓN
@@ -242,7 +243,7 @@ El resumen estadístico muestra que todas las comunidades autónomas tienen el m
 Dado que la función `summary()` ofrece información limitada para variables categóricas, se amplió el análisis calculando los principales estadísticos descriptivos de Total por comunidad autónoma. Este enfoque permite comparar la magnitud y variabilidad del turismo entre regiones, antes de profundizar en las relaciones en el análisis bivariante.
 
 ```{r, echo=FALSE}
-df_Turismo %>%
+tabla <- df_Turismo %>%
   group_by(CCAA) %>%
   summarise(
     media = mean(Total, na.rm = TRUE),
@@ -252,8 +253,9 @@ df_Turismo %>%
     max = max(Total, na.rm = TRUE),
     IQR=IQR(Total, na.rm=TRUE),
   ) %>%
-  arrange(desc(media)) %>% 
-  print()
+  arrange(desc(media))
+
+tabla
 ```
 
 Los resultados muestran que Cataluña presenta la media más alta en el número de turistas, lo que refleja su consolidación como uno de los principales destinos turísticos del país. Le siguen Baleares, Canarias y Andalucía, todas ellas comunidades con una fuerte especialización en el sector turístico.
@@ -385,7 +387,7 @@ outliers_sigma3_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r Gráfico 3, echo=FALSE, out.height="30%", out.width="70%"}
+```{r Gráfico 3, echo=FALSE, out.height="20%", out.width="70%"}
 if(!dir.exists("graficos_outliers_3sigma")){
   dir.create("graficos_outliers_3sigma")
 }
@@ -567,7 +569,7 @@ tabla_outliers_ccaa <- df_outliers %>%
   ) %>%
   arrange(desc(n_hampel))
 
-tabla_outliers_ccaa
+head(tabla_outliers_ccaa)
 ```
 
 Durante la aplicación de los distintos métodos de detección de valores atípicos (3-sigma, Hampel y Boxplot) se observó que algunas comunidades autónomas no presentaban outliers, a pesar de mostrar comportamientos anómalos en sus series temporales.
@@ -577,9 +579,6 @@ Esto provoca que métodos como el de 3-sigma no identifiquen correctamente algun
 
 Dado que los métodos tradicionales no captan adecuadamente todas las anomalías y considerando el contexto económico y social, se decidió tratar como outliers comunes el periodo comprendido entre marzo de 2020 y febrero de 2021, correspondiente al impacto más severo de la pandemia de la COVID-19.
 De este modo, se homogeneiza el tratamiento de valores atípicos en todas las comunidades, evitando sesgos derivados de diferencias estacionales.
-
-
-### Series de tiempo
 
 ### Series temporales
 
@@ -689,9 +688,9 @@ Los resultados para cada comunidad se guardaron en un archivo llamado `AnalisisB
 AnalisisBox <- readRDS("../AnalisisBox.rds")
 ```
 
-Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
+Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**.
 
-```{r Gráfico 6, out.height="30%", out.width="70%", echo=FALSE}
+```{r Gráfico 6, out.height="20%", out.width="70%", echo=FALSE}
 AnalisisBox[[2]]
 ```
 
@@ -699,12 +698,11 @@ Entonces, tras ver que el modelo aproxima de forma razonable los datos prepandem
 
 Lo más interesante ocurre si comparamos esas predicciones con los datos posteriores a la pandemia. Si bien es cierto que hay algunas comunidades para las cuales las predicciones no se ajustan en nada (son los casos de las ciudades autónomas) en el resto de casos se puede ver como la predicción y el valor postpandemia son iguales solo que con cifras algo menores menores.
 
-```{r Gráfico 7, echo=FALSE, out.height="30%", out.width="70%"}
+```{r Gráfico 7, echo=FALSE, out.height="20%", out.width="50%"}
+par(mfrow=c(2,2))
 AnalisisBox[[18]]
-```
-
-```{r Gráfico 8, echo=FALSE, out.height="30%", out.width="70%"}
 AnalisisBox[[13]]
+par(mfrow=c(1,1))
 ```
 
 ### Imputación de datos
@@ -843,7 +841,7 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
 
-```{r Gráfico 9, echo=FALSE, out.height="20%", out.width="70%"}
+```{r Gráfico 9, echo=FALSE, out.height="20%", out.width="70%", warning=FALSE}
 # Total nacional por trimestre
 ocup_nacional <- df_Ocupacion_clean %>%
   group_by(Periodo) %>%
@@ -965,7 +963,7 @@ tabla_outliers_ccaa_oc <- df_outliers_oc %>%
   ) %>%
   arrange(desc(n_hampel))
 
-tabla_outliers_ccaa_oc
+head(tabla_outliers_ccaa_oc)
 ```
 
 El número de valores atípicos detectados en la serie de ocupación es reducido y no presenta un patrón sistemático entre comunidades autónomas. En la mayoría de los casos, estas observaciones reflejan variaciones reales del empleo, asociadas al crecimiento estructural del mercado laboral o a episodios económicos concretos, como la crisis de 2008.
@@ -1137,7 +1135,7 @@ elasticidad_por_ccaa <- df_Turismo_Ocupacion %>%
   select(CCAA, elasticidad, int) %>% 
   arrange(desc(elasticidad))
   
-elasticidad_por_ccaa
+head(elasticidad_por_ccaa)
 
 ```
 
