@@ -133,7 +133,7 @@ Las variables Totales.Territoriales, Viajeros.y.pernoctaciones, Residencia..Nive
 
 A continuación, se utilizó la función `glimpse()` del paquete `dplyr` para obtener una vista general del dataset, comprobando que todas las columnas se importaron como tipo carácter y que será necesario ajustar sus tipos en etapas posteriores.
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo %>% glimpse()
 ```
 Gracias a esto, se observa que todas las columnas se importaron inicialmente como tipo character. Por ello, en la fase de preparación se realizará la conversión a tipos de datos adecuados (fechas, factores y numéricos) para facilitar el análisis estadístico y gráfico.
@@ -147,13 +147,13 @@ df_Turismo <- df_Turismo %>%
 
 Posteriormente, se aplicó `sapply()` junto con `unique()` para revisar los valores de cada variable y detectar posibles inconsistencias.
 
-```{r}
+```{r, echo=FALSE}
 sapply(df_Turismo, function(x) length(unique(x)))
 ```
 
 Se identificaron varias **incidencias**: la columna Totales.Territoriales presentaba un único valor (“Total nacional”), y Comunidades.y.Ciudades.Autónomas incluía 20 categorías en lugar de 19, debido a registros vacíos o duplicados.
 
-```{r}
+```{r, echo=FALSE}
 print(unique(df_Turismo$Comunidades.y.Ciudades.Autónomas))
 ```
 Además, se observó que la variable CCAA presentaba registros vacíos o en blanco, lo que explica las discrepancias detectadas anteriormente. Estos valores se eliminarán en la fase de limpieza del dataset.
@@ -171,7 +171,7 @@ Posteriormente, con el fin de facilitar la interpretación y el análisis compar
 
 En consecuencia, se eliminaron las variables no relevantes para este nivel de análisis (Provincias, Viajeros.y.pernoctaciones, Residencia..Nivel.1 y Residencia..Nivel.2).
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo <- df_Turismo %>%
   select(-c(Provincias,Viajeros.y.pernoctaciones,
             Residencia..Nivel.1,
@@ -180,7 +180,7 @@ df_Turismo <- df_Turismo %>%
 
 Dado que todas las variables se importaron inicialmente como texto, fue necesario convertir Periodo al formato de fecha. Para ello, se sustituyó el carácter “M” por un guion y se aplicó la función `ym()` para reconocer correctamente el año y el mes.
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo <- df_Turismo %>%
   mutate(Periodo = str_replace(Periodo, "M", "-"), 
     Periodo = ym(Periodo))
@@ -188,7 +188,7 @@ df_Turismo <- df_Turismo %>%
 
 Además, la variable Total se convirtió a tipo numérico para permitir la realización de cálculos y análisis estadísticos sin errores de formato.
 
-```{r}
+```{r, echo=FALSE}
 df_Turismo <- df_Turismo %>% 
   mutate(Total=as.numeric(Total))
 ```
@@ -229,13 +229,106 @@ anyNA(df_Turismo)
 colSums(is.na(df_Turismo))
 ```
 
+### Análisis
+
+Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos.
+
+```{r, echo=FALSE}
+summary(df_Turismo)
+```
+El resumen estadístico muestra que todas las comunidades autónomas tienen el mismo número de observaciones, con registros trimestrales entre 1999 y 2025. La variable Total presenta un mínimo de 0 (probablemente asociado a la pandemia), una media de 6,27 millones y un máximo de 54 millones, reflejando una notable variabilidad entre regiones y periodos.
+
+Dado que la función `summary()` ofrece información limitada para variables categóricas, se amplió el análisis calculando los principales estadísticos descriptivos de Total por comunidad autónoma. Este enfoque permite comparar la magnitud y variabilidad del turismo entre regiones, antes de profundizar en las relaciones en el análisis bivariante.
+
+```{r, echo=FALSE}
+df_Turismo %>%
+  group_by(CCAA) %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    sd = sd(Total, na.rm = TRUE),
+    min = min(Total, na.rm = TRUE),
+    max = max(Total, na.rm = TRUE),
+    IQR=IQR(Total, na.rm=TRUE),
+  ) %>%
+  arrange(desc(media)) %>% 
+  print()
+```
+
+Los resultados muestran que Cataluña presenta la media más alta en el número de turistas, lo que refleja su consolidación como uno de los principales destinos turísticos del país. Le siguen Baleares, Canarias y Andalucía, todas ellas comunidades con una fuerte especialización en el sector turístico.
+
+En el extremo opuesto, Melilla, Ceuta, La Rioja y Navarra registran las medias más bajas, lo que podría deberse a su menor capacidad de atracción turística o a un peso económico menos centrado en este sector.
+
+Para obtener una visión general del comportamiento del turismo en el conjunto del país, se calcularon los principales estadísticos descriptivos del Total Nacional, agregando los valores de todas las comunidades por periodo.
+
+```{r, include=FALSE}
+nacional_mensual <- df_Turismo %>%
+  group_by(Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+nacional_mensual %>%
+  summarise(
+    media = mean(Total, na.rm = TRUE),
+    mediana = median(Total, na.rm = TRUE),
+    sd = sd(Total, na.rm = TRUE),
+    var = var(Total, na.rm = TRUE),
+    min = min(Total, na.rm = TRUE),
+    max = max(Total, na.rm = TRUE),
+    N = n()
+  )
+```
+
+Además, se han analizado los resultados agregados a nivel nacional y muestran una media de aproximadamente 119 millones de turistas por periodo y una mediana cercana a 112 millones, lo que indica una distribución relativamente equilibrada aunque con cierta asimetría hacia los valores altos.
+
+La desviación típica, de unos 52 millones, junto con una varianza elevada, refleja una alta variabilidad en el volumen de turismo entre periodos.
+
+El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mientras que el máximo (247,9 millones) evidencia los picos alcanzados en los años de mayor actividad turística.
+
+-------
+
+Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
+
+```{r Gráfico 1, echo=FALSE, out.height="20%", out.width="90%"}
+ggplot(nacional_mensual, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
+  labs(title = "Serie temporal de viajeros por mes",
+       x = "Periodo", y = "Total") +
+  theme_minimal()
+```
+
+La gráfica muestra una tendencia general al alza con una clara estacionalidad anual, marcada por picos recurrentes en los meses de mayor actividad turística. También se identifican valores atípicos durante el periodo de la pandemia de la COVID-19, que reflejan la brusca caída del sector en esos años.
+
+A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
+
+```{r Gráfico 2, echo=FALSE ,out.height="30%", out.width="90%"}
+ca_mensual <- df_Turismo %>%
+  group_by(CCAA, Periodo) %>%
+  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+
+ggplot(ca_mensual, aes(Periodo, Total)) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
+  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
+  labs(title = "Serie temporal por Comunidad Autónoma",
+       x = "Periodo", y = "Total") +
+  theme_minimal()
+```
+
+En general, todas las comunidades muestran una marcada estacionalidad, con picos de actividad durante los meses de verano. A largo plazo, Madrid, el País Vasco y Canarias presentan una tendencia claramente creciente, mientras que otras, como Ceuta, mantienen una evolución más estable.
+
+Asimismo, se observa heterocedasticidad en regiones como Illes Balears, Asturias, Andalucía o la Comunitat Valenciana, donde la variabilidad aumenta con el número de turistas, a diferencia de Madrid o Canarias, donde la dispersión se mantiene más constante.
+
+Por último, todas las comunidades registran una caída abrupta en 2020, asociada al impacto de la pandemia de la COVID-19.
+En el siguiente apartado se aplicará el método 3sigma estacional (por mes y comunidad autónoma) para identificar de forma formal los valores atípicos sin confundirlos con la estacionalidad natural de la serie.
+
 ### Detección de outliers
 
 Para la detección de valores atípicos en las series de turismo se aplicaron tres métodos estadísticos complementarios:
 
-- Regla 3-sigmas: considera como *outliers* los valores que se alejan más de tres desviaciones típicas respecto a la media.  
-- Método de Hampel: utiliza la mediana y la desviación absoluta mediana (MAD) para detectar observaciones atípicas, siendo más robusto frente a valores extremos.  
-- Método del Boxplot: identifica *outliers* a partir de los límites del rango intercuartílico (1,5×IQR).  
+- **Regla 3-sigmas**: considera como *outliers* los valores que se alejan más de tres desviaciones típicas respecto a la media.  
+- **Método de Hampel**: utiliza la mediana y la desviación absoluta mediana (MAD) para detectar observaciones atípicas, siendo más robusto frente a valores extremos.  
+- **Método del Boxplot**: identifica *outliers* a partir de los límites del rango intercuartílico (1,5×IQR).  
 
 En todos los casos se aplicó una versión estacional del método, calculando los parámetros (media, desviación, mediana o cuartiles) por mes y comunidad autónoma, con el objetivo de evitar clasificar como atípicos los picos o caídas debidos a la estacionalidad turística.  
 
@@ -260,7 +353,7 @@ outliers_sigma3_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r Gráfico 1, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 3, echo=FALSE, out.height="30%", out.width="90%"}
 if(!dir.exists("graficos_outliers_3sigma")){
   dir.create("graficos_outliers_3sigma")
 }
@@ -339,7 +432,7 @@ outliers_hampel_est <- df_Turismo %>%
 ```
 
 
-```{r Gráfico 2, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 4, echo=FALSE, out.height="30%", out.width="90%"}
 if(!dir.exists("graficos_outliers_hampel")){
   dir.create("graficos_outliers_hampel")
 }
@@ -406,7 +499,7 @@ outliers_boxplot_est <- df_Turismo %>%
   ungroup()
 ```
 
-```{r Gráfico 3, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 5, echo=FALSE, out.height="30%", out.width="90%"}
 if(!dir.exists("graficos_outliers_boxplot")){
   dir.create("graficos_outliers_boxplot")
 }
@@ -488,7 +581,8 @@ Dado que los resultados sugieren que los métodos tradicionales no captan adecua
 
 Este enfoque permite homogeneizar el tratamiento de outliers en todas las comunidades, evitando que diferencias en la dispersión estacional alteren la comparación entre regiones.
 
-### Análisis de series de tiempo
+
+### Series de tiempo
 
 Los datos de turismo referentes al periodo de la pandemia son claramente _outlier_, la pregunta principal es qué hacer con ellos. Esta pregunta no es sencilla, como se ha mencionado, hay métodos de detección que no los clasifican como tales.
 
@@ -599,116 +693,84 @@ AnalisisBox <- readRDS("../AnalisisBox.rds")
 
 Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**
 
-```{r Gráfico 4, out.height="20%", out.width="90%"}
+```{r Gráfico 6, out.height="20%", out.width="90%"}
 AnalisisBox[[2]]
 ```
+
 Entonces, tras ver que el modelo aproxima de forma razonable los datos prepandemia, hay razones para confiar en las predicciones, las cuales se pueden interpretar como los datos de pernoctaciones que hubieran sucedido en esos meses siguientes a febrero de $2020$ si la pandemia no hubiera azotado.
 
 Lo más interesante ocurre si comparamos esas predicciones con los datos posteriores a la pandemia. Si bien es cierto que hay algunas comunidades para las cuales las predicciones no se ajustan en nada (son los casos de las ciudades autónomas) en el resto de casos se puede ver como la predicción y el valor postpandemia son iguales solo que con cifras algo menores menores.
-```{r Gráfico 5, echo=FALSE, out.height="20%", out.width="90%"}
+
+```{r Gráfico 7, echo=FALSE, out.height="20%", out.width="90%"}
 AnalisisBox[[18]]
 ```
 
-```{r Gráfico 7, echo=FALSE, out.height="20%", out.width="90%"}
+```{r Gráfico 8, echo=FALSE, out.height="20%", out.width="90%"}
 AnalisisBox[[13]]
 ```
 
-### Análisis
+### Imputación de datos
 
-Como primer paso del análisis univariante, se calcularon los estadísticos descriptivos básicos con el fin de obtener una visión general de las variables del conjunto de datos.
+Mediante el modelo ARIMA previamente entrenado, se imputan los valores del periodo comprendido entre marzo de 2020 y febrero de 2021, sustituyendo los datos originales afectados por la pandemia por las predicciones del modelo.
+Así se obtiene una serie temporal más coherente y continua, almacenada en el nuevo data frame `df_Turismo_corregido`. 
 
-```{r}
-summary(df_Turismo)
-```
-El resumen estadístico muestra que todas las comunidades autónomas tienen el mismo número de observaciones, con registros trimestrales entre 1999 y 2025. La variable Total presenta un mínimo de 0 (probablemente asociado a la pandemia), una media de 6,27 millones y un máximo de 54 millones, reflejando una notable variabilidad entre regiones y periodos.
+```{r Dataframe con las predicciones, echo=FALSE}
+AnalisisBox <- readRDS("../AnalisisBox.rds")
 
-Dado que la función `summary()` ofrece información limitada para variables categóricas, se amplió el análisis calculando los principales estadísticos descriptivos de Total por comunidad autónoma. Este enfoque permite comparar la magnitud y variabilidad del turismo entre regiones, antes de profundizar en las relaciones en el análisis bivariante.
+df <- data.frame(matrix(nrow = 0, ncol = 12))
+ccaa <- levels(df_Turismo$CCAA)
+j <- 1
 
-```{r}
-df_Turismo %>%
-  group_by(CCAA) %>%
-  summarise(
-    media = mean(Total, na.rm = TRUE),
-    mediana = median(Total, na.rm = TRUE),
-    sd = sd(Total, na.rm = TRUE),
-    min = min(Total, na.rm = TRUE),
-    max = max(Total, na.rm = TRUE),
-    IQR=IQR(Total, na.rm=TRUE),
-    N = n()
-  ) %>%
-  arrange(desc(media)) %>% 
-  print()
+for (x in AnalisisBox){
+  if (inherits(x, "forecast")){
+    df[j, ] <- x$mean 
+    rownames(df)[j] <- ccaa[[j]]
+    j <- j + 1
+  }
+}
+
 ```
 
-Los resultados muestran que Cataluña presenta la media más alta en el número de turistas, lo que refleja su consolidación como uno de los principales destinos turísticos del país. Le siguen Baleares, Canarias y Andalucía, todas ellas comunidades con una fuerte especialización en el sector turístico.
+```{r Imputación de los datos con las predicciones, include=FALSE}
+# Copia del data frame original
+df_Turismo_corregido <- df_Turismo
 
-En el extremo opuesto, Melilla, Ceuta, La Rioja y Navarra registran las medias más bajas, lo que podría deberse a su menor capacidad de atracción turística o a un peso económico menos centrado en este sector.
+# Ordenar por CCAA y Periodo para tener los meses en orden dentro de cada comunidad
+df_Turismo_corregido <- df_Turismo_corregido %>%
+  arrange(CCAA, Periodo)
 
-Para obtener una visión general del comportamiento del turismo en el conjunto del país, se calcularon los principales estadísticos descriptivos del Total Nacional, agregando los valores de todas las comunidades por periodo.
+# Definir rango COVID (12 meses: 2020-03 a 2021-02)
+inicio_covid <- as.Date("2020-03-01")
+fin_covid    <- as.Date("2021-02-01")
 
-```{r}
-nacional_mensual <- df_Turismo %>%
-  group_by(Periodo) %>%
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
+# Número de meses que tenemos predichos (columnas de df)
+n_meses <- ncol(df)
 
-nacional_mensual %>%
-  summarise(
-    media = mean(Total, na.rm = TRUE),
-    mediana = median(Total, na.rm = TRUE),
-    sd = sd(Total, na.rm = TRUE),
-    var = var(Total, na.rm = TRUE),
-    min = min(Total, na.rm = TRUE),
-    max = max(Total, na.rm = TRUE),
-    N = n()
+# Comunidades en el mismo orden para df
+ccaa_niveles <- levels(df_Turismo_corregido$CCAA)
+
+# Opcional pero útil: asignar nombres de fila a df según las CCAA
+if (nrow(df) == length(ccaa_niveles)) {
+  rownames(df) <- ccaa_niveles
+}
+
+# Bucle: para cada CCAA, sustituir los 12 meses de COVID por los del df
+for (ccaa_actual in ccaa_niveles) {
+  
+  # índices de las filas de esa CCAA en el periodo COVID
+  idx <- which(
+    df_Turismo_corregido$CCAA   == ccaa_actual &
+    df_Turismo_corregido$Periodo >= inicio_covid &
+    df_Turismo_corregido$Periodo <= fin_covid
   )
+  
+  # si hay tantas filas como meses predichos, sustituimos
+  if (length(idx) == n_meses && ccaa_actual %in% rownames(df)) {
+    df_Turismo_corregido$Total[idx] <- as.numeric(df[ccaa_actual, 1:n_meses])
+  }
+}
+
 ```
-
-Los resultados agregados a nivel nacional muestran una media de aproximadamente 119 millones de turistas por periodo y una mediana cercana a 112 millones, lo que indica una distribución relativamente equilibrada aunque con cierta asimetría hacia los valores altos.
-
-La desviación típica, de unos 52 millones, junto con una varianza elevada, refleja una alta variabilidad en el volumen de turismo entre periodos.
-
-El valor mínimo (0) corresponde al impacto de la pandemia de la COVID-19, mientras que el máximo (247,9 millones) evidencia los picos alcanzados en los años de mayor actividad turística.
-
--------
-
-Para ilustrar la evolución del turismo en el conjunto nacional, se elaboró una serie temporal que permite observar las principales tendencias y patrones estacionales.
-
-```{r Gráfico 8, out.height="20%", out.width="90%"}
-ggplot(nacional_mensual, aes(Periodo, Total)) +
-  geom_line(linewidth = 0.8) +
-  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
-  labs(title = "Serie temporal de viajeros por mes",
-       x = "Periodo", y = "Total") +
-  theme_minimal()
-```
-
-La gráfica muestra una tendencia general al alza con una clara estacionalidad anual, marcada por picos recurrentes en los meses de mayor actividad turística. También se identifican valores atípicos durante el periodo de la pandemia de la COVID-19, que reflejan la brusca caída del sector en esos años.
-
-A continuación, se representa la serie temporal de cada comunidad y ciudad autónoma para analizar la evolución del turismo y comparar sus comportamientos a lo largo del tiempo.
-
-```{r Gráfico 9, out.height="30%", out.width="90%"}
-ca_mensual <- df_Turismo %>%
-  group_by(CCAA, Periodo) %>%
-  summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
-
-ggplot(ca_mensual, aes(Periodo, Total)) +
-  geom_line(linewidth = 0.6) +
-  facet_wrap(~ CCAA, scales = "free_y", ncol = 3) +
-  scale_y_continuous(labels = label_comma(big.mark = ".", decimal.mark = ","))+
-  labs(title = "Serie temporal por Comunidad Autónoma",
-       x = "Periodo", y = "Total") +
-  theme_minimal()
-```
-
-En general, todas las comunidades muestran una marcada estacionalidad, con picos de actividad durante los meses de verano. A largo plazo, Madrid, el País Vasco y Canarias presentan una tendencia claramente creciente, mientras que otras, como Ceuta, mantienen una evolución más estable.
-
-Asimismo, se observa heterocedasticidad en regiones como Illes Balears, Asturias, Andalucía o la Comunitat Valenciana, donde la variabilidad aumenta con el número de turistas, a diferencia de Madrid o Canarias, donde la dispersión se mantiene más constante.
-
-Por último, todas las comunidades registran una caída abrupta en 2020, asociada al impacto de la pandemia de la COVID-19.
-En el siguiente apartado se aplicará el método 3sigma estacional (por mes y comunidad autónoma) para identificar de forma formal los valores atípicos sin confundirlos con la estacionalidad natural de la serie.
-
-
-##TODO METER LOS MAPAS Y EXPLICARLO Mas bien, meter el del año 2024 y explicarlo. También estaría bien meter algo más de bivariante
 
 ## OCUPACIÓN
 
@@ -783,7 +845,7 @@ df_Ocupacion_clean <-  df_Ocupacion %>%
 
 A continuación, se representa la **evolución trimestral del empleo nacional en el sector servicios**. Para ello, se agrupan los datos por periodo y se calcula el total de personas ocupadas, generando una serie temporal mediante un gráfico de líneas.
 
-```{r Gráfico 10, out.height="20%", out.width="90%"}
+```{r Gráfico 9, echo=FALSE,out.height="20%", out.width="90%"}
 # Total nacional por trimestre
 ocup_nacional <- df_Ocupacion_clean %>%
   group_by(Periodo) %>%
@@ -806,7 +868,7 @@ Además, se aprecia una estacionalidad clara, con aumentos recurrentes en determ
 
 Además, también se analiza la **evolución trimestral del empleo en el sector servicios por Comunidad Autónoma**, agrupando los datos por región y periodo. El gráfico permite comparar la dinámica laboral entre territorios a lo largo del tiempo.
 
-```{r Gráfico 11, out.height="30%", out.width="90%"}
+```{r Gráfico 10, echo=FALSE ,out.height="30%", out.width="90%"}
 ocup_ccaa <- df_Ocupacion_clean %>%
   group_by(CCAA, Periodo) %>%
   summarise(Total = sum(Total, na.rm = TRUE), .groups = "drop")
@@ -891,76 +953,13 @@ Por tanto, no se eliminarán las observaciones atípicas y se mantendrán en el 
 
 # ANÁLISIS BIVARIANTE
 
-**Base de datos actualizada con los valores imputados**
-
-```{r Dataframe con las predicciones, echo=FALSE}
-AnalisisBox <- readRDS("../AnalisisBox.rds")
-
-df <- data.frame(matrix(nrow = 0, ncol = 12))
-ccaa <- levels(df_Turismo$CCAA)
-j <- 1
-
-for (x in AnalisisBox){
-  if (inherits(x, "forecast")){
-    df[j, ] <- x$mean 
-    rownames(df)[j] <- ccaa[[j]]
-    j <- j + 1
-  }
-}
-
-```
-
-```{r Imputación de los datos con las predicciones}
-# Copia del data frame original
-df_Turismo_corregido <- df_Turismo
-
-# Ordenar por CCAA y Periodo para tener los meses en orden dentro de cada comunidad
-df_Turismo_corregido <- df_Turismo_corregido %>%
-  arrange(CCAA, Periodo)
-
-# Definir rango COVID (12 meses: 2020-03 a 2021-02)
-inicio_covid <- as.Date("2020-03-01")
-fin_covid    <- as.Date("2021-02-01")
-
-# Aseguramos que df es data.frame y tiene dimensiones
-
-
-# Número de meses que tenemos predichos (columnas de df)
-n_meses <- ncol(df)
-
-# Comunidades en el mismo orden para df
-ccaa_niveles <- levels(df_Turismo_corregido$CCAA)
-
-# Opcional pero útil: asignar nombres de fila a df según las CCAA
-if (nrow(df) == length(ccaa_niveles)) {
-  rownames(df) <- ccaa_niveles
-}
-
-# Bucle: para cada CCAA, sustituir los 12 meses de COVID por los del df
-for (ccaa_actual in ccaa_niveles) {
-  
-  # índices de las filas de esa CCAA en el periodo COVID
-  idx <- which(
-    df_Turismo_corregido$CCAA   == ccaa_actual &
-    df_Turismo_corregido$Periodo >= inicio_covid &
-    df_Turismo_corregido$Periodo <= fin_covid
-  )
-  
-  # si hay tantas filas como meses predichos, sustituimos
-  if (length(idx) == n_meses && ccaa_actual %in% rownames(df)) {
-    df_Turismo_corregido$Total[idx] <- as.numeric(df[ccaa_actual, 1:n_meses])
-  }
-}
-
-```
-
 En esta sección se abordará el análisis bivariante, con el objetivo de relacionar las bases de datos de turismo y ocupación para estudiar posibles vínculos entre ambas variables.
 
 Antes de combinar los conjuntos de datos, será necesario estandarizar ciertas variables con el fin de garantizar una fusión correcta (merge) y obtener un marco de datos coherente para el análisis conjunto.
 
 Así pues, se convierte la variable Periodo al formato año-trimestre, luego se agrupan los datos por comunidad y periodo, y se calcula el total de turistas por trimestre y CCAA. Finalmente, se ordenan los registros por comunidad y periodo para facilitar el merge posterior.
 
-```{r}
+```{r, echo=FALSE}
 turismo_to_merge <- df_Turismo_corregido %>%
   mutate(Periodo = as.yearqtr(Periodo)) %>%
   group_by(CCAA, Periodo) %>%
@@ -1020,7 +1019,7 @@ correlaciones_por_comunidad
 
 ```
 
-```{r Gráfico 12, echo=FALSE, out.height="40%", out.width="90%"}
+```{r Gráfico 11, echo=FALSE, out.height="40%", out.width="90%"}
 ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
@@ -1031,7 +1030,7 @@ ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
 
 ```
 
-Se observa que Illes Balears presenta la mayor correlación positiva (r = 0.68) entre turismo y empleo en el sector servicios, reflejando su fuerte dependencia del turismo estival. En el extremo opuesto, Melilla muestra una correlación negativa (r = -0.24), probablemente por una menor relación directa entre la llegada de turistas y el empleo local.
+Se observa que Illes Balears presenta la mayor correlación positiva (r = 0.705) entre turismo y empleo en el sector servicios, reflejando su fuerte dependencia del turismo estival. En el extremo opuesto, Melilla muestra una correlación muy baja (r = 0.083), probablemente por una menor relación directa entre la llegada de turistas y el empleo local.
 
 En general, las correlaciones son positivas pero de magnitud moderada, indicando que ambas variables tienden a evolucionar conjuntamente, aunque con distinta intensidad según la región.
 
@@ -1054,11 +1053,12 @@ modelos_por_ccaa <- df_Turismo_Ocupacion %>%
     intercepto = coef(modelo)[1], #β₀
     p_value    = summary(modelo)$coefficients[2, 4]
   ) %>%
-  select(CCAA, pendiente, intercepto, R2, p_value)
+  select(CCAA, pendiente, intercepto, R2, p_value) %>% 
+  arrange(desc(R2))
 
 modelos_por_ccaa[,c(1,4)]
 ```
-```{r Gráfico 13, echo=FALSE, out.height="30%", out.width="90%"}
+```{r Gráfico 12, echo=FALSE, out.height="30%", out.width="90%"}
 año_ref <- 2024
 
 nuts2 <- gisco_get_nuts(year = año_ref,
@@ -1099,9 +1099,9 @@ ggplot(mapa_R2) +
 
 En general, se observa que los valores son moderados o bajos, lo que indica que, aunque existe cierta relación entre ambas variables, el turismo no explica completamente la evolución del empleo, y probablemente influyen otros factores económicos o estructurales.
 
-Las comunidades con mayor ajuste del modelo son Aragón ($R^2 = 0.25$), Castilla y León ($R^2 = 0.24$), Cantabria ($R^2 = 0.22$) y Canarias ($R^2 = 0.22$), donde alrededor de una cuarta parte de la variabilidad en el empleo se asocia con los cambios en el turismo.
+Las comunidades con mayor ajuste del modelo son Islas Baleares ($R^2 = 0.498$), Canarias ($R^2 = 0.388$), Madrid ($R^2 = 0.276$) y Aragón ($R^2 = 0.234$),donde donde el comportamiento del empleo en el sector servicios parece estar más vinculado a la actividad turística, mostrando una relación más clara entre ambas variables en comparación con el resto de regiones.
 
-Por el contrario, en Ceuta ($R^2 \approx 0$) y Cataluña ($R \approx 0.05$) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
+Por el contrario, en Ceuta y Melilla ($R^2 \approx 0$) y Asturias ($R \approx 0.045$) el modelo lineal apenas explica la variación en el empleo, lo que sugiere una relación débil o inexistente entre ambas variables en estas regiones.
 
 A partir del modelo de regresión lineal calculado anteriormente, se estima la **elasticidad** del empleo respecto al turismo, utilizando la pendiente de la recta de regresión como medida del impacto del turismo sobre el empleo en cada comunidad autónoma.
 
@@ -1124,11 +1124,11 @@ elasticidad_por_ccaa
 
 ```
 
-Los valores de elasticidad, comprendidos entre -0.09 y 0.19, muestran que en todas las comunidades autónomas la relación entre turismo y empleo es inelástica (ya que <1), es decir, el empleo en el sector servicios apenas varía ante los cambios en la actividad turística. Esto sugiere que un aumento del turismo no se traduce proporcionalmente en un mayor nivel de empleo.
+Los valores de elasticidad, comprendidos entre  0.01891369 y 0.3962694 , muestran que en todas las comunidades autónomas la relación entre turismo y empleo es inelástica (ya que <1), es decir, el empleo en el sector servicios apenas varía ante los cambios en la actividad turística. Esto sugiere que un aumento del turismo no se traduce proporcionalmente en un mayor nivel de empleo.
 
 Esta baja respuesta puede deberse a que parte del empleo es estructural o fijo, a la existencia de desfases temporales entre el incremento del turismo y la contratación de personal, o a que las variables se miden en frecuencias distintas (mensual para el turismo y trimestral para el empleo), lo que suaviza la relación observada.
 
-En regiones como Canarias ($\approx 0.19$), donde la elasticidad es algo mayor, el empleo muestra una mayor sensibilidad a las variaciones del turismo, coherente con su elevada dependencia económica de esta actividad.
+En regiones como Canarias ($\approx 0.396$), donde la elasticidad es algo mayor, el empleo muestra una mayor sensibilidad a las variaciones del turismo, coherente con su elevada dependencia económica de esta actividad.
 
 Aunque las correlaciones y la bondad de ajuste indicaban una relación fuerte y significativa entre turismo y empleo, las elasticidades calculadas son bajas. Esto no representa una contradicción, sino una diferencia en la interpretación: mientras la correlación mide la fuerza de la relación, la elasticidad cuantifica su intensidad relativa.
 
