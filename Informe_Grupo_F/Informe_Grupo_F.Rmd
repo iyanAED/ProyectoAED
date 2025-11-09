@@ -1036,16 +1036,44 @@ correlaciones_por_comunidad <- df_Turismo_Ocupacion %>%
 
 ```
 
-```{r Gráfico 11, echo=FALSE, out.height="20%", out.width="60%"}
-ggplot(correlaciones_por_comunidad, aes(x = reorder(CCAA, cor), y = cor)) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
-  labs(title = "Correlación entre Turismo y Ocupación por Comunidad Autónoma",
-       x = "Comunidad Autónoma", y = "Coeficiente de correlación de Pearson") +
-  theme_minimal()
+```{r, echo=FALSE, out.height="30%", out.width="70%"}
+año_ref <- 2024
 
+nuts2 <- gisco_get_nuts(year = año_ref,
+                        resolution = 20,
+                        nuts_level = 2,
+                        country = "ES") %>%
+         select(NUTS_ID, NAME_LATN)
+
+nuts2 <- nuts2 %>%
+  mutate(NAME_LATN = recode(
+    NAME_LATN,
+    "Comunidad Valenciana"      = "Comunitat Valenciana",
+    "Castilla-La Mancha"        = "Castilla - La Mancha",
+    "Ciudad Autónoma de Ceuta"  = "Ceuta",
+    "Ciudad Autónoma de Melilla"= "Melilla"
+  ))
+
+cor_por_ccaa <- correlaciones_por_comunidad %>%
+  select(CCAA, cor)
+
+mapa_cor <- nuts2 %>%
+  left_join(cor_por_ccaa, by = c("NAME_LATN" = "CCAA"))
+
+ggplot(mapa_cor) +
+  geom_sf(aes(fill = cor), color = "white") +
+  scale_fill_gradientn(
+    colours = hcl.colors(7, "Inferno", rev = TRUE),
+    name = 'Correlación'
+  ) +
+  labs(
+    title = "Correlación por CCAA",
+    subtitle = "Coeficiente de correlación",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
 ```
+
 
 Se observa que Illes Balears presenta la mayor correlación positiva (r = 0.705) entre turismo y empleo en el sector servicios, reflejando su fuerte dependencia del turismo estival. En el extremo opuesto, Melilla muestra una correlación muy baja (r = 0.083), probablemente por una menor relación directa entre la llegada de turistas y el empleo local.
 
@@ -1073,6 +1101,7 @@ modelos_por_ccaa <- df_Turismo_Ocupacion %>%
   select(CCAA, pendiente, intercepto, R2, p_value) %>% 
   arrange(desc(R2))
 ```
+
 ```{r Gráfico 12, echo=FALSE, out.height="30%", out.width="70%"}
 año_ref <- 2024
 
