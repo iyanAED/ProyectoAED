@@ -569,32 +569,29 @@ tabla_outliers_ccaa <- df_outliers %>%
 tabla_outliers_ccaa
 ```
 
-Durante la aplicación de los distintos métodos de detección de valores atípicos (3-sigma, Hampel y Boxplot) se observó que algunas comunidades autónomas no presentaban *outliers*, lo cual resultaba poco coherente con la evolución visible de sus series temporales.
+Durante la aplicación de los distintos métodos de detección de valores atípicos (3-sigma, Hampel y Boxplot) se observó que algunas comunidades autónomas no presentaban outliers, a pesar de mostrar comportamientos anómalos en sus series temporales.
 
-Para contrastar esta situación, se analizaron los estadísticos descriptivos de los valores mensuales (media, varianza y desviación típica). Este análisis permitió comprobar que, en algunos casos, como el de la Comunidad de Madrid, la desviación típica estacional es elevada debido a un crecimiento sostenido en los últimos años.  
+El análisis de los estadísticos descriptivos (media, varianza y desviación típica) evidenció que en regiones como la Comunidad de Madrid la variabilidad dentro del año es reducida, pero la variabilidad entre estaciones es alta debido al crecimiento sostenido del turismo en los últimos años.
+Esto provoca que métodos como el de 3-sigma no identifiquen correctamente algunos valores que visualmente se perciben como atípicos.
 
-Esto implica que, aunque la variabilidad dentro de cada año es baja, la variabilidad entre estaciones es alta, provocando que el método 3-sigma no identifique correctamente ciertos valores que visualmente podrían considerarse atípicos.
-
-Este comportamiento también se repite en otras comunidades de similares características, donde las medias y la dispersión entre estaciones son altas.  
-
-Dado que los resultados sugieren que los métodos tradicionales no captan adecuadamente todas las anomalías, y teniendo en cuenta el conocimiento contextual del fenómeno turístico, se ha decidido considerar como valores atípicos comunes el periodo comprendido entre marzo de 2020 y febrero de 2021, correspondiente al impacto más severo de la pandemia de la COVID-19.  
-
-Este enfoque permite homogeneizar el tratamiento de outliers en todas las comunidades, evitando que diferencias en la dispersión estacional alteren la comparación entre regiones.
+Dado que los métodos tradicionales no captan adecuadamente todas las anomalías y considerando el contexto económico y social, se decidió tratar como outliers comunes el periodo comprendido entre marzo de 2020 y febrero de 2021, correspondiente al impacto más severo de la pandemia de la COVID-19.
+De este modo, se homogeneiza el tratamiento de valores atípicos en todas las comunidades, evitando sesgos derivados de diferencias estacionales.
 
 
 ### Series de tiempo
 
-Los datos de turismo referentes al periodo de la pandemia son claramente _outlier_, la pregunta principal es qué hacer con ellos. Esta pregunta no es sencilla, como se ha mencionado, hay métodos de detección que no los clasifican como tales.
+### Series temporales
 
-La idea para justificar qué debemos hacer con estos datos anómalos es la siguiente, en general, si representamos la serie temporal de una comunidad autónoma se puede ver que la gran bajada del número de pernoctaciones a partir del mes de marzo de 2020, lo cual está directamente relacionado con el inicio del estado de alarma y la cuarentena nacional. 
+El periodo de la pandemia constituye claramente una anomalía dentro de la serie temporal turística.  A partir de marzo de 2020 se observa un descenso abrupto en el número de viajeros y pernoctaciones, directamente asociado al confinamiento y las restricciones de movilidad.  
 
-Tras esto se mantienen unas cifras muy bajas hasta aproximadamente dos años después (dependiendo de la comunidad), coincidiendo con la declaración del final de la pandemia por parte de la OMS, los datos de estancias vuelven prácticamente a los niveles prepandemia, lo cual sugiere que este sector se recuperó de forma bastante rápida cuando la situación sanitaria lo permitió.
+Tras ese desplome, las cifras se mantienen bajas durante varios trimestres y comienzan a recuperarse gradualmente hacia 2022, alcanzando niveles similares a los previos a la pandemia.  Esto sugiere que el COVID-19 interrumpió temporalmente la tendencia del sector, sin modificar de forma estructural su evolución a largo plazo.  
 
-Esto hace pensar que la pandemia simplemente puso una "pausa" al turismo y tras ello la actividad en este sector continuó desarrollándose de la misma forma que lo venía haciendo en los últimos años, aunque si es cierto que el crecimiento se desaceleró ligeramente. Lo cual sugiere que los datos de la pandemia no aportan ningún tipo de información relevante.
+Por tanto, se considera que los datos correspondientes a dicho periodo no aportan información representativa del comportamiento habitual del turismo.
 
-Para darle respaldo a esta hipótesis nos proponemos hacer un análisis de la serie de datos de cada CCAA, cosa que es muy natural por la forma en la que están organizados los datos.
+Con esta justificación, se plantea ajustar modelos ARIMA para el análisis de tendencias a largo plazo, utilizando únicamente los datos previos a la pandemia.  
 
-Entonces, se tomarán los datos previos a la pandemia y se utilizarán para crear un modelo $ARIMA(p, d, q)(P, D, Q)$, el ajuste de los parámetros se hace de forma automática con las función `auto.arima`. Tras el ajuste se usa la función `forecast` que permite utilizar el modelo para predecir una serie de valores en el futuro, en este caso de predicen los $12$ meses siguientes. 
+El modelo se define como: $ARIMA(p, d, q)(P, D, Q)$, donde los parámetros se ajustan automáticamente mediante la función `auto.arima()`.  
+Posteriormente, se utiliza la función `forecast()` para proyectar los valores de los 12 meses siguientes a partir del modelo estimado.
 
 ```{r Función principal para el cálculo de la serie, include=FALSE}
 # Dado que hay que hacer el mismo análisis de series de tiempo para cada comunidad y ciudad autónoma la mejor opción es hacer una función que automatice el proceso.
