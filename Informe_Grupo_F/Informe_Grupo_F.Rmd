@@ -1059,7 +1059,7 @@ Por último, cabe señalar que la correlación no implica causalidad: los result
 
 **Análisis de regresión lineal simple**
 
-Además, modelamos para cada comunidad una regresión  simple con el objetivo de conocer la **bondad de ajuste** (`R^2`), lo cual permitea valorar qué proporción de la variabilidad en el empleo es explicada por el turismo.
+Además, modelamos para cada comunidad una regresión  simple con el objetivo de conocer la **bondad de ajuste** ($R^2$), lo cual permitea valorar qué proporción de la variabilidad en el empleo es explicada por el turismo.
 
 ```{r, echo=FALSE}
 modelos_por_ccaa <- df_Turismo_Ocupacion %>%
