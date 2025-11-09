@@ -1075,7 +1075,6 @@ ggplot(mapa_cor) +
   ) +
   labs(
     title = "Coeficiente de correlación por CCAA",
-    subtitle = "Coeficiente de correlación",
     x = NULL, y = NULL
   ) +
   theme_minimal()
