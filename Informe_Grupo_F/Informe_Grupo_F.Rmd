@@ -23,7 +23,7 @@ rm(list=ls())
 ```{r Librerias, include=FALSE}
 paquetes <- c(
   "lubridate", "tidyr", "tidyverse", "scales", "stringr", "zoo", "purrr",
-  "forecast", "leaflet", "sf", "dplyr", "ggplot2", "giscoR", "pacman", "printr"
+  "forecast", "leaflet", "sf", "dplyr", "ggplot2", "giscoR", "pacman", "printr", "here"
 )
 
 for (pkg in paquetes) {
@@ -685,10 +685,10 @@ PostPandemia <- lapply(Series, Recorte)
 # AnalisisBox <- mapply(Prediccion, PrePandemia, PostPandemia, rep(12,10))
 ```
 
-Los resultados para cada comunidad se guardaron en un archivo llamado `AnalisisBox.rsd`. Se trata de una lista, si queremos acceder a ellos se pueden importar con el comando `readRSD("AnálisisBox.rsd")` y asignándolo a una variable.
+Los resultados para cada comunidad se guardaron en un archivo llamado `AnalisisBox.rsd`. Se trata de una lista, si queremos acceder a ellos se pueden importar con el comando `readRDS("AnálisisBox.rsd")` y asignándolo a una variable.
 
 ```{r Importación de los resultados, include=FALSE}
-AnalisisBox <- readRDS("AnalisisBox.rds")
+AnalisisBox <- readRDS(here("AnalisisBox.rds"))
 ```
 
 Se pueden ver las diferentes gráficas de juste para cada comunidad, como son muchos gráficos se muestra solo uno, pero se puede ver que el resto muestran resultados similares. Ponemos el caso de **Andalucía**.
@@ -714,7 +714,7 @@ Mediante el modelo ARIMA previamente entrenado, se imputan los valores del perio
 Así se obtiene una serie temporal más coherente y continua, almacenada en el nuevo data frame `df_Turismo_corregido`. 
 
 ```{r Dataframe con las predicciones, echo=FALSE}
-AnalisisBox <- readRDS("../AnalisisBox.rds")
+AnalisisBox <- readRDS(here("AnalisisBox.rds"))
 
 df <- data.frame(matrix(nrow = 0, ncol = 12))
 ccaa <- levels(df_Turismo$CCAA)
